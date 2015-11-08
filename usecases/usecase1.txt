@@ -1,0 +1,12 @@
+Name:
+Kurzbeschreibung:
+Interessengruppe/Interessen:
+Minimale Garantien:
+Erfolgsgarantien:
+Hauptakteur:
+Untergeordnete Akteure:
+Übergeordnete UseCases:
+Untergeordnete UseCases:
+Vorbedingungen:
+Haupterfolgsszenario:
+Erweiterungen:
