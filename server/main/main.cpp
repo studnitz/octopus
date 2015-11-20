@@ -1,5 +1,8 @@
 /*
-    C socket server example
+Simple Server in C/C++
+Only able to connect to one client
+
+Part of the 2015/16 BA-Praktikum
 */
 
 #include<stdio.h>
@@ -12,17 +15,20 @@
 
 int main(int argc , char *argv[])
 {
-    int socket_desc , client_sock , c , read_size;
-    struct sockaddr_in server , client;
-    char client_message[2000];
+    int socket_desc; // Server-Sockethandle
+    int client_sock; // Client-Sockethandle
+    int c;
+    int read_size;   // Size of incoming message. if > 0, new message is incoming
+    struct sockaddr_in server , client; // Client/Server-structs
+    char client_message[2000]; // Buffer for receiving messages
 
     //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1)
     {
-        printf("Could not create socket");
+        std::cout<<"Could not create socket"<<std::endl;
     }
-    puts("Socket created");
+    std::cout<<"Socket created"<<std::endl;
 
     //Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
@@ -36,25 +42,25 @@ int main(int argc , char *argv[])
         perror("bind failed. Error");
         return 1;
     }
-    puts("bind done");
+    std::cout<<"Bind done."<<std::endl;
 
     //Listen
     listen(socket_desc , 3);
 
-    //Accept and incoming connection
-    puts("Waiting for incoming connections...");
+    //Accept an incoming connection
+    std::cout<<"Waiting for incoming connections..."<<std::endl;
     c = sizeof(struct sockaddr_in);
 
     //accept connection from an incoming client
     client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
     if (client_sock < 0)
     {
-        perror("accept failed");
+        perror("Acception failed. Error");
         return 1;
     }
-    puts("Connection accepted");
+    std::cout<<"Connection accepted"<<std::endl;
 
-    puts(inet_ntoa(client.sin_addr));       // OUTPUT CLIENT IP
+    std::cout<<"Client connected: " << inet_ntoa(client.sin_addr)<<std::endl;       // OUTPUT CLIENT IP
 
     //Receive a message from client
     while( (read_size = recv(client_sock , client_message , 2000 , 0)) > 0 )
@@ -69,13 +75,12 @@ int main(int argc , char *argv[])
 
        write(client_sock ,"NOPE" , strlen("NOPE"));
         }
-        memset(&client_message[0], 0, sizeof(client_message));
+        memset(&client_message[0], 0, sizeof(client_message)); // Clear message-Buffer
     }
 
     if(read_size == 0)
     {
-        puts("Client disconnected");
-        fflush(stdout);
+        std::cout<<"Client disconnected"<<std::endl;
     }
     else if(read_size == -1)
     {
