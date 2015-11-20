@@ -62,6 +62,9 @@ int main(int argc , char *argv[])
 
     std::cout<<"Client connected: " << inet_ntoa(client.sin_addr)<<std::endl;       // OUTPUT CLIENT IP
 
+
+    memset(&client_message[0], 0, sizeof(client_message)); // Clear message-Buffer
+
     //Receive a message from client
     while( (read_size = recv(client_sock , client_message , 2000 , 0)) > 0 )
     {

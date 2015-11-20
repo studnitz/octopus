@@ -34,6 +34,8 @@ int main(int argc , char *argv[])
 
     puts("Connected\n");
 
+    memset(&server_reply[0], 0, sizeof(server_reply) ); // Clear Message-Buffer
+
     //keep communicating with server
     while(1)
     {
