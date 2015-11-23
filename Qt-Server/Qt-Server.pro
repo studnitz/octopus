@@ -1,4 +1,5 @@
 QT += core
+QT += network
 QT -= gui
 
 TARGET = Qt-Server
@@ -7,5 +8,11 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    myserver.cpp \
+    mythread.cpp
+
+HEADERS += \
+    myserver.h \
+    mythread.h
 
