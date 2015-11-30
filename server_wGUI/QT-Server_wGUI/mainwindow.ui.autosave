@@ -117,10 +117,10 @@
    <widget class="QListView" name="listView">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>340</y>
-      <width>251</width>
-      <height>192</height>
+      <x>590</x>
+      <y>361</y>
+      <width>211</width>
+      <height>171</height>
      </rect>
     </property>
    </widget>
@@ -170,6 +170,19 @@
       </font>
      </property>
     </widget>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>360</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
    </widget>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

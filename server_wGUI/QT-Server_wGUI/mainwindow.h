@@ -21,6 +21,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void recordStart();
+    void recordStop();
 };
 
 #endif // MAINWINDOW_H
