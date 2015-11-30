@@ -3,6 +3,10 @@
 #define MYSERVER_H
 
 #include <QTcpServer>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <mythread.h>
 
 class MyServer : public QTcpServer
 {
@@ -10,6 +14,7 @@ class MyServer : public QTcpServer
 public:
     explicit MyServer(QObject *parent = 0);
     void startServer();
+    QList<QTcpSocket*> connections;
 signals:
 
 public slots:
