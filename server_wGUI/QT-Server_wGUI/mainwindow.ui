@@ -206,11 +206,23 @@
        <pointsize>9</pointsize>
       </font>
      </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
      <property name="alternatingRowColors">
       <bool>false</bool>
      </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::NoSelection</enum>
+     </property>
+     <property name="showGrid">
+      <bool>true</bool>
+     </property>
+     <property name="cornerButtonEnabled">
+      <bool>true</bool>
+     </property>
      <property name="rowCount">
-      <number>2</number>
+      <number>1</number>
      </property>
      <property name="columnCount">
       <number>2</number>
@@ -218,16 +230,27 @@
      <attribute name="horizontalHeaderVisible">
       <bool>false</bool>
      </attribute>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>100</number>
+     </attribute>
      <attribute name="horizontalHeaderHighlightSections">
       <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>100</number>
      </attribute>
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
+     <attribute name="verticalHeaderDefaultSectionSize">
+      <number>20</number>
+     </attribute>
      <attribute name="verticalHeaderHighlightSections">
       <bool>true</bool>
      </attribute>
-     <row/>
+     <attribute name="verticalHeaderMinimumSectionSize">
+      <number>20</number>
+     </attribute>
      <row/>
      <column/>
      <column/>
