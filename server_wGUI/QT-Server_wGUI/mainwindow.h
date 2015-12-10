@@ -31,7 +31,7 @@ private:
     QList<QString> *clients;
     void recordStart();
     void recordStop();
-    void checkForClients();
+    void printClients();
 };
 
 #endif // MAINWINDOW_H
