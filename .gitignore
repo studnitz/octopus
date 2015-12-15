@@ -1,6 +1,9 @@
 # Manual added #
 ################
 
+build-Qt-Server-Desktop_Qt_5_5_1_GCC_64bit-Debug/*
+server_wGUI/build-QT-Server_wGUI-Desktop_Qt_5_5_1_GCC_64bit-Debug/*
+
 # Latex outputs
 *.aux
 *.pdf
