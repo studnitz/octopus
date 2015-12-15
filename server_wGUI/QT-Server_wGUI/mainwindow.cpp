@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Initialisierung der Clients-Liste
     clients = new QList<QString>();
     clients->reserve(100);
+
     // Testdaten
     clients->insert(clients->size(),"Client 1");
     clients->insert(clients->size(),"Client 2");
@@ -35,6 +36,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_recordButton_clicked()
 {
+    /*
+     * Button ändert die Schrift, wenn man ihn anklickt
+     */
     static bool startStopFlag = false;
     if (startStopFlag == false) {
         ui->recordButton->setText("Stop");
@@ -64,23 +68,21 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::printClients() {
     /* some magic to check for clients */
 
-    /*QTableWidgetItem *i1, *i2;
-    i1 = new QTableWidgetItem(clients->at(0));
-    i2 = new QTableWidgetItem(QString::number(0));
-    ui->tableWidget->setItem(0,0,i1);
-    ui->tableWidget->setItem(0,1,i2);
-
-    i1 = new QTableWidgetItem(clients->at(1));
-    i2 = new QTableWidgetItem(QString::number(1));
-    ui->tableWidget->setItem(1,0,i1);
-    ui->tableWidget->setItem(1,1,i2);*/
-
-
+    // Eine Liste von Clients durchlaufen
     for (int i = 0; i < clients->size(); i++) {
-
+        /* In das tableWidget neue tableItems erstellen. Links Clientname.
+         * Rechts Leerer String, der später eingefärbt wird.
+         * WICHTIG: Erhöhen der rowCount!
+         */
         ui->tableWidget->setItem(i, 0, new QTableWidgetItem(clients->at(i)));
         ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
-        ui->tableWidget->item(i,1)->setBackgroundColor(QColor("red"));
+        if (clients->at(i).contains('1')) {
+            ui->tableWidget->item(i,1)->setBackgroundColor(QColor("red"));
+        } else if (clients->at(i).contains("2")) {
+            ui->tableWidget->item(i,1)->setBackgroundColor(QColor("yellow"));
+        } else {
+            ui->tableWidget->item(i,1)->setBackgroundColor(QColor("green"));
+        }
         ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
     }
 
