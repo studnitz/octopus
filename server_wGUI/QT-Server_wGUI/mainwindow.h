@@ -5,6 +5,12 @@
 
 namespace Ui {
 class MainWindow;
+
+/*struct TClient {
+    QString name;
+    QString otherdata;
+};*/
+
 }
 
 class MainWindow : public QMainWindow
@@ -22,8 +28,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QList<QString> *clients;
     void recordStart();
     void recordStop();
+    void printClients();
 };
 
 #endif // MAINWINDOW_H
