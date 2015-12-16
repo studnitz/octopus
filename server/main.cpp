@@ -20,6 +20,6 @@ int main(int argc, char *argv[])
 }
 
 
-std::string clients(){
-    return server.findChildren<MyThread*>().at(0)->socket->peerAddress().toString().toStdString();
+QList<MyThread*> client_threads(){
+    return server.findChildren<MyThread*>();
 }
