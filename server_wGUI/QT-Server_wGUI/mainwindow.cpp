@@ -7,6 +7,17 @@
 #include <stdio.h>
 #include <QHostInfo>
 
+//Videoplayer
+#include <QtWidgets>
+#include <QVideoWidget>
+#include <QVideoSurfaceFormat>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+
+QMediaPlayer *player;
+QMediaPlaylist *playlist;
+QVideoWidget *videoWidget;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -19,6 +30,23 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setColumnWidth(0,160);
     ui->tableWidget->setColumnWidth(1,20);
     ui->tableWidget->setShowGrid(false);
+
+    //Videoplayer-Tests
+    player = new QMediaPlayer;
+    playlist = new QMediaPlaylist(player);
+    playlist->addMedia(QUrl("test.avi"));
+
+    videoWidget = new QVideoWidget(ui->tab_2);
+    player->setVideoOutput(videoWidget);
+
+    videoWidget->move(50,50);
+    videoWidget->resize(320,240);
+    videoWidget->show();
+    playlist->setCurrentIndex(1);
+    player->play();
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -56,8 +84,6 @@ void MainWindow::on_pushButton_2_clicked()
     printClients();
 }
 
-
-
 void MainWindow::printClients() {
     /* some magic to check for clients */
 
@@ -85,4 +111,9 @@ void MainWindow::printClients() {
         ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
     }
 
+}
+
+void MainWindow::on_playButton_clicked()
+{
+    player->play();
 }
