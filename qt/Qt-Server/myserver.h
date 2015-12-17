@@ -13,6 +13,7 @@ class MyServer : public QTcpServer
     Q_OBJECT
 public:
     explicit MyServer(QObject *parent = 0);
+    ~MyServer();
     void startServer();
     QList<QTcpSocket*> connections;
 signals:
