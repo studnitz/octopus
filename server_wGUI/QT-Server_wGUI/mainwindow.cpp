@@ -45,8 +45,6 @@ MainWindow::MainWindow(QWidget *parent) :
     playlist->setCurrentIndex(1);
     player->play();
 
-
-
 }
 
 MainWindow::~MainWindow()
