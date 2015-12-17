@@ -5,6 +5,7 @@
 #include <QList>
 #include <QMessageBox>
 #include <stdio.h>
+#include <QHostInfo>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,15 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setColumnWidth(0,160);
     ui->tableWidget->setColumnWidth(1,20);
     ui->tableWidget->setShowGrid(false);
-
-    // Initialisierung der Clients-Liste
-    clients = new QList<QString>();
-    clients->reserve(100);
-
-    // Testdaten
-    clients->insert(clients->size(),"Client 1");
-    clients->insert(clients->size(),"Client 2");
-    clients->insert(clients->size(),"Client 3");
 }
 
 MainWindow::~MainWindow()
@@ -61,24 +53,31 @@ void MainWindow::recordStop() {
 
 void MainWindow::on_pushButton_2_clicked()
 {
-
     printClients();
 }
+
+
 
 void MainWindow::printClients() {
     /* some magic to check for clients */
 
     // Eine Liste von Clients durchlaufen
-    for (int i = 0; i < clients->size(); i++) {
+    for (int i = 0; i < server->findChildren<MyThread*>().size(); i++) {
         /* In das tableWidget neue tableItems erstellen. Links Clientname.
          * Rechts Leerer String, der später eingefärbt wird.
          * WICHTIG: Erhöhen der rowCount!
          */
-        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(clients->at(i)));
+
+        int SocketDescriptor = server->findChildren<MyThread*>().at(i)->socketDescriptor;       //Socket-Descriptor, int der die Socket eindeutig identifiziert
+        QTcpSocket* socket = server->findChildren<MyThread*>().at(i)->socket;                   //Socket-Pointer, verweist auf das Socket-Object
+        QHostInfo HI = QHostInfo::fromName(socket->peerAddress().toString());                   //Host-Info/-Name. Funktioniert noch nicht wie es soll.
+        ui->tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(SocketDescriptor).append(" ").append(HI.hostName())));
         ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
-        if (clients->at(i).contains('1')) {
+
+        //Dummyvergleiche fuer mehr bunte Farben.
+        if (server->findChildren<MyThread*>().at(i)->socketDescriptor > 18) {
             ui->tableWidget->item(i,1)->setBackgroundColor(QColor("red"));
-        } else if (clients->at(i).contains("2")) {
+        } else if (server->findChildren<MyThread*>().at(i)->socketDescriptor > 10) {
             ui->tableWidget->item(i,1)->setBackgroundColor(QColor("yellow"));
         } else {
             ui->tableWidget->item(i,1)->setBackgroundColor(QColor("green"));

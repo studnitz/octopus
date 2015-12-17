@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <myserver.h>
+#include <mythread.h>
+#include <QHostInfo>
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +23,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    MyServer* server;
 
 private slots:
     void on_recordButton_clicked();

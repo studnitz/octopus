@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     server.startServer();
 
     MainWindow w;
+    w.server = &server;
     w.show();
 
     return a.exec();
