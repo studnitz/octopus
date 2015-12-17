@@ -69,3 +69,5 @@ server_wGUI/build-QT-Server_wGUI-Desktop-Debug/moc_mainwindow.cpp
 server_wGUI/build-QT-Server_wGUI-Desktop-Debug/moc_mainwindow.o
 server_wGUI/build-QT-Server_wGUI-Desktop-Debug/ui_mainwindow.h
 .gitignore
+server_wGUI/QT-Server_wGUI/QT-Server_wGUI.pro.user
+server_wGUI/QT-Server_wGUI/QT-Server_wGUI.pro.user.b08a247
