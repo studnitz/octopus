@@ -1,9 +1,6 @@
 # Manual added #
 ################
 
-build-Qt-Server-Desktop_Qt_5_5_1_GCC_64bit-Debug/*
-server_wGUI/build-QT-Server_wGUI-Desktop_Qt_5_5_1_GCC_64bit-Debug/*
-
 # Latex outputs
 *.aux
 *.pdf
@@ -52,20 +49,8 @@ server_wGUI/build-QT-Server_wGUI-Desktop_Qt_5_5_1_GCC_64bit-Debug/*
 .Trashes
 ehthumbs.db
 Thumbs.db
-build-Qt-Server-Desktop-Debug/Makefile
-build-Qt-Server-Desktop-Debug/Qt-Server
-build-Qt-Server-Desktop-Debug/main.o
-build-Qt-Server-Desktop-Debug/moc_myserver.cpp
-build-Qt-Server-Desktop-Debug/moc_myserver.o
-build-Qt-Server-Desktop-Debug/moc_mythread.cpp
-build-Qt-Server-Desktop-Debug/moc_mythread.o
-build-Qt-Server-Desktop-Debug/myserver.o
-build-Qt-Server-Desktop-Debug/mythread.o
-server_wGUI/build-QT-Server_wGUI-Desktop-Debug/Makefile
-server_wGUI/build-QT-Server_wGUI-Desktop-Debug/QT-Server_wGUI
-server_wGUI/build-QT-Server_wGUI-Desktop-Debug/main.o
-server_wGUI/build-QT-Server_wGUI-Desktop-Debug/mainwindow.o
-server_wGUI/build-QT-Server_wGUI-Desktop-Debug/moc_mainwindow.cpp
-server_wGUI/build-QT-Server_wGUI-Desktop-Debug/moc_mainwindow.o
-server_wGUI/build-QT-Server_wGUI-Desktop-Debug/ui_mainwindow.h
-.gitignore
+
+####QT-Related
+
+*-Debug*
+*.pro.user*

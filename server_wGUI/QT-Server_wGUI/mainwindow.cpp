@@ -61,6 +61,9 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::printClients() {
     /* some magic to check for clients */
 
+
+    //Row-Count auf 0 setzen, damit bei mehrmaligem Wiederholen der Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
+    ui->tableWidget->setRowCount(1);
     // Eine Liste von Clients durchlaufen
     for (int i = 0; i < server->findChildren<MyThread*>().size(); i++) {
         /* In das tableWidget neue tableItems erstellen. Links Clientname.
