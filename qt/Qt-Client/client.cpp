@@ -28,5 +28,9 @@ void Client::start(QString address, quint16 port)
 
 void Client::startTransfer()
 {
- client.write("Hello, world", 12);
+    client.write("Hello, world", 12);
+}
+QTcpSocket::SocketState Client::getState() const{
+
+    return client.state();
 }

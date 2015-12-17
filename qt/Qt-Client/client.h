@@ -19,6 +19,7 @@ signals:
 
 public slots:
     void startTransfer();
+    QTcpSocket::SocketState getState() const;
 private:
    QTcpSocket client;
 };
