@@ -28,6 +28,7 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
     // We have a new connection
     qDebug() << socketDescriptor << " Connecting...";
 
+
     // Every new connection will be run in a newly created thread
     MyThread *thread = new MyThread(socketDescriptor, this);
 
@@ -36,4 +37,13 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
     thread->start();
+
+
+
+
 }
+
+
+
+
+
