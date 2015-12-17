@@ -6,19 +6,20 @@
 MyServer::MyServer(QObject *parent) :
     QTcpServer(parent)
 {
+    qDebug() << "Server created";
 }
 
 void MyServer::startServer()
 {
     int port = 1234;
 
-    if(!this->listen(QHostAddress::Any, port))
+    if(!this->listen(QHostAddress::LocalHost, port))
     {
         qDebug() << "Could not start server";
     }
     else
     {
-        qDebug() << "Listening to port " << port << "...";
+        qDebug() << "Listening to port " << serverAddress() << port << "...";
     }
 }
 
@@ -41,6 +42,10 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
 
 
 
+}
+
+MyServer::~MyServer(){
+     qDebug() << "Destroy Server";
 }
 
 
