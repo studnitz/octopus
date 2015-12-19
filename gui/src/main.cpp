@@ -1,6 +1,6 @@
 #include "mainwindow.h"
-#include "myserver.h"
-#include "mythread.h"
+#include "../server/src/myserver.h"
+#include "../server/src/mythread.h"
 #include <QApplication>
 
 MyServer server;

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <mythread.h>
+#include "mythread.h"
 
 class MyServer : public QTcpServer
 {

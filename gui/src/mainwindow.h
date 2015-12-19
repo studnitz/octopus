@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <myserver.h>
-#include <mythread.h>
+#include "../server/src/myserver.h"
+#include "../server/src/mythread.h"
 #include <QHostInfo>
 
 namespace Ui {

@@ -1,8 +1,8 @@
 #include <QString>
 #include <QtTest>
 #include <QCoreApplication>
-#include "client.h"
-#include "myserver.h"
+#include "../client/src/client.h"
+#include "../server/src/myserver.h"
 
 
 class communication : public QObject
