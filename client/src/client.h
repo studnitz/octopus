@@ -7,6 +7,7 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QString>
+#include <iostream>
 
 class Client : public QObject
 {
@@ -19,6 +20,10 @@ signals:
 
 public slots:
     void startTransfer();
+    double getCurrentValue();
+    long getFreeMemory();
+    long getAllMemory();
+    std::string isConnected();
 private:
    QTcpSocket client;
 };

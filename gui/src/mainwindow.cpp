@@ -87,7 +87,7 @@ void MainWindow::printClients() {
 
 
     //Row-Count auf 0 setzen, damit bei mehrmaligem Wiederholen der Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
-    ui->tableWidget->setRowCount(1);
+    ui->tableWidget->setRowCount(0);
     // Eine Liste von Clients durchlaufen
     for (int i = 0; i < server->findChildren<MyThread*>().size(); i++) {
         /* In das tableWidget neue tableItems erstellen. Links Clientname.
@@ -95,6 +95,7 @@ void MainWindow::printClients() {
          * WICHTIG: Erhöhen der rowCount!
          */
 
+        ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
         int SocketDescriptor = server->findChildren<MyThread*>().at(i)->socketDescriptor;       //Socket-Descriptor, int der die Socket eindeutig identifiziert
         QTcpSocket* socket = server->findChildren<MyThread*>().at(i)->socket;                   //Socket-Pointer, verweist auf das Socket-Object
         QHostInfo HI = QHostInfo::fromName(socket->peerAddress().toString());                   //Host-Info/-Name. Funktioniert noch nicht wie es soll.
@@ -109,7 +110,6 @@ void MainWindow::printClients() {
         } else {
             ui->tableWidget->item(i,1)->setBackgroundColor(QColor("green"));
         }
-        ui->tableWidget->setRowCount(ui->tableWidget->rowCount()+1);
     }
 
 }
