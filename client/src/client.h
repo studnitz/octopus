@@ -11,24 +11,25 @@
 
 class Client : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit Client(QObject *parent = 0);
-    ~Client();
-    void start(QString address, quint16 port);
+  explicit Client(QObject* parent = 0);
+  ~Client();
+  void start(QString address, quint16 port);
 signals:
 
 public slots:
-    void startTransfer();
-    double getCpuUsage();
-    long getFreeMemory();
-    long getAllMemory();
-    double getDiskUsage();
-    ulong getFreeDisk();
-    ulong getTotalDisk();
-    std::string isConnected();
+  void startTransfer();
+  double getCpuUsage();
+  long getFreeMemory();
+  long getAllMemory();
+  double getDiskUsage();
+  ulong getFreeDisk();
+  ulong getTotalDisk();
+  std::string isConnected();
+
 private:
-   QTcpSocket client;
+  QTcpSocket client;
 };
 
 #endif // TCPCLIENT_H

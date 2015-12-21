@@ -5,24 +5,23 @@
 #include <QTcpSocket>
 #include <QDebug>
 
-class MyThread : public QThread
-{
-    Q_OBJECT
-public:
-    explicit MyThread(qintptr ID, QObject *parent = 0);
+class MyThread : public QThread {
+  Q_OBJECT
+ public:
+  explicit MyThread(qintptr ID, QObject* parent = 0);
 
-    void run();
+  void run();
 
-signals:
-    void error(QTcpSocket::SocketError socketerror);
+ signals:
+  void error(QTcpSocket::SocketError socketerror);
 
-public slots:
-    void readyRead();
-    void disconnected();
+ public slots:
+  void readyRead();
+  void disconnected();
 
-public:
-    QTcpSocket *socket;
-    qintptr socketDescriptor;
+ public:
+  QTcpSocket* socket;
+  qintptr socketDescriptor;
 };
 
-#endif // MYTHREAD_H
+#endif  // MYTHREAD_H
