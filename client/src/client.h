@@ -20,9 +20,12 @@ signals:
 
 public slots:
     void startTransfer();
-    double getCurrentValue();
+    double getCpuUsage();
     long getFreeMemory();
     long getAllMemory();
+    double getDiskUsage();
+    ulong getFreeDisk();
+    ulong getTotalDisk();
     std::string isConnected();
 private:
    QTcpSocket client;
