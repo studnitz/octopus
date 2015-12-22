@@ -31,10 +31,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setColumnWidth(1,20);
     ui->tableWidget->setShowGrid(false);
 
-    //Videoplayer-Tests
+    //Videoplayer-Setup
     player = new QMediaPlayer;
     playlist = new QMediaPlaylist(player);
-    playlist->addMedia(QUrl("test.avi"));
+    player->setPlaylist(playlist);
 
     videoWidget = new QVideoWidget(ui->tab_2);
     player->setVideoOutput(videoWidget);
@@ -42,8 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
     videoWidget->move(50,50);
     videoWidget->resize(320,240);
     videoWidget->show();
-    playlist->setCurrentIndex(1);
-    player->play();
 
 }
 
@@ -70,11 +68,15 @@ void MainWindow::on_recordButton_clicked()
 }
 
 void MainWindow::recordStart() {
-    ui->debugTextEdit->insertPlainText("Aufnahme wurde gestartet\n");
+    /* magic */
+
+    log("Aufzeichnung wurde gestartet.");
 }
 
 void MainWindow::recordStop() {
-    ui->debugTextEdit->insertPlainText("Aufnahme wurde gestoppt\n");
+    /* magic */
+
+    log("Aufzeichnung wurde gestoppt.");
 }
 
 void MainWindow::on_pushButton_2_clicked()
@@ -86,8 +88,10 @@ void MainWindow::printClients() {
     /* some magic to check for clients */
 
 
-    //Row-Count auf 0 setzen, damit bei mehrmaligem Wiederholen der Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
+    // Row-Count auf 1 setzen, damit bei mehrmaligem Wiederholen der Aktualisierung, die Liste nur so
+    // lang ist, wie sie Elemente hat
     ui->tableWidget->setRowCount(1);
+
     // Eine Liste von Clients durchlaufen
     for (int i = 0; i < server->findChildren<MyThread*>().size(); i++) {
         /* In das tableWidget neue tableItems erstellen. Links Clientname.
@@ -98,6 +102,7 @@ void MainWindow::printClients() {
         int SocketDescriptor = server->findChildren<MyThread*>().at(i)->socketDescriptor;       //Socket-Descriptor, int der die Socket eindeutig identifiziert
         QTcpSocket* socket = server->findChildren<MyThread*>().at(i)->socket;                   //Socket-Pointer, verweist auf das Socket-Object
         QHostInfo HI = QHostInfo::fromName(socket->peerAddress().toString());                   //Host-Info/-Name. Funktioniert noch nicht wie es soll.
+
         ui->tableWidget->setItem(i, 0, new QTableWidgetItem(QString::number(SocketDescriptor).append(" ").append(HI.hostName())));
         ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
 
@@ -114,7 +119,51 @@ void MainWindow::printClients() {
 
 }
 
+/**
+ *  Pausiert Aufnahme oder spielt sie ab, abhängig von PlayingState.
+ *  Verändert außerdem die Button-Beschriftung.
+ */
 void MainWindow::on_playButton_clicked()
 {
-    player->play();
+    switch(player->state()) {
+    case QMediaPlayer::PlayingState:
+        player->pause();
+        ui->playButton->setText("Play");
+        log("Pausiere Aufnahme");
+        break;
+    default:
+        player->play();
+        if (player->state() == QMediaPlayer::PausedState) {
+            ui->playButton->setText("Pause");
+        }
+        log("Starte Aufnahme");
+        break;
+    }
+}
+
+/**
+ * Button bietet Funktionalität zum öffnen von Aufnahmen.
+ */
+void MainWindow::on_openFileButton_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Movie"),QDir::currentPath());
+    playlist->addMedia(QUrl::fromLocalFile(fileName));
+    playlist->setCurrentIndex(playlist->mediaCount());
+}
+
+/**
+ * Hilfsfunktion zum Füllen des Debug-Fensters.
+ */
+void MainWindow::log(QString msg)
+{
+    ui->debugTextEdit->setText(msg.append("\n").append(ui->debugTextEdit->toPlainText()));
+}
+
+/**
+ * Stoppen der aktuellen Aufnahme.
+ */
+void MainWindow::on_stopButton_clicked()
+{
+    player->stop();
+    log("Stoppe Aufnahme");
 }
