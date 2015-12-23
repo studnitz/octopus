@@ -230,7 +230,17 @@
        </rect>
       </property>
       <property name="text">
-       <string>Open File</string>
+       <string>Open Files</string>
+      </property>
+     </widget>
+     <widget class="QListView" name="listView">
+      <property name="geometry">
+       <rect>
+        <x>700</x>
+        <y>150</y>
+        <width>101</width>
+        <height>192</height>
+       </rect>
       </property>
      </widget>
     </widget>

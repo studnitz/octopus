@@ -13,8 +13,10 @@
 #include <QVideoSurfaceFormat>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include "playlistmodel.h"
 
 QMediaPlayer *player;
+PlaylistModel *playlistModel;
 QMediaPlaylist *playlist;
 QVideoWidget *videoWidget;
 
@@ -32,9 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setShowGrid(false);
 
     //Videoplayer-Setup
-    player = new QMediaPlayer;
+    player = new QMediaPlayer(this);
     playlist = new QMediaPlaylist(player);
-    player->setPlaylist(playlist);
 
     videoWidget = new QVideoWidget(ui->tab_2);
     player->setVideoOutput(videoWidget);
@@ -129,26 +130,43 @@ void MainWindow::on_playButton_clicked()
     case QMediaPlayer::PlayingState:
         player->pause();
         ui->playButton->setText("Play");
-        log("Pausiere Aufnahme");
+        log("Pausiere Wiedergabe der Aufnahme");
         break;
     default:
         player->play();
         if (player->state() == QMediaPlayer::PausedState) {
             ui->playButton->setText("Pause");
         }
-        log("Starte Aufnahme");
+        log("Starte Wiedergabe der Aufnahme");
         break;
     }
 }
 
 /**
- * Button bietet Funktionalität zum öffnen von Aufnahmen.
+ * Button bietet Funktionalität zum Öffnen von Aufnahmen.
  */
 void MainWindow::on_openFileButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Movie"),QDir::currentPath());
-    playlist->addMedia(QUrl::fromLocalFile(fileName));
+    // Öffnen der Aufzeichnungen
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open movies"),QDir::currentPath());
+    // Erste der Aufzeichnungen in Player laden
+    player->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
+
+    // Aufzeichnungen in Playlist laden
+    for (int i = 0; i < fileNames.size(); i++) {
+        playlist->addMedia(QUrl::fromLocalFile(fileNames.at(i)));
+        // Log-Ausgabe
+        log(QString("Lade ").append(fileNames.at(i)).append("..."));
+    }
     playlist->setCurrentIndex(playlist->mediaCount());
+
+    // PlaylistModel für ausgelesene Dateien erstellen
+    PlaylistModel *playlistModel = new PlaylistModel(this);
+    playlistModel->setPlaylist(playlist);
+
+    // Modell und listView verknüpfen
+    ui->listView->setModel(playlistModel);
+    ui->listView->setCurrentIndex(playlistModel->index(playlist->currentIndex(), 0));
 }
 
 /**
@@ -165,5 +183,5 @@ void MainWindow::log(QString msg)
 void MainWindow::on_stopButton_clicked()
 {
     player->stop();
-    log("Stoppe Aufnahme");
+    log("Stoppe Wiedergabe der Aufnahme");
 }
