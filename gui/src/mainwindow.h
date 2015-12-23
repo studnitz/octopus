@@ -36,6 +36,8 @@ private slots:
 
     void on_stopButton_clicked();
 
+    void on_listView_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
     QList<QString> *clients;

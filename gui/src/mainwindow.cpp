@@ -36,7 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //Videoplayer-Setup
     player = new QMediaPlayer(this);
     playlist = new QMediaPlaylist(player);
-
     videoWidget = new QVideoWidget(ui->tab_2);
     player->setVideoOutput(videoWidget);
 
@@ -44,6 +43,9 @@ MainWindow::MainWindow(QWidget *parent) :
     videoWidget->resize(320,240);
     videoWidget->show();
 
+    // Playlist-Setup
+    playlistModel = new PlaylistModel(this);
+    ui->listView->setModel(playlistModel);
 }
 
 MainWindow::~MainWindow()
@@ -134,10 +136,10 @@ void MainWindow::on_playButton_clicked()
         break;
     default:
         player->play();
-        if (player->state() == QMediaPlayer::PausedState) {
+        if (player->state() == QMediaPlayer::PlayingState) {
             ui->playButton->setText("Pause");
-        }
-        log("Starte Wiedergabe der Aufnahme");
+            log("Starte Wiedergabe der Aufnahme");
+        } 
         break;
     }
 }
@@ -149,23 +151,20 @@ void MainWindow::on_openFileButton_clicked()
 {
     // Öffnen der Aufzeichnungen
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open movies"),QDir::currentPath());
-    // Erste der Aufzeichnungen in Player laden
+    // Erste der Aufzeichnung automatisch in Player laden
     player->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
 
     // Aufzeichnungen in Playlist laden
     for (int i = 0; i < fileNames.size(); i++) {
         playlist->addMedia(QUrl::fromLocalFile(fileNames.at(i)));
-        // Log-Ausgabe
         log(QString("Lade ").append(fileNames.at(i)).append("..."));
     }
     playlist->setCurrentIndex(playlist->mediaCount());
 
-    // PlaylistModel für ausgelesene Dateien erstellen
-    PlaylistModel *playlistModel = new PlaylistModel(this);
+    // PlaylistModel befüllen mit Playlist-Inhalt
     playlistModel->setPlaylist(playlist);
 
-    // Modell und listView verknüpfen
-    ui->listView->setModel(playlistModel);
+    // Indexbereich der Liste aktualisieren
     ui->listView->setCurrentIndex(playlistModel->index(playlist->currentIndex(), 0));
 }
 
@@ -184,4 +183,12 @@ void MainWindow::on_stopButton_clicked()
 {
     player->stop();
     log("Stoppe Wiedergabe der Aufnahme");
+}
+
+/**
+ * Auswählen der Aufnahme, die abgespielt werden soll.
+ */
+void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
+{
+    player->setMedia(playlist->media(index.row()));
 }
