@@ -8,19 +8,21 @@
 #include <QDebug>
 #include <QString>
 
-class Client : public QObject
-{
-    Q_OBJECT
-public:
-    explicit Client(QObject *parent = 0);
-    ~Client();
-    void start(QString address, quint16 port);
-signals:
+class Client : public QObject {
+  Q_OBJECT
+ public:
+  explicit Client(QObject *parent = 0);
+  ~Client();
+  void start(QString address, quint16 port);
+ signals:
 
-public slots:
-    void startTransfer();
-private:
-   QTcpSocket client;
+ public slots:
+  void waitForOrder();
+  void sendInfo();
+  QTcpSocket::SocketState getState() const;
+
+ private:
+  QTcpSocket client;
 };
 
-#endif // TCPCLIENT_H
+#endif  // TCPCLIENT_H

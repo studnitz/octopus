@@ -19,15 +19,15 @@ SOURCES += tst_communication.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 
-INCLUDEPATH += ../Qt-Client/
-INCLUDEPATH += ../Qt-Server/
+INCLUDEPATH += ../client/
+INCLUDEPATH += ../server/
 
-SOURCES += ../Qt-Client/client.cpp
-SOURCES += ../Qt-Server/myserver.cpp
-SOURCES += ../Qt-Server/mythread.cpp
+SOURCES += ../client/client.cpp
+SOURCES += ../server/myserver.cpp
+SOURCES += ../server/mythread.cpp
 
 
-HEADERS += ../Qt-Client/client.h
-HEADERS += ../Qt-Server/myserver.h
-HEADERS += ../Qt-Server/mythread.h
+HEADERS += ../client/client.h
+HEADERS += ../server/myserver.h
+HEADERS += ../server/mythread.h
 

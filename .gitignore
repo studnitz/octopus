@@ -5,7 +5,7 @@
 *.aux
 *.pdf
 *.toc
-
+*.pro.user
 
 # Cached files #
 ################
