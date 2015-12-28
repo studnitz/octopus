@@ -15,3 +15,7 @@ SOURCES += src/main.cpp \
 HEADERS += \
     src/client.h \
     src/gst_recorder.h
+
+CONFIG += link_pkgconfig
+PKGCONFIG += Qt5GStreamer-1.0 \
+    Qt5GLib-2.0

@@ -2,16 +2,16 @@
 #define GSTREAMER_H
 
 #include <QObject>
-#include <Qt5GStreamer/QGlib/Error>
-#include <Qt5GStreamer/QGlib/Connect>
-#include <Qt5GStreamer/QGst/Init>
-#include <Qt5GStreamer/QGst/ElementFactory>
-#include <Qt5GStreamer/QGst/ChildProxy>
-#include <Qt5GStreamer/QGst/Pipeline>
-#include <Qt5GStreamer/QGst/Pad>
-#include <Qt5GStreamer/QGst/Event>
-#include <Qt5GStreamer/QGst/Message>
-#include <Qt5GStreamer/QGst/Bus>
+#include <QGlib/Error>
+#include <QGlib/Connect>
+#include <QGst/Init>
+#include <QGst/ElementFactory>
+#include <QGst/ChildProxy>
+#include <QGst/Pipeline>
+#include <QGst/Pad>
+#include <QGst/Event>
+#include <QGst/Message>
+#include <QGst/Bus>
 
 class GstRecorder : public QObject
 {
@@ -19,15 +19,14 @@ class GstRecorder : public QObject
 public:
   GstRecorder(QObject *parent = 0);
 
-private:
-  QGst::BinPtr createVideoSrcBin();
-
   void start();
   void stop();
 
+private:
+  QGst::BinPtr createVideoSrcBin();
+
   void onBusMessage(const QGst::MessagePtr &message);
 
-private:
   QGst::PipelinePtr m_pipeline;
 };
 
