@@ -32,12 +32,19 @@ private slots:
 
     void on_playButton_clicked();
 
+    void on_openFileButton_clicked();
+
+    void on_stopButton_clicked();
+
+    void on_listView_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
     QList<QString> *clients;
     void recordStart();
     void recordStop();
     void printClients();
+    void log(QString msg);
 };
 
 #endif // MAINWINDOW_H
