@@ -13,16 +13,30 @@ class Client : public QObject {
  public:
   explicit Client(QObject *parent = 0);
   ~Client();
-  void start(QString address, quint16 port);
+  /*
+   * start by given port
+   */
+  void start(quint16 port);
  signals:
 
  public slots:
-  void waitForOrder();
-  void sendInfo();
+
   QTcpSocket::SocketState getState() const;
 
+ private slots:
+
+  void sendInfo();
+  void waitForOrder();
+
  private:
+  bool timesync;
+  short numCamera;
+  char* info;
+  // Liste Cameras
   QTcpSocket client;
+  QString findServer();
+  void findCamera();
+  void syncTime();
 };
 
 #endif  // TCPCLIENT_H

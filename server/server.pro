@@ -8,11 +8,11 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp \
-    myserver.cpp \
-    mythread.cpp
+SOURCES += \
+    src/myserver.cpp \
+    src/mythread.cpp \
+    src/main.cpp
 
 HEADERS += \
-    myserver.h \
-    mythread.h
-
+    src/myserver.h \
+    src/mythread.h

@@ -19,15 +19,17 @@ SOURCES += tst_communication.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 
-INCLUDEPATH += ../client/
-INCLUDEPATH += ../server/
+INCLUDEPATH += \
+    ../client/src/ \
+    ../server/src/
 
-SOURCES += ../client/client.cpp
-SOURCES += ../server/myserver.cpp
-SOURCES += ../server/mythread.cpp
+SOURCES += \
+    ../client/src/client.cpp \
+    ../server/src/myserver.cpp \
+    ../server/src/mythread.cpp
 
 
-HEADERS += ../client/client.h
-HEADERS += ../server/myserver.h
-HEADERS += ../server/mythread.h
-
+HEADERS += \
+    ../client/src/client.h \
+    ../server/src/myserver.h \
+    ../server/src/mythread.h

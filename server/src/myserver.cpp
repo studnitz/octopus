@@ -1,10 +1,13 @@
 // myserver.cpp
 
-#include "myserver.h"
-#include "mythread.h"
+#include "../src/myserver.h"
+#include "../src/mythread.h"
 
 MyServer::MyServer(QObject *parent) : QTcpServer(parent) {
   qDebug() << "Server created";
+
+
+
 }
 
 void MyServer::startServer() {
@@ -15,6 +18,10 @@ void MyServer::startServer() {
   } else {
     qDebug() << "Listening to port " << serverAddress() << port << "...";
   }
+
+  qDebug() << this->isListening();
+  qDebug() << this->hasPendingConnections();
+
 }
 
 // This function is called by QTcpServer when a new connection is available.
@@ -30,6 +37,23 @@ void MyServer::incomingConnection(qintptr socketDescriptor) {
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
   thread->start();
+  qDebug() << "Thread startet";
+  qDebug() << this->getClients().size();
+}
+void MyServer::broadcastOrder(QString order) {
+  // should be global const list at end of client connection
+  QList<MyThread *> clients = this->getClients();
+
+  for (int i = 0; i < clients.size(); ++i) { /// TODO QTLISTITERATOR
+    clients.at(i)->sendOrder(order);
+    qDebug() << "Order send to " << i;
+  }
+}
+QList<MyThread *> MyServer::getClients() { return findChildren<MyThread *>(); }
+
+
+    MyServer::~MyServer() {
+  qDebug() << "Destroy Server";
 }
 
-MyServer::~MyServer() { qDebug() << "Destroy Server"; }
+

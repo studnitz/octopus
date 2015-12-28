@@ -22,7 +22,7 @@ void MyThread::run() {
   // note - Qt::DirectConnection is used because it's multithreaded
   //        This makes the slot to be invoked immediately, when the signal is
   //        emitted.
-
+  qDebug() << socket->bytesAvailable();
   connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),
           Qt::DirectConnection);
   connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
@@ -40,30 +40,18 @@ void MyThread::run() {
 }
 
 void MyThread::readyRead() {
-  // get the information
-  QByteArray Data = socket->readAll();
+    QByteArray info = socket->read(3);
+    qDebug() << socket->bytesAvailable();
 
-  // will write on server side window
-  qDebug() << socketDescriptor
-           << "        IP:" << socket->peerAddress().toString()
-           << "       Data in: " << Data;
+    qDebug() << socketDescriptor
+             << "        IP:" << socket->peerAddress().toString()
+             << "       Data in: " << info;
+    sendOrder("000");
+}
 
-  if (Data == "Ready for Command\n") {
-    socket->write("COMMAND!!!");
-    int i = 0;
-    for (i; i < this->parent()->findChildren<MyThread *>().size(); i++) {
-      qDebug()
-          << this->parent()->findChildren<MyThread *>().at(i)->socketDescriptor
-          << "       "
-          << this->parent()
-                 ->findChildren<MyThread *>()
-                 .at(i)
-                 ->socket->peerAddress()
-                 .toString();
-    }
-  } else {
-    socket->write(Data);
-  }
+void MyThread::sendOrder(QString order){
+    socket->write(order.toUtf8());
+    qDebug() << "ORDER Send";
 }
 
 void MyThread::disconnected() {

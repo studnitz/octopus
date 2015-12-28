@@ -8,9 +8,9 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp \
-    client.cpp
+SOURCES += \
+    src/client.cpp \
+    src/main.cpp
 
 HEADERS += \
-    client.h
-
+    src/client.h

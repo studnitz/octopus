@@ -20,8 +20,12 @@ class MyThread : public QThread {
   void disconnected();
 
  public:
+
+  void sendOrder(QString order);
+ private:
   QTcpSocket *socket;
   qintptr socketDescriptor;
+
 };
 
 #endif  // MYTHREAD_H
