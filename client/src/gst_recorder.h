@@ -1,5 +1,5 @@
-#ifndef GSTREAMER_H
-#define GSTREAMER_H
+#ifndef GST_RECORDER_H
+#define GST_RECORDER_H
 
 #include <QObject>
 #include <QGlib/Error>
@@ -13,8 +13,7 @@
 #include <QGst/Message>
 #include <QGst/Bus>
 
-class GstRecorder : public QObject
-{
+class GstRecorder : public QObject {
   Q_OBJECT
 public:
   GstRecorder(QObject *parent = 0);
@@ -30,4 +29,4 @@ private:
   QGst::PipelinePtr m_pipeline;
 };
 
-#endif // GSTREAMER_H
+#endif // GST_RECORDER_h
