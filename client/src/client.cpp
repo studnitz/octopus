@@ -97,7 +97,7 @@ long Client::getFreeMemory() {
  */
 ulong Client::getFreeDisk() {
   QStorageInfo info("/");
-  return info.bytesAvailable()/1024;
+  return info.bytesAvailable() / 1024;
 }
 
 /**
@@ -105,14 +105,13 @@ ulong Client::getFreeDisk() {
  * @return disk usage in percent
  */
 double Client::getDiskUsage() {
-  QStorageInfo info("/");
   return 100 - (getFreeDisk() / (float)getTotalDisk()) * 100;
 }
 
 float Client::getMemoryUsage() {
   long free_mem = getFreeMemory();
   long total_mem = getAllMemory();
-  return 100-(free_mem / ((float)total_mem)) * 100;  // Percentage used
+  return 100 - (free_mem / ((float)total_mem)) * 100;  // Percentage used
 }
 
 /**
@@ -121,7 +120,7 @@ float Client::getMemoryUsage() {
  */
 ulong Client::getTotalDisk() {
   QStorageInfo info("/");
-  return info.bytesTotal()/1024;
+  return info.bytesTotal() / 1024;
 }
 
 /**
