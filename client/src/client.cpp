@@ -12,7 +12,6 @@ Client::Client(QObject *parent) : QObject(parent) {
 
 Client::~Client() { client.close(); }
 
-
 /**
  * @brief Client::start starts a connection
  * @param address IP-Address of the server
@@ -27,7 +26,6 @@ void Client::start(QString address, quint16 port) {
  * @brief Client::startTransfer sends a message to the server
  */
 void Client::startTransfer() { client.write("Ready for Command\n", 18); }
-
 
 /**
  * @brief Client::getCpuUsage
@@ -93,14 +91,13 @@ long Client::getFreeMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-
 /**
  * @brief Client::getFreeDisk
- * @return free disk space in Bytes
+ * @return free disk space in KB
  */
 ulong Client::getFreeDisk() {
   QStorageInfo info("/");
-  return info.bytesAvailable();
+  return info.bytesAvailable()/1024;
 }
 
 /**
@@ -112,14 +109,19 @@ double Client::getDiskUsage() {
   return 100 - (getFreeDisk() / (float)getTotalDisk()) * 100;
 }
 
+float Client::getMemoryUsage() {
+  long free_mem = getFreeMemory();
+  long total_mem = getAllMemory();
+  return 100-(free_mem / ((float)total_mem)) * 100;  // Percentage used
+}
 
 /**
  * @brief Client::getTotalDisk
- * @return total disk space in Bytes
+ * @return total disk space in KB
  */
 ulong Client::getTotalDisk() {
   QStorageInfo info("/");
-  return info.bytesTotal();
+  return info.bytesTotal()/1024;
 }
 
 /**

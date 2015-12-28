@@ -23,6 +23,7 @@ public slots:
   double getCpuUsage();
   long getFreeMemory();
   long getAllMemory();
+  float getMemoryUsage();
   double getDiskUsage();
   ulong getFreeDisk();
   ulong getTotalDisk();
