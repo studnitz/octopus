@@ -1,5 +1,4 @@
 #include "mythread.h"
-#include "myserver.h"
 
 MyThread::MyThread(qintptr ID, QObject *parent) : QThread(parent) {
   this->socketDescriptor = ID;
@@ -26,6 +25,7 @@ void MyThread::run() {
 //  connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),
 //          Qt::DirectConnection);
   connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+  connect(this,SIGNAL(order()),this,SLOT(sendOrder()));
 
   // We'll have multiple clients, we want to know which is which
   qDebug() << socketDescriptor
@@ -47,6 +47,10 @@ void MyThread::readyRead() {
            << "        IP:" << socket->peerAddress().toString()
            << "       Data in: " << info;
 
+}
+void MyThread::receiveOrder(){
+
+    emit this->order();
 }
 
 void MyThread::sendOrder() {

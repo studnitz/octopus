@@ -47,6 +47,7 @@ void Client::start(quint16 port) {
 
 void Client::waitForCommand() {
  // while (!socket.atEnd()) {
+    qDebug () << "READ COMMAND";
     QByteArray command;
     command = socket.read(3);
     qDebug() << command;

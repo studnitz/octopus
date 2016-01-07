@@ -1,6 +1,6 @@
 QT += core
 QT += network
-QT -= gui
+QT += gui
 
 TARGET = server
 CONFIG += console
@@ -11,8 +11,10 @@ TEMPLATE = app
 SOURCES += \
     src/myserver.cpp \
     src/main.cpp \
-    src/mythread.cpp
+    src/mythread.cpp \
+    src/clientconnection.cpp
 
 HEADERS += \
     src/myserver.h \
-    src/mythread.h
+    src/mythread.h \
+    src/clientconnection.h

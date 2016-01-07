@@ -4,7 +4,8 @@
 #include <QThread>
 #include <QTcpSocket>
 #include <QDebug>
-
+#include <iostream>
+#include <QTcpServer>
 class MyThread : public QThread {
   Q_OBJECT
  public:
@@ -12,20 +13,20 @@ class MyThread : public QThread {
 
   void run();
 
- signals:
-  void error(QTcpSocket::SocketError socketerror);
-
- public slots:
-  void readyRead();
-  void disconnected();
- void sendOrder();
- public:
-
-
  private:
   QTcpSocket *socket;
   qintptr socketDescriptor;
 
+ signals:
+  void error(QTcpSocket::SocketError socketerror);
+
+  void order();
+
+ public slots:
+  void readyRead();
+  void disconnected();
+  void sendOrder();
+  void receiveOrder();
 };
 
 #endif  // MYTHREAD_H

@@ -2,12 +2,14 @@
 #ifndef MYSERVER_H
 #define MYSERVER_H
 
+#include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <iostream>
 #include <vector>
 #include <string>
 #include "mythread.h"
+#include "clientconnection.h"
 
 class MyServer : public QTcpServer {
   Q_OBJECT

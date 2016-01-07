@@ -1,7 +1,6 @@
 // myserver.cpp
 
-#include "../src/myserver.h"
-#include "../src/mythread.h"
+#include "myserver.h"
 
 MyServer::MyServer(QObject *parent) : QTcpServer(parent) {
   // ONLY FOR 1 CLIENT to show working command broadcast
@@ -18,6 +17,7 @@ void MyServer::startServer() {
   } else {
     qDebug() << "Listening to port " << serverAddress() << port << "...";
   }
+
 }
 
 
@@ -28,12 +28,14 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
 
 
     // Every new connection will be run in a newly created thread
-    MyThread *thread = new MyThread(socketDescriptor, this);
+    MyThread *thread = new MyThread(socketDescriptor,this);
 
+  //  ClientConnection* d = new ClientConnection();
+    //delete d;
     // connect signal/slot
     // once a thread is not needed, it will be beleted later
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    connect(this,SIGNAL(sendO()),thread, SLOT(sendOrder()));
+    connect(this,SIGNAL(sendO()),thread, SLOT(receiveOrder()));
 
     thread->start();
 
