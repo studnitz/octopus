@@ -2,7 +2,7 @@
 #include <QtTest>
 #include <QCoreApplication>
 #include "client.h"
-#include "myserver.h"
+#include "../server/server.h"
 #include <QTime>
 #include <QThread>
 
@@ -34,7 +34,7 @@ void communication::cleanupTestCase() {}
  */
 
 void communication::testCase1() {
-  MyServer* server = new MyServer();
+  Server* server = new Server();
   server->startServer();
   qDebug() << "Server started";
   Client client1;
@@ -48,7 +48,7 @@ void communication::testCase1() {
  *
  */
 void communication::testCase2() {
-  MyServer server;
+  Server server;
   server.startServer();
   Client client1;
   client1.start(1234);
@@ -60,7 +60,7 @@ void communication::testCase2() {
 }
 
 void communication::testCase3() {
-  MyServer server;
+  Server server;
   server.startServer(); 
 
   Client client1;

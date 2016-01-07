@@ -5,4 +5,3 @@ SUBDIRS += \
     server \
     tests \
     gui \
-    server2

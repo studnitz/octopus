@@ -24,15 +24,28 @@ class Client : public QObject {
   QTcpSocket::SocketState getState() const;
 
  private slots:
+  double getCpuUsage();
+  long getFreeMemory();
+  long getAllMemory();
+  float getMemoryUsage();
+  double getDiskUsage();
+  ulong getFreeDisk();
+  /**
+   * @brief Client::getTotalDisk
+   * @return total disk space in KB
+   */
+  ulong getTotalDisk();
+  /**
+   * @brief Client::isConnected is used to test the connection
+   * @return "yes"
+   */
+  std::string isConnected();
 
-  void sendInfo();
   void waitForCommand();
 
  private:
   bool timesync;
   short numCamera;
-  char* info;
-  // Liste Cameras
   QTcpSocket socket;
   QString findServer();
   void findCamera();

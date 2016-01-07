@@ -13,7 +13,8 @@ public:
 signals:
 
 public slots:
-    void writeData();
+    void sendCommand(int value);
+    void setUpSocket();
 
 protected:
     qintptr socketDescriptor;

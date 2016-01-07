@@ -23,32 +23,33 @@ void Server::incomingConnection(qintptr socketDescriptor) {
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
   ClientConnection* client = new ClientConnection(socketDescriptor);
-  connect(this, SIGNAL(broadcastCommand()), client, SLOT(writeData()));
+  connect(this, &Server::broadcastCommand, client, &ClientConnection::sendCommand);
+
+  connect(this,SIGNAL(setUpSocket()),client,SLOT(setUpSocket()));
   client->moveToThread(thread);
-  //connections.push_back(client);
-  qDebug() << client->thread() << "ClientCon Thread";
-  qDebug() << this->thread()<< "Server thread";
   thread->start();
-  qDebug() << "New Connection";
+  emit setUpSocket();
+  qDebug() << "New Thread startet";
 }
 
 void Server::sendCommand() {
-  qint32 command;
+    int  command;
 
   while (true) {
     std::cout << "Type Command:";
     std::cin >> command;
 
     switch (command) {
-      case 0000:
+      case 0:
         std::cout << "Number of Clients connected: " << getNumClients() << "\n";
         break;
-      case 0001:
+      case 1:
 
-        std::cout << "Send Command to Clients \n";
-        std::cout << "Type your Command \n";
+        std::cout << "Send Command to Clients:";
         std::cin >> command;
-        emit this->broadcastCommand();
+
+        emit this->broadcastCommand(command);
+
         break;
 
       default:
@@ -59,4 +60,4 @@ void Server::sendCommand() {
   return;
 }
 
-int Server::getNumClients() { return findChildren<ClientConnection*>().size(); }
+int Server::getNumClients() { return findChildren<QThread*>().size(); }

@@ -6,7 +6,7 @@
 #include <QTcpSocket>
 #include <QThread>
 #include <iostream>
-
+#include <string.h>
 #include "clientconnection.h"
 
 class Server : public QTcpServer {
@@ -14,16 +14,17 @@ class Server : public QTcpServer {
  public:
   explicit Server(QObject *parent = 0);
   ~Server();
-
+int getNumClients();
   void startServer();
  signals:
-    void broadcastCommand();
+    void broadcastCommand(int value);
+    void setUpSocket();
  public slots:
     void sendCommand();
 
  protected:
   QList<ClientConnection*> connections;
-  int getNumClients();
+
   void incomingConnection(qintptr socketDescriptor);
 };
 
