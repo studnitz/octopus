@@ -23,8 +23,8 @@ void MyThread::run() {
   //        This makes the slot to be invoked immediately, when the signal is
   //        emitted.
   qDebug() << socket->bytesAvailable();
-  connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),
-          Qt::DirectConnection);
+//  connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()),
+//          Qt::DirectConnection);
   connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
 
   // We'll have multiple clients, we want to know which is which
@@ -40,18 +40,24 @@ void MyThread::run() {
 }
 
 void MyThread::readyRead() {
-    QByteArray info = socket->read(3);
-    qDebug() << socket->bytesAvailable();
+  QByteArray info = socket->read(3);
+  qDebug() << socket->bytesAvailable();
 
-    qDebug() << socketDescriptor
-             << "        IP:" << socket->peerAddress().toString()
-             << "       Data in: " << info;
-    sendOrder("000");
+  qDebug() << socketDescriptor
+           << "        IP:" << socket->peerAddress().toString()
+           << "       Data in: " << info;
+  sendOrder("000");
 }
 
-void MyThread::sendOrder(QString order){
-    socket->write(order.toUtf8());
-    qDebug() << "ORDER Send";
+QString MyThread::sendOrder(QString order) {
+  socket->write(order.toUtf8());
+  socket->waitForReadyRead();
+  QByteArray data = socket->readLine();
+  QString answer;
+  answer.append(data);
+
+  qDebug() << "ORDER Send";
+  return answer;
 }
 
 void MyThread::disconnected() {

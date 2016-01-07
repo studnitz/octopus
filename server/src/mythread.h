@@ -21,7 +21,7 @@ class MyThread : public QThread {
 
  public:
 
-  void sendOrder(QString order);
+  QString sendOrder(QString order);
  private:
   QTcpSocket *socket;
   qintptr socketDescriptor;

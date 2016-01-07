@@ -51,7 +51,7 @@ void Client::waitForCommand() {
     command = socket.read(3);
     qDebug() << command;
     qDebug() << "Command recieved";
-    if (command == 0) {
+    if ((command) == "0") {
       socket.write("Number of Cameras 0\n");
     } else {
       socket.write("command unknown\n");

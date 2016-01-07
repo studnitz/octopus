@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "myserver.h"
-
+#include "mythread.h"
 int main(int argc, char *argv[]) {
   QCoreApplication a(argc, argv);
 

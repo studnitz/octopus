@@ -1,7 +1,7 @@
 // myserver.cpp
 
 #include "../src/myserver.h"
-//#include "../src/mythread.h"
+#include "../src/mythread.h"
 
 MyServer::MyServer(QObject *parent) : QTcpServer(parent) {
   // ONLY FOR 1 CLIENT to show working command broadcast
@@ -20,25 +20,46 @@ void MyServer::startServer() {
   }
 }
 
-void MyServer::incomingConnection(qintptr socketDescriptor) {
-  QTcpSocket *socket;
-  socket = new QTcpSocket();
 
-  // set the ID
-  if (!socket->setSocketDescriptor(socketDescriptor)) {
-    // something's wrong, we just emit a signal
-    emit socket->error();
-    return;
-  }
+void MyServer::incomingConnection(qintptr socketDescriptor)
+{
+    // We have a new connection
+    qDebug() << socketDescriptor << " Connecting...";
 
-  qDebug() << "new Connection";
-  clients.push_back(socket);
-  qDebug() << socketDescriptor
-           << "        IP:" << socket->peerAddress().toString()
-           << " Client connected";
 
-  // DELETE SOCKET??
+    // Every new connection will be run in a newly created thread
+    MyThread *thread = new MyThread(socketDescriptor, this);
+
+    // connect signal/slot
+    // once a thread is not needed, it will be beleted later
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    thread->start();
+
+
+
+
 }
+
+//void MyServer::incomingConnection(qintptr socketDescriptor) {
+//  QTcpSocket *socket;
+//  socket = new QTcpSocket();
+
+//  // set the ID
+//  if (!socket->setSocketDescriptor(socketDescriptor)) {
+//    // something's wrong, we just emit a signal
+//    emit socket->error();
+//    return;
+//  }
+
+//  qDebug() << "new Connection";
+//  clients.push_back(socket);
+//  qDebug() << socketDescriptor
+//           << "        IP:" << socket->peerAddress().toString()
+//           << " Client connected";
+
+//  // DELETE SOCKET??
+//}
 
 void MyServer::sendCommand() {
   qint32 command;
@@ -67,25 +88,47 @@ void MyServer::sendCommand() {
   return;
 }
 
+
 QString MyServer::broadcastCommand(int command) {
   // should be global const list at end of client connection
   QString answer;
   QByteArray send;
   send.setNum(command);
-  for (int i = 0; i < clients.size(); ++i) {  /// TODO QTLISTITERATOR
+  QList<MyThread*> connections = getClients();
+  for (int i = 0; i < connections.size(); ++i) {  /// TODO QTLISTITERATOR
     answer.append("Client ").append(": ");
-    clients.at(i)->write(send);
-    clients.at(i)->waitForReadyRead();
+    answer.append(connections.at(i)->sendOrder(send));
 
-    QByteArray data = clients.at(i)->readLine();
-    qDebug() << data;
-    answer.append(data);
-    qDebug() << answer;
     qDebug() << "Order send to Client" << i + 1;
   }
   return answer;
 }
 
+
+//QString MyServer::broadcastCommand(int command) {
+//  // should be global const list at end of client connection
+//  QString answer;
+//  QByteArray send;
+//  send.setNum(command);
+//  for (int i = 0; i < clients.size(); ++i) {  /// TODO QTLISTITERATOR
+//    answer.append("Client ").append(": ");
+//    clients.at(i)->write(send);
+//    clients.at(i)->waitForReadyRead();
+
+//    QByteArray data = clients.at(i)->readLine();
+//    //qDebug() << data;
+//    answer.append(data);
+//    //qDebug() << answer;
+//    qDebug() << "Order send to Client" << i + 1;
+//  }
+//  return answer;
+//}
+
 int MyServer::getNumClients() { return clients.size(); }
+
+QList<MyThread *> MyServer::getClients(){
+       return this->findChildren<MyThread*>();
+
+}
 
 MyServer::~MyServer() { qDebug() << "Destroy Server"; }

@@ -10,7 +10,9 @@ TEMPLATE = app
 
 SOURCES += \
     src/myserver.cpp \
-    src/main.cpp
+    src/main.cpp \
+    src/mythread.cpp
 
 HEADERS += \
-    src/myserver.h
+    src/myserver.h \
+    src/mythread.h

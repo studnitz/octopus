@@ -7,7 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
+#include "mythread.h"
 
 class MyServer : public QTcpServer {
   Q_OBJECT
@@ -18,7 +18,7 @@ class MyServer : public QTcpServer {
   void startServer();
   QString broadcastCommand(int command);
   int getNumClients();
-
+ QList<MyThread *> getClients();
  signals:
 
  public slots:
