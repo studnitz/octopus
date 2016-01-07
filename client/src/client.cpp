@@ -2,19 +2,19 @@
 #include <QHostAddress>
 
 Client::Client(QObject *parent) : QObject(parent) {
-  if (!this->connect(&client, SIGNAL(connected()), this, SLOT(sendInfo()))) {
+  if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(sendInfo()))) {
     qDebug() << "Could not start client";
   } else {
     qDebug() << "Client started";
   }
-  connect(&client, SIGNAL(readyRead()), this, SLOT(waitForOrder()));
+  connect(&socket, SIGNAL(readyRead()), this, SLOT(waitForCommand()));
 
   // hostfound() signal connect?
 }
 
 Client::~Client() {
   qDebug() << "Destroy Client";
-  client.close();
+  socket.close();
 }
 
 void Client::start(quint16 port) {
@@ -30,36 +30,40 @@ void Client::start(quint16 port) {
     qDebug() << "Time Server not avaivble";
   }
 
-  client.connectToHost(addr, port);
+  socket.connectToHost(addr, port);
 
-  if (client.waitForConnected()) {  // Timeout included in waitfor
+  if (socket.waitForConnected()) {  // Timeout included in waitfor
     qDebug() << "Client connected";
 
   } else {
     qDebug() << "Client not connected";
   }
-  qDebug()<< getState();
-  qDebug() << client.isValid();
-  qDebug() << client.isOpen();
-  qDebug()<< client.isWritable();
-  qDebug()<< client.isReadable();
-
+//  qDebug() << getState();
+//  qDebug() << socket.isValid();
+//  qDebug() << socket.isOpen();
+//  qDebug() << socket.isWritable();
+//  qDebug() << socket.isReadable();
 }
 
-void Client::waitForOrder() {
-  while (!client.atEnd()) {
-    QByteArray Data;
-    Data = client.read(3);
-    qDebug() << Data;
-    if (Data == "000") {
-      qDebug() << "GOT ORDER!";
+void Client::waitForCommand() {
+ // while (!socket.atEnd()) {
+    QByteArray command;
+    command = socket.read(3);
+    qDebug() << command;
+    qDebug() << "Command recieved";
+    if (command == 0) {
+      socket.write("Number of Cameras 0\n");
+    } else {
+      socket.write("command unknown\n");
     }
-  }
+  //}
 }
 
-void Client::sendInfo() { client.write("123"); }  // INFO ABOUT CLIENT
+void Client::sendInfo() {
+  // socket.write("123");
+}  // INFO ABOUT CLIENT
 
-QTcpSocket::SocketState Client::getState() const { return client.state(); }
+QTcpSocket::SocketState Client::getState() const { return socket.state(); }
 
 QString Client::findServer() {
   /*

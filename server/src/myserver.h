@@ -3,28 +3,32 @@
 #define MYSERVER_H
 
 #include <QTcpServer>
+#include <QTcpSocket>
 #include <iostream>
 #include <vector>
 #include <string>
-#include "../src/mythread.h"
+
 
 class MyServer : public QTcpServer {
   Q_OBJECT
  public:
   explicit MyServer(QObject *parent = 0);
   ~MyServer();
+
   void startServer();
-  void broadcastOrder(QString order);
-  QList<MyThread *> getClients();
-   signals:
+  QString broadcastCommand(int command);
+  int getNumClients();
+
+ signals:
 
  public slots:
 
+ protected slots:
+  void sendCommand();
+
  protected:
   void incomingConnection(qintptr socketDescriptor);
-  QList<QTcpSocket *> connections;
-
-
+  QList<QTcpSocket *> clients;
 };
 
 #endif  // MYSERVER_H

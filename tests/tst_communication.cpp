@@ -3,7 +3,6 @@
 #include <QCoreApplication>
 #include "client.h"
 #include "myserver.h"
-#include "mythread.h"
 #include <QTime>
 #include <QThread>
 
@@ -71,8 +70,8 @@ void communication::testCase3() {
   QVERIFY(QAbstractSocket::ConnectedState == client2.getState());
   QVERIFY(QAbstractSocket::ConnectedState == client1.getState());
   QTest::qSleep(10000);
-  qDebug() << server.getClients().size();
-  QVERIFY(server.getClients().size() == 2);
+  qDebug() << server.getNumClients();
+  QVERIFY(server.getNumClients() == 2);
 }
 
 void communication::testCase4() {}

@@ -25,11 +25,9 @@ INCLUDEPATH += \
 
 SOURCES += \
     ../client/src/client.cpp \
-    ../server/src/myserver.cpp \
-    ../server/src/mythread.cpp
+    ../server/src/myserver.cpp
 
 
 HEADERS += \
     ../client/src/client.h \
-    ../server/src/myserver.h \
-    ../server/src/mythread.h
+    ../server/src/myserver.h

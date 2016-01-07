@@ -5,7 +5,10 @@ int main(int argc, char *argv[]) {
   QCoreApplication a(argc, argv);
 
   Client client;
-  client.start(1234);
+  while(client.getState()==QAbstractSocket::UnconnectedState){
 
+      client.start(1234);
+
+  }
   return a.exec();
 }

@@ -26,14 +26,14 @@ class Client : public QObject {
  private slots:
 
   void sendInfo();
-  void waitForOrder();
+  void waitForCommand();
 
  private:
   bool timesync;
   short numCamera;
   char* info;
   // Liste Cameras
-  QTcpSocket client;
+  QTcpSocket socket;
   QString findServer();
   void findCamera();
   void syncTime();
