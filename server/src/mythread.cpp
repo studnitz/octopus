@@ -46,18 +46,20 @@ void MyThread::readyRead() {
   qDebug() << socketDescriptor
            << "        IP:" << socket->peerAddress().toString()
            << "       Data in: " << info;
-  sendOrder("000");
+
 }
 
-QString MyThread::sendOrder(QString order) {
-  socket->write(order.toUtf8());
-  socket->waitForReadyRead();
-  QByteArray data = socket->readLine();
-  QString answer;
-  answer.append(data);
+void MyThread::sendOrder() {
+
+    socket->write("000");
+  //socket->write(*command);
+//  socket->waitForReadyRead();
+//  QByteArray data = socket->readLine();
+//  QString answer;
+//  answer.append(data);
 
   qDebug() << "ORDER Send";
-  return answer;
+  //return &answer;
 }
 
 void MyThread::disconnected() {

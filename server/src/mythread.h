@@ -18,10 +18,10 @@ class MyThread : public QThread {
  public slots:
   void readyRead();
   void disconnected();
-
+ void sendOrder();
  public:
 
-  QString sendOrder(QString order);
+
  private:
   QTcpSocket *socket;
   qintptr socketDescriptor;

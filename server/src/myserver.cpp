@@ -33,6 +33,7 @@ void MyServer::incomingConnection(qintptr socketDescriptor)
     // connect signal/slot
     // once a thread is not needed, it will be beleted later
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    connect(this,SIGNAL(sendO()),thread, SLOT(sendOrder()));
 
     thread->start();
 
@@ -92,14 +93,18 @@ void MyServer::sendCommand() {
 QString MyServer::broadcastCommand(int command) {
   // should be global const list at end of client connection
   QString answer;
-  QByteArray send;
-  send.setNum(command);
+  QString send;
+  send.append("000");
+
+  qDebug()<< send;
+  QByteArray message = send.toUtf8();
   QList<MyThread*> connections = getClients();
   for (int i = 0; i < connections.size(); ++i) {  /// TODO QTLISTITERATOR
     answer.append("Client ").append(": ");
-    answer.append(connections.at(i)->sendOrder(send));
-
-    qDebug() << "Order send to Client" << i + 1;
+    //answer.append
+           // ((connections.at(i)->sendOrder(&message)));
+ emit this->sendO();
+    qDebug() << "Order sent to Client" << i + 1;
   }
   return answer;
 }

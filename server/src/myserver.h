@@ -20,6 +20,7 @@ class MyServer : public QTcpServer {
   int getNumClients();
  QList<MyThread *> getClients();
  signals:
+  void sendO();
 
  public slots:
 
