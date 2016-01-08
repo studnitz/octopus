@@ -24,32 +24,64 @@ class Client : public QObject {
   QTcpSocket::SocketState getState() const;
 
  private slots:
+   void sendInfo();
+  /**
+   * @brief waitForCommand
+   * @description slot started after connection established
+  */
+  void waitForCommand();
+
+ private:
+  bool timesync;
+  short numCamera;
+
+  QTcpSocket socket;
+  QString findServer();
+  void findCamera();
+  void syncTime();
+
+  /**
+   * @brief Client::isConnected is used to test the connection
+   * @return "yes"
+   */
+  std::string isConnected();
+  /**
+   * @brief Client::getCpuUsage
+   * @return current CPU-Usage in percent
+   */
   double getCpuUsage();
+
+  /**
+   * @brief Client::getFreeMemory
+   * @return free memory in KB
+   */
   long getFreeMemory();
+
+  /**
+    * @brief Client::getAllMemory
+    * @return total memory in KB
+    */
   long getAllMemory();
+  /**
+   * @brief getMemoryUsage
+   * @return memory usage in percent
+   */
   float getMemoryUsage();
+  /**
+   * @brief Client::getDiskUsage
+   * @return disk usage in percent
+   */
   double getDiskUsage();
+  /**
+   * @brief Client::getFreeDisk
+   * @return free disk space in KB
+   */
   ulong getFreeDisk();
   /**
    * @brief Client::getTotalDisk
    * @return total disk space in KB
    */
   ulong getTotalDisk();
-  /**
-   * @brief Client::isConnected is used to test the connection
-   * @return "yes"
-   */
-  std::string isConnected();
-
-  void waitForCommand();
-
- private:
-  bool timesync;
-  short numCamera;
-  QTcpSocket socket;
-  QString findServer();
-  void findCamera();
-  void syncTime();
 };
 
 #endif  // TCPCLIENT_H

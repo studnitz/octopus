@@ -17,6 +17,8 @@ Client::~Client() {
   socket.close();
 }
 
+void Client::sendInfo() {}
+
 void Client::start(quint16 port) {
   this->findCamera();
 
@@ -46,25 +48,48 @@ void Client::waitForCommand() {
   qDebug() << message << "Command recieved";
 
   switch (command) {
+    case 0:
+      qDebug() << "sending Info about Memory Usage";
+      message.setNum(getMemoryUsage());
+      break;
     case 1:
-      message.setNum(getMemoryUsage()).append("% \n");
+      qDebug() << "sending Info about CPU Usage";
+      message.setNum(getCpuUsage());
       break;
     case 2:
-      message.setNum(getCpuUsage()).append("% \n");
+      qDebug() << "sending Info about Disk Usage";
+      message.setNum(getDiskUsage());
       break;
     case 3:
-      message.setNum((int)getAllMemory()).append("KB \n");
+      qDebug() << "sending Info about Free Memory";
+      message.setNum((int)getFreeMemory());
       break;
     case 4:
-
+      qDebug() << "sending Info about All Memory";
+      message.setNum((int)getAllMemory());
       break;
-
+    case 5:
+      qDebug() << "sending Info about Free Disk";
+      message.setNum((int)getFreeDisk());
+      break;
+    case 6:
+      qDebug() << "sending Info about Total Disk";
+      message.setNum((int)getTotalDisk());
+      break;
+    case 7:
+      break;
+    case 8:
+      break;
+    case 9:
+      break;
     default:
-      message.append("command unknown\n");
+      message.append("command unknown \n");
       break;
   }
   socket.write(message);
 }
+
+std::string Client::isConnected() { return "yes"; }
 
 QTcpSocket::SocketState Client::getState() const { return socket.state(); }
 
@@ -90,10 +115,6 @@ void Client::findCamera() {
   return;
 };
 
-/**
- * @brief Client::getCpuUsage
- * @return current CPU-Usage in percent
- */
 double Client::getCpuUsage() {
   double percent;
   FILE *file;
@@ -113,10 +134,6 @@ double Client::getCpuUsage() {
   return percent;
 }
 
-/**
- * @brief Client::getAllMemory
- * @return total memory in KB
- */
 long Client::getAllMemory() {
   QFile file("/proc/meminfo");
   if (!file.open(QIODevice::ReadOnly)) {
@@ -133,10 +150,6 @@ long Client::getAllMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-/**
- * @brief Client::getFreeMemory
- * @return free memory in KB
- */
 long Client::getFreeMemory() {
   QFile file("/proc/meminfo");
   if (!file.open(QIODevice::ReadOnly)) {
@@ -154,19 +167,11 @@ long Client::getFreeMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-/**
- * @brief Client::getFreeDisk
- * @return free disk space in KB
- */
 ulong Client::getFreeDisk() {
   QStorageInfo info("/");
   return info.bytesAvailable() / 1024;
 }
 
-/**
- * @brief Client::getDiskUsage
- * @return disk usage in percent
- */
 double Client::getDiskUsage() {
   return 100 - (getFreeDisk() / (float)getTotalDisk()) * 100;
 }
@@ -174,14 +179,10 @@ double Client::getDiskUsage() {
 float Client::getMemoryUsage() {
   long free_mem = getFreeMemory();
   long total_mem = getAllMemory();
-  return 100 - (free_mem / ((float)total_mem)) * 100;  // Percentage used
+  return 100 - (free_mem / ((float)total_mem)) * 100;
 }
-
 
 ulong Client::getTotalDisk() {
   QStorageInfo info("/");
   return info.bytesTotal() / 1024;
 }
-
-
-std::string Client::isConnected() { return "yes"; }

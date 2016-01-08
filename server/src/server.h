@@ -7,24 +7,25 @@
 #include <QThread>
 #include <iostream>
 #include <string.h>
-#include "clientconnection.h"
+
+#include "serverthread.h"
 
 class Server : public QTcpServer {
   Q_OBJECT
  public:
   explicit Server(QObject *parent = 0);
   ~Server();
-int getNumClients();
+  int getNumClients();
   void startServer();
  signals:
-    void broadcastCommand(int value);
-    void setUpSocket();
+  void broadcastCommand(int command);
+  void setUpSocket();
  public slots:
-    void sendCommand();
+  void getInfo();
+  void sendCommand(int command);
 
  protected:
-  QList<ClientConnection*> connections;
-
+  QList<ServerThread*> getClients();
   void incomingConnection(qintptr socketDescriptor);
 };
 
