@@ -7,30 +7,81 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QString>
-#include <iostream>
 
-class Client : public QObject
-{
+class Client : public QObject {
   Q_OBJECT
-public:
-  explicit Client(QObject* parent = 0);
+ public:
+  explicit Client(QObject *parent = 0);
   ~Client();
-  void start(QString address, quint16 port);
-signals:
+  /*
+   * start by given port
+   */
+  void start(quint16 port);
+ signals:
 
-public slots:
-  void startTransfer();
-  double getCpuUsage();
-  long getFreeMemory();
-  long getAllMemory();
-  float getMemoryUsage();
-  double getDiskUsage();
-  ulong getFreeDisk();
-  ulong getTotalDisk();
+ public slots:
+
+  QTcpSocket::SocketState getState() const;
+
+ private slots:
+   void sendInfo();
+  /**
+   * @brief waitForCommand
+   * @description slot started after connection established
+  */
+  void waitForCommand();
+
+ private:
+  bool timesync;
+  short numCamera;
+
+  QTcpSocket socket;
+  QString findServer();
+  void findCamera();
+  void syncTime();
+
+  /**
+   * @brief Client::isConnected is used to test the connection
+   * @return "yes"
+   */
   std::string isConnected();
+  /**
+   * @brief Client::getCpuUsage
+   * @return current CPU-Usage in percent
+   */
+  double getCpuUsage();
 
-private:
-  QTcpSocket client;
+  /**
+   * @brief Client::getFreeMemory
+   * @return free memory in KB
+   */
+  long getFreeMemory();
+
+  /**
+    * @brief Client::getAllMemory
+    * @return total memory in KB
+    */
+  long getAllMemory();
+  /**
+   * @brief getMemoryUsage
+   * @return memory usage in percent
+   */
+  float getMemoryUsage();
+  /**
+   * @brief Client::getDiskUsage
+   * @return disk usage in percent
+   */
+  double getDiskUsage();
+  /**
+   * @brief Client::getFreeDisk
+   * @return free disk space in KB
+   */
+  ulong getFreeDisk();
+  /**
+   * @brief Client::getTotalDisk
+   * @return total disk space in KB
+   */
+  ulong getTotalDisk();
 };
 
-#endif // TCPCLIENT_H
+#endif  // TCPCLIENT_H

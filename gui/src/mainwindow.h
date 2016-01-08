@@ -2,8 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../server/src/myserver.h"
-#include "../server/src/mythread.h"
+#include "../server/server.h"
 #include <QHostInfo>
 
 namespace Ui {
@@ -23,7 +22,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    MyServer* server;
+    Server* server;
+
+signals:
+    void getinfo();
 
 private slots:
     void on_recordButton_clicked();

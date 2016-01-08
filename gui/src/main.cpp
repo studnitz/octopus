@@ -1,18 +1,17 @@
 #include "mainwindow.h"
-#include "../server/src/myserver.h"
-#include "../server/src/mythread.h"
+#include "../server/server.h"
 #include <QApplication>
+#include <QObject>
 
-MyServer server;
+Server server;
 
-int
-main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
   QApplication a(argc, argv);
 
   server.startServer();
 
   MainWindow w;
+  QObject::connect(&w, SIGNAL(getinfo()), &server, SLOT(getInfo()));
   w.server = &server;
   w.show();
 

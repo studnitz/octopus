@@ -2,17 +2,17 @@ QT += core
 QT += network
 QT -= gui
 
-TARGET = server
+TARGET = server2
 CONFIG += console
 CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += src/main.cpp \
-    src/myserver.cpp \
-    src/mythread.cpp
+SOURCES += main.cpp \
+    server.cpp \
+    serverthread.cpp
 
 HEADERS += \
-    src/myserver.h \
-    src/mythread.h
+    server.h \
+    serverthread.h
 

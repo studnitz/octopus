@@ -9,13 +9,13 @@ TEMPLATE = app
 SOURCES += src/main.cpp         \
         src/mainwindow.cpp      \
         src/playlistmodel.cpp   \
-    ../server/src/myserver.cpp  \
-    ../server/src/mythread.cpp
+    ../server/server.cpp        \
+    ../server/serverthread.cpp
 
 HEADERS  += src/mainwindow.h    \
     src/playlistmodel.h         \
-    ../server/src/myserver.h    \
-    ../server/src/mythread.h
+    ../server/server.h          \
+    ../server/serverthread.h
 
 FORMS    += forms/mainwindow.ui
 

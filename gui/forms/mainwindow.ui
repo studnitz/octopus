@@ -26,8 +26,11 @@
       <height>601</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string/>
+    </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="tabBarAutoHide">
      <bool>false</bool>
@@ -97,7 +100,7 @@
         <number>1</number>
        </property>
        <property name="columnCount">
-        <number>2</number>
+        <number>3</number>
        </property>
        <attribute name="horizontalHeaderVisible">
         <bool>false</bool>
@@ -126,6 +129,67 @@
        <row/>
        <column/>
        <column/>
+       <column/>
+      </widget>
+      <widget class="QLabel" name="labelDisk">
+       <property name="geometry">
+        <rect>
+         <x>165</x>
+         <y>10</y>
+         <width>20</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>Disk Usage</string>
+       </property>
+       <property name="toolTipDuration">
+        <number>1000</number>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string>D</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelRAM_2">
+       <property name="geometry">
+        <rect>
+         <x>205</x>
+         <y>10</y>
+         <width>20</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>CPU Usage</string>
+       </property>
+       <property name="toolTipDuration">
+        <number>1000</number>
+       </property>
+       <property name="text">
+        <string>C</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelMem">
+       <property name="geometry">
+        <rect>
+         <x>185</x>
+         <y>10</y>
+         <width>20</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>Memory Usage</string>
+       </property>
+       <property name="toolTipDuration">
+        <number>1000</number>
+       </property>
+       <property name="text">
+        <string>M</string>
+       </property>
       </widget>
      </widget>
      <widget class="QFrame" name="frame">
