@@ -36,10 +36,13 @@ MainWindow::MainWindow(QWidget *parent) :
     //Videoplayer-Setup
     player = new QMediaPlayer(this);
     playlist = new QMediaPlaylist(player);
-    videoWidget = new QVideoWidget(ui->tab_2);
+    videoWidget = new QVideoWidget(ui->widget);
     player->setVideoOutput(videoWidget);
 
-    videoWidget->move(50,50);
+    ui->widget->move(50,50);
+    ui->widget->resize(320,240);
+    ui->widget->show();
+    videoWidget->move(0,0);
     videoWidget->resize(320,240);
     videoWidget->show();
 
