@@ -154,21 +154,24 @@ void MainWindow::on_openFileButton_clicked()
 {
     // Öffnen der Aufzeichnungen
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open movies"),QDir::currentPath());
-    // Erste der Aufzeichnung automatisch in Player laden
-    player->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
 
-    // Aufzeichnungen in Playlist laden
-    for (int i = 0; i < fileNames.size(); i++) {
-        playlist->addMedia(QUrl::fromLocalFile(fileNames.at(i)));
-        log(QString("Lade ").append(fileNames.at(i)).append("..."));
+    if (!fileNames.empty()) {
+        // Erste der Aufzeichnung automatisch in Player laden
+        player->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
+
+        // Aufzeichnungen in Playlist laden
+        for (int i = 0; i < fileNames.size(); i++) {
+            playlist->addMedia(QUrl::fromLocalFile(fileNames.at(i)));
+            log(QString("Lade ").append(fileNames.at(i)).append("..."));
+        }
+        playlist->setCurrentIndex(playlist->mediaCount());
+
+        // PlaylistModel befüllen mit Playlist-Inhalt
+        playlistModel->setPlaylist(playlist);
+
+        // Indexbereich der Liste aktualisieren
+        ui->listView->setCurrentIndex(playlistModel->index(playlist->currentIndex(), 0));
     }
-    playlist->setCurrentIndex(playlist->mediaCount());
-
-    // PlaylistModel befüllen mit Playlist-Inhalt
-    playlistModel->setPlaylist(playlist);
-
-    // Indexbereich der Liste aktualisieren
-    ui->listView->setCurrentIndex(playlistModel->index(playlist->currentIndex(), 0));
 }
 
 /**
