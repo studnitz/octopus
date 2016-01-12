@@ -14,11 +14,12 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include "playlistmodel.h"
+#include "forms/videoplayer.h"
 
 QMediaPlayer *player;
 PlaylistModel *playlistModel;
 QMediaPlaylist *playlist;
-QVideoWidget *videoWidget;
+VideoPlayer *videoPlayer;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -36,15 +37,15 @@ MainWindow::MainWindow(QWidget *parent) :
     //Videoplayer-Setup
     player = new QMediaPlayer(this);
     playlist = new QMediaPlaylist(player);
-    videoWidget = new QVideoWidget(ui->widget);
-    player->setVideoOutput(videoWidget);
+    videoPlayer = new VideoPlayer(ui->playerWrapper);
+    player->setVideoOutput(videoPlayer);
 
-    ui->widget->move(50,50);
-    ui->widget->resize(320,240);
-    ui->widget->show();
-    videoWidget->move(0,0);
-    videoWidget->resize(320,240);
-    videoWidget->show();
+    connect(videoPlayer, SIGNAL(playerClicked(int)), this, SLOT(videoPlayerClicked(int)));
+
+    ui->playerWrapper->resize(320,240);
+    ui->playerWrapper->show();
+    videoPlayer->resize(320,240);
+    videoPlayer->show();
 
     // Playlist-Setup
     playlistModel = new PlaylistModel(this);
@@ -200,4 +201,13 @@ void MainWindow::on_stopButton_clicked()
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
     player->setMedia(playlist->media(index.row()));
+}
+
+void MainWindow::videoPlayerClicked(int index) {
+    QMessageBox msg;
+    QString test;
+    test.clear();
+    test.append("Ich bin Dialog Nummer ").append(QString::number(index));
+    msg.setText(test);
+    msg.exec();
 }

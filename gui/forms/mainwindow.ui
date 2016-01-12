@@ -243,7 +243,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QVideoWidget" name="widget" native="true">
+     <widget class="QVideoWidget" name="playerWrapper" native="true">
       <property name="geometry">
        <rect>
         <x>40</x>
