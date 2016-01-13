@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     /* --- SET-UP Playlist --- */
     playlistModel = new PlaylistModel(this);
     ui->listView->setModel(playlistModel);
+
 }
 
 MainWindow::~MainWindow() {
