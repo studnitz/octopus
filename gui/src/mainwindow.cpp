@@ -25,17 +25,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setShowGrid(false);
 
     /* --- SET-UP Videoplayer --- */
-    player = new QMediaPlayer(this);
-    playlist = new QMediaPlaylist(player);
-    videoPlayer = new VideoPlayer(ui->tab_2);
-    player->setVideoOutput(videoPlayer);
+    player = new QList<QMediaPlayer*>();
+    videoPlayer = new QList<VideoPlayer*>();
 
-    videoPlayer->resize(320,240);
-    videoPlayer->move(10,10);
-    videoPlayer->show();
+    playlist = new QMediaPlaylist(); // --- Falls Playback irgendwann nicht mehr funktioniert, hier als Parent den Player hinzufügen bzw. player.at(0)
 
     // Videoplayer Slots verbinden
-    connect(videoPlayer, SIGNAL(playerClicked(int)), this, SLOT(videoPlayerClicked(int)));
+    //connect(videoPlayer, SIGNAL(playerClicked(int)), this, SLOT(videoPlayerClicked(int)));
 
 
     /* --- SET-UP Playlist --- */
@@ -44,7 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 MainWindow::~MainWindow() {
-    videoPlayer->disconnect();
+    for (int i = 0; i < videoPlayer->size(); i++)
+        videoPlayer->at(i)->disconnect();
     delete ui;
 }
 
@@ -129,7 +126,7 @@ void MainWindow::printClients() {
  */
 void MainWindow::on_playButton_clicked()
 {
-    switch(player->state()) {
+    /*switch(player->state()) {
     case QMediaPlayer::PlayingState:
         player->pause();
         ui->playButton->setText("Play");
@@ -142,7 +139,7 @@ void MainWindow::on_playButton_clicked()
             log("Starte Wiedergabe der Aufnahme");
         } 
         break;
-    }
+    }*/
 }
 
 /**
@@ -155,7 +152,7 @@ void MainWindow::on_openFileButton_clicked()
 
     if (!fileNames.empty()) {
         // Erste der Aufzeichnung automatisch in Player laden
-        player->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
+        //player->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
 
         // Aufzeichnungen in Playlist laden
         for (int i = 0; i < fileNames.size(); i++) {
@@ -185,7 +182,7 @@ void MainWindow::log(QString msg)
  */
 void MainWindow::on_stopButton_clicked()
 {
-    player->stop();
+    //player->stop();
     log("Stoppe Wiedergabe der Aufnahme");
 }
 
@@ -194,11 +191,12 @@ void MainWindow::on_stopButton_clicked()
  */
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 {
-    player->setMedia(playlist->media(index.row()));
+    //player->setMedia(playlist->media(index.row()));
 }
 
 void MainWindow::videoPlayerClicked(int index)
 {
+    /*
     // Dialogfenster erstellen
     QDialog *optDialog = new QDialog(this);
     optDialog->resize(500,150);
@@ -233,6 +231,7 @@ void MainWindow::videoPlayerClicked(int index)
     widthInput->setValue(videoPlayer->width());
     heightInput->setValue(videoPlayer->height());
 
+
     // Save-Button erstellen und connecten
     QPushButton *saveButton = new QPushButton("Speichern", optDialog);
     saveButton->move(400,10);
@@ -247,10 +246,47 @@ void MainWindow::videoPlayerClicked(int index)
     // Connection trennen und Dialog zerstören
     saveButton->disconnect();
     optDialog->deleteLater();
-
+    */
 }
 
-void MainWindow::optDialogSaveClicked(int posX, int posY)
+void MainWindow::on_addPlayerButton_clicked()
 {
-    videoPlayer->move(posX, posY);
+    // ---- Parameter variabel wählbar
+    int initialMarginX = 10;
+    int initialMarginY = 10;
+    int marginX = 1;
+    int marginY = 1;
+    int newWidth = 240;
+    int newHeight = 180;
+    // -------------------------------
+
+    int index = player->size();
+
+    player->append(new QMediaPlayer(this));
+    videoPlayer->append(new VideoPlayer(ui->tab_2, index));
+
+    // Beim ersten Aufruf der Prozedur
+    if (videoPlayer->size() == 1) {
+
+        player->at(0)->setVideoOutput(videoPlayer->at(0));
+        videoPlayer->at(0)->move(initialMarginX, initialMarginY);
+        videoPlayer->at(0)->resize(newWidth, newHeight);
+        videoPlayer->at(0)->show();
+    // Sonst
+    } else {
+        int newX = videoPlayer->at(index-1)->x();
+        int newY = videoPlayer->at(index-1)->y();
+
+        if (newY + videoPlayer->at(index-1)->height() + newHeight > ui->tabWidget->height()) {
+            newY = initialMarginY;
+            newX += marginX + newWidth;
+        } else {
+            newY += marginY + newHeight;
+        }
+
+        player->at(index)->setVideoOutput(videoPlayer->at(index));
+        videoPlayer->at(index)->move(newX, newY);
+        videoPlayer->at(index)->resize(newWidth, newHeight);
+        videoPlayer->at(index)->show();
+    }
 }

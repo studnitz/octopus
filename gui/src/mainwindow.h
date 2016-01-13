@@ -40,16 +40,18 @@ private slots:
     void on_listView_doubleClicked(const QModelIndex &index);
 
     void videoPlayerClicked(int index);
-    void optDialogSaveClicked(int posX, int posY);
+
+    void on_addPlayerButton_clicked();
 
 private:
     Ui::MainWindow *ui;
-    QList<QString> *clients;
+    QList<QString> *clients;    // TODO: Kann weg?
 
-    QMediaPlayer *player;
+    QList<QMediaPlayer*> *player;
+    QList<VideoPlayer*> *videoPlayer;
     PlaylistModel *playlistModel;
     QMediaPlaylist *playlist;
-    VideoPlayer *videoPlayer;
+
 
     void recordStart();
     void recordStop();
