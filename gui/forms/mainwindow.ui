@@ -243,16 +243,6 @@
        </rect>
       </property>
      </widget>
-     <widget class="QVideoWidget" name="playerWrapper" native="true">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>20</y>
-        <width>120</width>
-        <height>80</height>
-       </rect>
-      </property>
-     </widget>
     </widget>
    </widget>
    <widget class="QTextEdit" name="debugTextEdit">
@@ -286,14 +276,6 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>QVideoWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qvideowidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
  <slots>

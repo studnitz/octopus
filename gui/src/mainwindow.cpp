@@ -8,18 +8,8 @@
 #include <QHostInfo>
 
 //Videoplayer
-#include <QtWidgets>
-#include <QVideoWidget>
-#include <QVideoSurfaceFormat>
-#include <QMediaPlayer>
-#include <QMediaPlaylist>
-#include "playlistmodel.h"
-#include "forms/videoplayer.h"
-
-QMediaPlayer *player;
-PlaylistModel *playlistModel;
-QMediaPlaylist *playlist;
-VideoPlayer *videoPlayer;
+#include <QtWidgets>    // Laden der Dateien (QDir)
+#include <QDialog>      // Einstellungs-Dialog (QDialog)
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,32 +17,36 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Initialisierung der Tabelle
+    /* --- SET-UP Tabelle --- */
     ui->tableWidget->setColumnCount(2);
     ui->tableWidget->setRowCount(1);
     ui->tableWidget->setColumnWidth(0,160);
     ui->tableWidget->setColumnWidth(1,20);
     ui->tableWidget->setShowGrid(false);
 
-    //Videoplayer-Setup
+    /* --- SET-UP Videoplayer --- */
     player = new QMediaPlayer(this);
     playlist = new QMediaPlaylist(player);
-    videoPlayer = new VideoPlayer(ui->playerWrapper);
+    videoPlayer = new VideoPlayer(ui->tab_2);
     player->setVideoOutput(videoPlayer);
 
-    connect(videoPlayer, SIGNAL(playerClicked(int)), this, SLOT(videoPlayerClicked(int)));
-
-    ui->playerWrapper->resize(320,240);
-    ui->playerWrapper->show();
     videoPlayer->resize(320,240);
+    videoPlayer->move(10,10);
     videoPlayer->show();
 
-    // Playlist-Setup
+    // Videoplayer Slots verbinden
+    connect(videoPlayer, SIGNAL(playerClicked(int)), this, SLOT(videoPlayerClicked(int)));
+
+
+    /* --- SET-UP Playlist --- */
     playlistModel = new PlaylistModel(this);
     ui->listView->setModel(playlistModel);
 }
 
-MainWindow::~MainWindow() { delete ui; }
+MainWindow::~MainWindow() {
+    videoPlayer->disconnect();
+    delete ui;
+}
 
 void MainWindow::on_recordButton_clicked() {
   /*
@@ -203,11 +197,60 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
     player->setMedia(playlist->media(index.row()));
 }
 
-void MainWindow::videoPlayerClicked(int index) {
-    QMessageBox msg;
-    QString test;
-    test.clear();
-    test.append("Ich bin Dialog Nummer ").append(QString::number(index));
-    msg.setText(test);
-    msg.exec();
+void MainWindow::videoPlayerClicked(int index)
+{
+    // Dialogfenster erstellen
+    QDialog *optDialog = new QDialog(this);
+    optDialog->resize(500,150);
+    optDialog->setWindowTitle(QString("Einstellungen vom Player mit ID=").append(QString::number(index)).append(""));
+    optDialog->move(this->x()+200,this->y()+300);
+
+    // Infotexte erstellen
+    QLabel *posXLabel   = new QLabel(QString("Position X:"), optDialog);
+    QLabel *posYLabel   = new QLabel(QString("Position Y:"), optDialog);
+    QLabel *widthLabel  = new QLabel(QString("Breite:"));
+    QLabel *heightLabel = new QLabel(QString("Höhe:"));
+    posXLabel->move(10,10);
+    posYLabel->move(120,10);
+    widthLabel->move(10,75);
+    heightLabel->move(120,75);
+
+    // Eingabefenster erstellen und befüllen
+    QSpinBox *posXInput     = new QSpinBox(optDialog);
+    QSpinBox *posYInput     = new QSpinBox(optDialog);
+    QSpinBox *widthInput    = new QSpinBox(optDialog);
+    QSpinBox *heightInput   = new QSpinBox(optDialog);
+    posXInput->setMaximum(9999);
+    posYInput->setMaximum(9999);
+    widthInput->setMaximum(9999);
+    heightInput->setMaximum(9999);
+    posXInput->move(10,35);
+    posYInput->move(120,35);
+    widthInput->move(10,90);
+    heightInput->move(120,90);
+    posXInput->setValue(videoPlayer->x());
+    posYInput->setValue(videoPlayer->y());
+    widthInput->setValue(videoPlayer->width());
+    heightInput->setValue(videoPlayer->height());
+
+    // Save-Button erstellen und connecten
+    QPushButton *saveButton = new QPushButton("Speichern", optDialog);
+    saveButton->move(400,10);
+    connect(saveButton, &QPushButton::pressed,
+            [this, &posXInput, &posYInput, &widthInput, &heightInput]() {
+                videoPlayer->move(posXInput->value(), posYInput->value());
+                videoPlayer->resize(widthInput->value(), heightInput->value());
+    });
+
+    optDialog->exec();
+
+    // Connection trennen und Dialog zerstören
+    saveButton->disconnect();
+    optDialog->deleteLater();
+
+}
+
+void MainWindow::optDialogSaveClicked(int posX, int posY)
+{
+    videoPlayer->move(posX, posY);
 }

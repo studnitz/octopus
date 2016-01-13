@@ -1,7 +1,6 @@
 #ifndef VIDEOPLAYER_H
 #define VIDEOPLAYER_H
 
-//#include <QObject>
 #include <QVideoWidget>
 
 class VideoPlayer : public QVideoWidget

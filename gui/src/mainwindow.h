@@ -6,6 +6,12 @@
 #include "../server/src/mythread.h"
 #include <QHostInfo>
 
+// Videoplayer
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include "playlistmodel.h"
+#include "videoplayer.h"
+
 namespace Ui {
 class MainWindow;
 
@@ -34,10 +40,17 @@ private slots:
     void on_listView_doubleClicked(const QModelIndex &index);
 
     void videoPlayerClicked(int index);
+    void optDialogSaveClicked(int posX, int posY);
 
 private:
     Ui::MainWindow *ui;
     QList<QString> *clients;
+
+    QMediaPlayer *player;
+    PlaylistModel *playlistModel;
+    QMediaPlaylist *playlist;
+    VideoPlayer *videoPlayer;
+
     void recordStart();
     void recordStop();
     void printClients();
