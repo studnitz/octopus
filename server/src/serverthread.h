@@ -35,9 +35,13 @@ class ServerThread : public QThread {
  signals:
   void error(QTcpSocket::SocketError socketerror);
   void ready();
+  void newInfo();
  public slots:
   void sendCommand(int value);
   void disconnected();
+ private slots:
+  void getData();
+
 };
 
 #endif  // SERVERTHREAD_H

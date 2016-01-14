@@ -24,12 +24,12 @@ class Client : public QObject {
   QTcpSocket::SocketState getState() const;
 
  private slots:
-   void sendInfo();
+   void sendInfo(QByteArray message);
   /**
    * @brief waitForCommand
    * @description slot started after connection established
   */
-  void waitForCommand();
+  void getCommand();
 
  private:
   bool timesync;

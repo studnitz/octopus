@@ -1,5 +1,4 @@
 #include "server.h"
-
 Server::Server(QObject* parent) : QTcpServer(parent) {
    qDebug() << "Server created";
 
@@ -19,7 +18,8 @@ void Server::startServer() {
 
 void Server::incomingConnection(qintptr socketDescriptor) {
   qDebug() << socketDescriptor;
-  ServerThread* thread = new ServerThread(socketDescriptor, this);
+  ServerThread* t = new ServerThread(socketDescriptor);
+ServerThread* thread = new ServerThread(socketDescriptor, this);
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
   connect(this, &Server::broadcastCommand, thread, &ServerThread::sendCommand);
   connect(thread,SIGNAL(ready()),this,SLOT(getInfo()));
@@ -45,7 +45,7 @@ void Server::getInfo(){
 }
 
 QList<ServerThread*> Server::getClients(){
-    return findChildren<ServerThread*>();
+    //return findChildren<ServerThread*>();
 }
 
 void Server::sendCommand(int command) { emit this->broadcastCommand(command); }

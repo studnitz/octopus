@@ -25,11 +25,10 @@ INCLUDEPATH += \
 
 SOURCES += \
     ../client/src/client.cpp \
-    ../server/server.cpp \
-    ../server/clientconnection.cpp
+    ../server/src/server.cpp \
+
 
 
 HEADERS += \
     ../client/src/client.h \
-    ../server/server.h \
-    ../server/clientconnection.h
+    ../server/src/server.h \

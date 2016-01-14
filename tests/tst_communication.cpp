@@ -2,7 +2,7 @@
 #include <QtTest>
 #include <QCoreApplication>
 #include "client.h"
-#include "../server/server.h"
+#include "server.h"
 #include <QTime>
 #include <QThread>
 

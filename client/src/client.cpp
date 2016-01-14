@@ -7,7 +7,7 @@ Client::Client(QObject *parent) : QObject(parent) {
   } else {
     qDebug() << "Client started";
   }
-  connect(&socket, SIGNAL(readyRead()), this, SLOT(waitForCommand()));
+  connect(&socket, SIGNAL(readyRead()), this, SLOT(getCommand()));
 
   // hostfound() signal connect?
 }
@@ -17,7 +17,18 @@ Client::~Client() {
   socket.close();
 }
 
-void Client::sendInfo() {}
+void Client::sendInfo(QByteArray message) {
+    message.append("0").append("\n");
+    message.append(getMemoryUsage()).append("\n");
+    message.append(getCpuUsage()).append("\n");
+    message.append(getDiskUsage()).append("\n");
+    message.append((int)getFreeMemory()).append("\n");
+    message.append((int)getAllMemory()).append("\n");
+    message.append((int)getFreeDisk()).append("\n");
+    message.append((int)getTotalDisk()).append("\n");
+    socket.write(message);
+    qDebug() << "Info Send";
+}
 
 void Client::start(quint16 port) {
   this->findCamera();
@@ -41,7 +52,7 @@ void Client::start(quint16 port) {
   }
 }
 
-void Client::waitForCommand() {
+void Client::getCommand() {
   QByteArray message;
   message = socket.readAll();
   int command = message.toInt();
@@ -49,44 +60,18 @@ void Client::waitForCommand() {
 
   switch (command) {
     case 0:
-      qDebug() << "sending Info about Memory Usage";
-      message.setNum(getMemoryUsage());
+      sendInfo(message);
       break;
     case 1:
-      qDebug() << "sending Info about CPU Usage";
-      message.setNum(getCpuUsage());
       break;
     case 2:
-      qDebug() << "sending Info about Disk Usage";
-      message.setNum(getDiskUsage());
-      break;
-    case 3:
-      qDebug() << "sending Info about Free Memory";
-      message.setNum((int)getFreeMemory());
-      break;
-    case 4:
-      qDebug() << "sending Info about All Memory";
-      message.setNum((int)getAllMemory());
-      break;
-    case 5:
-      qDebug() << "sending Info about Free Disk";
-      message.setNum((int)getFreeDisk());
-      break;
-    case 6:
-      qDebug() << "sending Info about Total Disk";
-      message.setNum((int)getTotalDisk());
-      break;
-    case 7:
-      break;
-    case 8:
-      break;
-    case 9:
       break;
     default:
-      message.append("command unknown \n");
+      message.append(" command unknown \n");
+      socket.write(message);
       break;
   }
-  socket.write(message);
+
 }
 
 std::string Client::isConnected() { return "yes"; }
