@@ -27,12 +27,14 @@ public:
 signals:
     void getinfo();
 
-private slots:
+public slots:
     void on_recordButton_clicked();
 
     void on_pushButton_2_clicked();
 
     void on_playButton_clicked();
+
+    void continueUpdateClientList();
 
     void on_openFileButton_clicked();
 
