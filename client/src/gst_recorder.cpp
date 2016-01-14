@@ -11,13 +11,13 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
   try {
     QGst::ElementFactoryPtr encoder = QGst::ElementFactory::find("omxh264enc");
     if (!encoder) {
-      // if we don't have omx (usually we are not on a RPI), use x264enc instead
+      // if we don't have omx (when we're not on a RPI), use x264enc instead
       videoBin = QGst::Bin::fromDescription(
-          "v4l2src device=/dev/video1 ! x264enc ! h264parse ! matroskamux");
+          "v4l2src device=/dev/video1 ! x264enc tune=zerolatency "
+          "byte-stream=true "); //! h264parse ! matroskamux");
       qDebug() << "Using x264enc on device /dev/video1";
     } else {
-      videoBin = QGst::Bin::fromDescription(
-          "v4l2src ! omxh264enc ! h264parse ! matroskamux");
+      videoBin = QGst::Bin::fromDescription("v4l2src ! omxh264enc ");
       qDebug() << "Using omxh264enc";
     }
 
@@ -29,8 +29,23 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
   }
 }
 
-void GstRecorder::start() {
+QGst::BinPtr GstRecorder::createVideoMuxBin() {
+  QGst::BinPtr videoMux;
+
+  try {
+    videoMux = QGst::Bin::fromDescription("h264parse ! matroskamux");
+    qDebug() << "Created videoMuxer with h264parse ! matrsokamux";
+
+    return videoMux;
+  } catch (const QGlib::Error &error) {
+    qDebug() << "Failed to created videoMux bin:" << error;
+    return QGst::BinPtr();
+  }
+}
+
+void GstRecorder::recordLocally() {
   QGst::BinPtr videoSrcBin = createVideoSrcBin();
+  QGst::BinPtr videoMuxBin = createVideoMuxBin();
   QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
 
   QString currentTime =
@@ -47,13 +62,64 @@ void GstRecorder::start() {
   }
 
   m_pipeline = QGst::Pipeline::create();
-  m_pipeline->add(videoSrcBin, sink);
+  m_pipeline->add(videoSrcBin, videoMuxBin, sink);
 
-  videoSrcBin->link(sink);
+  videoSrcBin->link(videoMuxBin);
+  videoMuxBin->link(sink);
 
   m_pipeline->bus()->addSignalWatch();
   QGlib::connect(m_pipeline->bus(), "message", this,
                  &GstRecorder::onBusMessage);
+
+  m_pipeline->setState(QGst::StatePlaying);
+}
+
+void GstRecorder::createRtpSink(int port) {
+  QGst::BinPtr videoSrcBin = createVideoSrcBin();
+  QGst::ElementPtr rtpbin = QGst::ElementFactory::make("rtpbin");
+  QGst::ElementPtr h264pay = QGst::ElementFactory::make("rtph264pay");
+
+  if (!videoSrcBin || !rtpbin) {
+    qDebug() << "Error. One or more elements could not be created.";
+    return;
+  }
+
+  m_pipeline = QGst::Pipeline::create();
+  m_pipeline->add(videoSrcBin, h264pay);
+  videoSrcBin->link(h264pay);
+
+  m_pipeline->add(rtpbin);
+  // send_rtp_sink_0 is needed as a parameter for rtpbin for the configuration
+  h264pay->link(rtpbin, "send_rtp_sink_0");
+
+  QGst::ElementPtr RtpUdpSink = QGst::ElementFactory::make("udpsink");
+  RtpUdpSink->setProperty("port", port);        /// TODO: Get port
+  RtpUdpSink->setProperty("host", "127.0.0.1"); /// TODO: Get port
+  if (!RtpUdpSink) {
+    qFatal("Failed to create udpsink. Aborting...");
+  }
+  m_pipeline->add(RtpUdpSink);
+  rtpbin->link("send_rtp_src_0", RtpUdpSink);
+
+  QGst::ElementPtr RtcpUdpSink = QGst::ElementFactory::make("udpsink");
+  RtcpUdpSink->setProperty("port", port + 1);
+  RtcpUdpSink->setProperty("host", "127.0.0.1");
+  RtcpUdpSink->setProperty("sync", false); // needed for real-time
+  RtcpUdpSink->setProperty("async", false);
+  m_pipeline->add(RtcpUdpSink);
+  rtpbin->link("send_rtcp_src_0", RtcpUdpSink);
+
+  QGst::ElementPtr RtcpUdpSrc = QGst::ElementFactory::make("udpsrc");
+  RtcpUdpSrc->setProperty("port", port + 2);
+  m_pipeline->add(RtcpUdpSrc);
+  RtcpUdpSrc->link(rtpbin, "recv_rtcp_sink_0");
+
+  // watch the bus
+  m_pipeline->bus()->addSignalWatch();
+  QGlib::connect(m_pipeline->bus(), "message", this,
+                 &GstRecorder::onBusMessage);
+
+  qDebug() << "Streaming to RTP";
 
   m_pipeline->setState(QGst::StatePlaying);
 }

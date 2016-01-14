@@ -10,7 +10,6 @@ int main(int argc, char *argv[]) {
 
   QGst::init(&argc, &argv);
   GstRecorder r;
-  r.start();
 
   return a.exec();
 }
