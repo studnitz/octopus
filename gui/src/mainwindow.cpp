@@ -84,13 +84,14 @@ void MainWindow::on_pushButton_2_clicked() { printClients(); }
 
 void MainWindow::printClients() {
   /* some magic to check for clients */
+  qDebug()<< "start 1";
   emit this->getinfo();
 
 }
 
 
 void MainWindow::continueUpdateClientList(){
-    qDebug()<<"continue";
+    qDebug()<<"gui:: back in gui 7";
     // Row-Count auf 0 setzen, damit bei mehrmaligem Wiederholen der
     // Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
       ui->tableWidget->setRowCount(0);
