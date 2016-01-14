@@ -12,6 +12,7 @@
 #include <QGst/Event>
 #include <QGst/Message>
 #include <QGst/Bus>
+#include <QHostAddress>
 
 class GstRecorder : public QObject {
   Q_OBJECT
@@ -37,8 +38,9 @@ public:
    * @param port The port on which the UDP Video sink is created. Note that this
    * implicitly creates a RTCP control sink and source, on the ports "port + 1"
    * and "port + 2"
+   * @param host The host on which the sinks are created. Defaults to 127.0.0.1
    */
-  void createRtpSink(int port = 1337);
+  void createRtpSink(quint16 port = 1337, QString address = "127.0.0.1");
 
 private:
   /**

@@ -9,7 +9,6 @@ int main(int argc, char *argv[]) {
   client.start("127.0.0.1", 1234);
 
   QGst::init(&argc, &argv);
-  GstRecorder r;
 
   return a.exec();
 }

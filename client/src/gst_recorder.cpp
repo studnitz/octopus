@@ -74,7 +74,7 @@ void GstRecorder::recordLocally() {
   m_pipeline->setState(QGst::StatePlaying);
 }
 
-void GstRecorder::createRtpSink(int port) {
+void GstRecorder::createRtpSink(quint16 port, QString address) {
   QGst::BinPtr videoSrcBin = createVideoSrcBin();
   QGst::ElementPtr rtpbin = QGst::ElementFactory::make("rtpbin");
   QGst::ElementPtr h264pay = QGst::ElementFactory::make("rtph264pay");
@@ -93,8 +93,8 @@ void GstRecorder::createRtpSink(int port) {
   h264pay->link(rtpbin, "send_rtp_sink_0");
 
   QGst::ElementPtr RtpUdpSink = QGst::ElementFactory::make("udpsink");
-  RtpUdpSink->setProperty("port", port);        /// TODO: Get port
-  RtpUdpSink->setProperty("host", "127.0.0.1"); /// TODO: Get port
+  RtpUdpSink->setProperty("port", (int)port);
+  RtpUdpSink->setProperty("host", address);
   if (!RtpUdpSink) {
     qFatal("Failed to create udpsink. Aborting...");
   }
@@ -103,7 +103,7 @@ void GstRecorder::createRtpSink(int port) {
 
   QGst::ElementPtr RtcpUdpSink = QGst::ElementFactory::make("udpsink");
   RtcpUdpSink->setProperty("port", port + 1);
-  RtcpUdpSink->setProperty("host", "127.0.0.1");
+  RtcpUdpSink->setProperty("host", address);
   RtcpUdpSink->setProperty("sync", false); // needed for real-time
   RtcpUdpSink->setProperty("async", false);
   m_pipeline->add(RtcpUdpSink);
