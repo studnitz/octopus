@@ -35,7 +35,7 @@ class ServerThread : public QThread {
  signals:
   void error(QTcpSocket::SocketError socketerror);
   void ready();
-  void newInfo();
+  void newInfo(int info []);
  public slots:
   void sendCommand(int value);
   void disconnected();

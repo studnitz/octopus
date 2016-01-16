@@ -17,15 +17,17 @@ class Server : public QTcpServer {
   ~Server();
   int getNumClients();
   void startServer();
+  QList<ServerThread*> getClients();
  signals:
   void broadcastCommand(int command);
   void setUpSocket();
  public slots:
   void getInfo();
   void sendCommand(int command);
+  void readInfo(int info []);
 
  protected:
-  QList<ServerThread*> getClients();
+
   void incomingConnection(qintptr socketDescriptor);
 };
 

@@ -13,48 +13,53 @@ void ServerThread::run() {
     emit error(socket->error());
     return;
   }
-
   connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
   connect(socket, SIGNAL(readyRead()), this, SLOT(getData()));
   ClientIP = socket->peerAddress().toString();
-  // We'll have multiple clients, we want to know which is which
-  qDebug() << socketDescriptor << "IP:" << ClientIP << " Client connected";
-  // emit ready();
-  exec();
-}
+  // Filling info with zeros
 
-void ServerThread::getData() {
-  QByteArray message;
-  message = socket->readLine();
-  qDebug() << message;
-  int messageCode = message.toInt();
-  switch (messageCode) {
-    case 0:
-      qDebug() << "Reading info";
-      // READING 7 INFOS from CLIENT MESSAGE
-      for (int i = 0; i < 7; ++i) {
-        message = socket->readLine();
-        ClientInfo[i]=message.toInt();
-      }
-      emit newInfo();;
 
-      break;
-    default:
-      break;
+    // We'll have multiple clients, we want to know which is which
+    qDebug() << socketDescriptor << "IP:" << ClientIP << " Client connected";
+     emit ready();
+    exec();
   }
-}
 
-void ServerThread::sendCommand(int value) {
-  qDebug() << "send command";
-  QByteArray message;
-  message.setNum(value);
-  qDebug() << message;
-  socket->write(message);
-  qDebug() << " command written";
-}
-void ServerThread::disconnected() {
-  qDebug() << socketDescriptor << " Disconnected";
+  void ServerThread::getData() {
+    QByteArray message;
+    message = socket->readLine();
+    qDebug() << message;
+    int messageCode = message.toInt();
+    switch (messageCode) {
+      case 0:
+        qDebug() << "Reading info";
+        // READING 7 INFOS from CLIENT MESSAGE
+        for (int i = 0; i < 7; ++i) {
+           char* line;
+          socket->readLineData(line);
+          QString a =QString::fromUtf8(message.data());
+          qDebug() << line;
+        ClientInfo[i]=message.toInt();
+        }
+        emit newInfo(this->ClientInfo);;
+        break;
+      default:
+        break;
+    }
+  }
 
-  socket->deleteLater();
-  exit(0);
-}
+  void ServerThread::sendCommand(int value) {
+    qDebug() << "send command";
+    QByteArray message;
+    message.setNum(value);
+    qDebug() << message;
+    socket->write(message);
+    qDebug() << " command written";
+  }
+
+  void ServerThread::disconnected() {
+    qDebug() << socketDescriptor << " Disconnected";
+
+    socket->deleteLater();
+    exit(0);
+  }

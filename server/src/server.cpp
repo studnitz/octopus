@@ -18,8 +18,7 @@ void Server::startServer() {
 
 void Server::incomingConnection(qintptr socketDescriptor) {
   qDebug() << socketDescriptor;
-  ServerThread* t = new ServerThread(socketDescriptor);
-ServerThread* thread = new ServerThread(socketDescriptor, this);
+  ServerThread* thread = new ServerThread(socketDescriptor, this);
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
   connect(this, &Server::broadcastCommand, thread, &ServerThread::sendCommand);
   connect(thread,SIGNAL(ready()),this,SLOT(getInfo()));
@@ -29,23 +28,26 @@ ServerThread* thread = new ServerThread(socketDescriptor, this);
 }
 
 void Server::getInfo(){
-    if(getNumClients()!=0){
-    for (int i = 0; i < 6; ++i) {
-        this->broadcastCommand(i);
-    }
-    QList<ServerThread*> clients = getClients();
-    QListIterator<ServerThread*> it(clients);
-    while (it.hasNext()){
-        for (int i = 0; i < 6; ++i) {
-            qDebug() << it.peekNext()->ClientInfo[i];
-        }
 
-    }
-    }
+        this->broadcastCommand(0);
+
+
+
 }
 
+ void Server::readInfo(int info []){
+         QList<ServerThread*> clients = getClients();
+         QListIterator<ServerThread*> it(clients);
+         while (it.hasNext()){
+             for (int i = 0; i < 6; ++i) {
+                 qDebug() << it.peekNext()->ClientInfo[i];
+             }
+     }
+
+ }
+
 QList<ServerThread*> Server::getClients(){
-    //return findChildren<ServerThread*>();
+    return findChildren<ServerThread*>();
 }
 
 void Server::sendCommand(int command) { emit this->broadcastCommand(command); }

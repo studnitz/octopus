@@ -2,7 +2,7 @@
 #include <QHostAddress>
 
 Client::Client(QObject *parent) : QObject(parent) {
-  if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(sendInfo()))) {
+  if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
     qDebug() << "Could not start client";
   } else {
     qDebug() << "Client started";
@@ -27,7 +27,11 @@ void Client::sendInfo(QByteArray message) {
     message.append((int)getFreeDisk()).append("\n");
     message.append((int)getTotalDisk()).append("\n");
     socket.write(message);
+    QString a;
+    a.fromUtf8(message);
     qDebug() << "Info Send";
+    qDebug() << a;
+    qDebug() << socket.write(message);
 }
 
 void Client::start(quint16 port) {
@@ -38,9 +42,9 @@ void Client::start(quint16 port) {
   this->syncTime();
 
   if (timesync) {
-    qDebug() << "Time synced";
+  //  qDebug() << "Time synced";
   } else {
-    qDebug() << "Time Server not avaivble";
+   // qDebug() << "Time Server not avaivble";
   }
 
   socket.connectToHost(addr, port);
@@ -96,7 +100,7 @@ void Client::syncTime() {
 }
 
 void Client::findCamera() {
-  qDebug() << "Camera found";
+  //qDebug() << "Camera found";
   return;
 };
 
