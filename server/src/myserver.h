@@ -10,18 +10,17 @@
 
 class MyServer : public QTcpServer
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit MyServer(QObject *parent = 0);
-    void startServer();
-    QList<QTcpSocket*> connections;
+  explicit MyServer(QObject* parent = 0);
+  void startServer();
+  QList<QTcpSocket*> connections;
 signals:
 
 public slots:
 
 protected:
-    void incomingConnection(qintptr socketDescriptor);
-
+  void incomingConnection(qintptr socketDescriptor);
 };
 
 #endif // MYSERVER_H

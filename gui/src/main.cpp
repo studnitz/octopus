@@ -5,15 +5,16 @@
 
 MyServer server;
 
-int main(int argc, char *argv[])
+int
+main(int argc, char* argv[])
 {
-    QApplication a(argc, argv);
+  QApplication a(argc, argv);
 
-    server.startServer();
+  server.startServer();
 
-    MainWindow w;
-    w.server = &server;
-    w.show();
+  MainWindow w;
+  w.server = &server;
+  w.show();
 
-    return a.exec();
+  return a.exec();
 }

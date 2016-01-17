@@ -49,8 +49,9 @@ void MyThread::readyRead()
 
     if(Data == "Ready for Command\n"){
         socket->write("COMMAND!!!");
+        qDebug()<< "Ready for Command :)";
         int i = 0;
-        for(i; i<this->parent()->findChildren<MyThread*>().size(); i++ ){
+        for(; i<this->parent()->findChildren<MyThread*>().size(); i++ ){
             qDebug() << this->parent()->findChildren<MyThread*>().at(i)->socketDescriptor << "       "<< this->parent()->findChildren<MyThread*>().at(i)->socket->peerAddress().toString();
         }
     }else{

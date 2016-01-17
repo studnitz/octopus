@@ -7,20 +7,30 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QString>
+#include <iostream>
 
 class Client : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit Client(QObject *parent = 0);
-    ~Client();
-    void start(QString address, quint16 port);
+  explicit Client(QObject* parent = 0);
+  ~Client();
+  void start(QString address, quint16 port);
 signals:
 
 public slots:
-    void startTransfer();
+  void startTransfer();
+  double getCpuUsage();
+  long getFreeMemory();
+  long getAllMemory();
+  float getMemoryUsage();
+  double getDiskUsage();
+  ulong getFreeDisk();
+  ulong getTotalDisk();
+  std::string isConnected();
+
 private:
-   QTcpSocket client;
+  QTcpSocket client;
 };
 
 #endif // TCPCLIENT_H
