@@ -30,10 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     playlist = new QMediaPlaylist(); // --- Falls Playback irgendwann nicht mehr funktioniert, hier als Parent den Player hinzufügen bzw. player.at(0)
 
-    // Videoplayer Slots verbinden
-    //connect(videoPlayer, SIGNAL(playerClicked(int)), this, SLOT(videoPlayerClicked(int)));
-
-
     /* --- SET-UP Playlist --- */
     playlistModel = new PlaylistModel(this);
     ui->listView->setModel(playlistModel);
@@ -197,7 +193,7 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 
 void MainWindow::videoPlayerClicked(int index)
 {
-    /*
+
     // Dialogfenster erstellen
     QDialog *optDialog = new QDialog(this);
     optDialog->resize(500,150);
@@ -227,19 +223,19 @@ void MainWindow::videoPlayerClicked(int index)
     posYInput->move(120,35);
     widthInput->move(10,90);
     heightInput->move(120,90);
-    posXInput->setValue(videoPlayer->x());
-    posYInput->setValue(videoPlayer->y());
-    widthInput->setValue(videoPlayer->width());
-    heightInput->setValue(videoPlayer->height());
+    posXInput->setValue(videoPlayer->at(index)->x());
+    posYInput->setValue(videoPlayer->at(index)->y());
+    widthInput->setValue(videoPlayer->at(index)->width());
+    heightInput->setValue(videoPlayer->at(index)->height());
 
 
     // Save-Button erstellen und connecten
     QPushButton *saveButton = new QPushButton("Speichern", optDialog);
     saveButton->move(400,10);
     connect(saveButton, &QPushButton::pressed,
-            [this, &posXInput, &posYInput, &widthInput, &heightInput]() {
-                videoPlayer->move(posXInput->value(), posYInput->value());
-                videoPlayer->resize(widthInput->value(), heightInput->value());
+            [this, index, &posXInput, &posYInput, &widthInput, &heightInput]() {
+                videoPlayer->at(index)->move(posXInput->value(), posYInput->value());
+                videoPlayer->at(index)->resize(widthInput->value(), heightInput->value());
     });
 
     optDialog->exec();
@@ -247,7 +243,17 @@ void MainWindow::videoPlayerClicked(int index)
     // Connection trennen und Dialog zerstören
     saveButton->disconnect();
     optDialog->deleteLater();
-    */
+}
+
+void MainWindow::videoPlayerDeleted(int index) {
+    videoPlayer->at(index)->disconnect();
+    delete videoPlayer->at(index);
+    delete player->at(index);
+    for (int i = index; i < videoPlayer->size(); i++) {
+        videoPlayer->at(i)->index -= 1;
+      }
+    player->removeAt(index);
+    videoPlayer->removeAt(index);
 }
 
 void MainWindow::on_addPlayerButton_clicked()
@@ -261,22 +267,16 @@ void MainWindow::on_addPlayerButton_clicked()
     int newHeight = 180;
     // -------------------------------
 
-    int index = player->size();
+    int newX, newY;
+    int index = findFreePlayerId();
 
-    player->append(new QMediaPlayer(this));
-    videoPlayer->append(new VideoPlayer(ui->tab_2, index));
-
-    // Beim ersten Aufruf der Prozedur
-    if (videoPlayer->size() == 1) {
-
-        player->at(0)->setVideoOutput(videoPlayer->at(0));
-        videoPlayer->at(0)->move(initialMarginX, initialMarginY);
-        videoPlayer->at(0)->resize(newWidth, newHeight);
-        videoPlayer->at(0)->show();
-    // Sonst
+    // Berechnung der neuen Position
+    if (index == 0) {
+        newX = initialMarginX;
+        newY = initialMarginY;
     } else {
-        int newX = videoPlayer->at(index-1)->x();
-        int newY = videoPlayer->at(index-1)->y();
+        newX = videoPlayer->at(index-1)->x();
+        newY = videoPlayer->at(index-1)->y();
 
         if (newY + videoPlayer->at(index-1)->height() + newHeight > ui->tabWidget->height()) {
             newY = initialMarginY;
@@ -284,10 +284,25 @@ void MainWindow::on_addPlayerButton_clicked()
         } else {
             newY += marginY + newHeight;
         }
-
-        player->at(index)->setVideoOutput(videoPlayer->at(index));
-        videoPlayer->at(index)->move(newX, newY);
-        videoPlayer->at(index)->resize(newWidth, newHeight);
-        videoPlayer->at(index)->show();
     }
+
+    player->append(new QMediaPlayer(this));
+    videoPlayer->append(new VideoPlayer(ui->tab_2, index));
+
+    // Anwenden der neuen Position
+    player->at(index)->setVideoOutput(videoPlayer->at(index));
+    videoPlayer->at(index)->move(newX, newY);
+    videoPlayer->at(index)->resize(newWidth, newHeight);
+    videoPlayer->at(index)->show();
+
+    // Videoplayer onClicked-Slots verbinden
+    connect(videoPlayer->at(index), &VideoPlayer::playerClicked, this, &MainWindow::videoPlayerClicked);
+    connect(videoPlayer->at(index), &VideoPlayer::playerDelete, this, &MainWindow::videoPlayerDeleted);
+}
+
+int MainWindow::findFreePlayerId() {
+  if (videoPlayer->empty())
+    return 0;
+
+  return videoPlayer->last()->index + 1;
 }

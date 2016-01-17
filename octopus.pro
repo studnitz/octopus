@@ -4,4 +4,5 @@ SUBDIRS += \
     client \
     server \
     gui \
-    Client-Befehl-Tests
+    Client-Befehl-Tests \
+    GUI_tests

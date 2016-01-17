@@ -14,49 +14,48 @@
 
 namespace Ui {
 class MainWindow;
-
 }
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+  Q_OBJECT
 
-public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    MyServer* server;
+ public:
+  explicit MainWindow(QWidget *parent = 0);
+  ~MainWindow();
+  MyServer *server;
 
-private slots:
-    void on_recordButton_clicked();
+ private slots:
+  void on_recordButton_clicked();
 
-    void on_pushButton_2_clicked();
+  void on_pushButton_2_clicked();
 
-    void on_playButton_clicked();
+  void on_playButton_clicked();
 
-    void on_openFileButton_clicked();
+  void on_openFileButton_clicked();
 
-    void on_stopButton_clicked();
+  void on_stopButton_clicked();
 
-    void on_listView_doubleClicked(const QModelIndex &index);
+  void on_listView_doubleClicked(const QModelIndex &index);
 
-    void videoPlayerClicked(int index);
+  void videoPlayerClicked(int index);
+  void videoPlayerDeleted(int index);
 
-    void on_addPlayerButton_clicked();
+  void on_addPlayerButton_clicked();
 
-private:
-    Ui::MainWindow *ui;
-    QList<QString> *clients;    // TODO: Kann weg?
+ private:
+  Ui::MainWindow *ui;
+  QList<QString> *clients;  // TODO: Kann weg?
 
-    QList<QMediaPlayer*> *player;
-    QList<VideoPlayer*> *videoPlayer;
-    PlaylistModel *playlistModel;
-    QMediaPlaylist *playlist;
+  QList<QMediaPlayer *> *player;
+  QList<VideoPlayer *> *videoPlayer;
+  PlaylistModel *playlistModel;
+  QMediaPlaylist *playlist;
 
-
-    void recordStart();
-    void recordStop();
-    void printClients();
-    void log(QString msg);
+  void recordStart();
+  void recordStop();
+  void printClients();
+  void log(QString msg);
+  int findFreePlayerId();
 };
 
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H
