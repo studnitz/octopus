@@ -1,9 +1,9 @@
 #include "mainwindow.h"
-#include "../server/src/myserver.h"
-#include "../server/src/mythread.h"
+#include "../server/src/server.h"
+#include "../server/src/serverthread.h"
 #include <QApplication>
 
-MyServer server;
+Server server;
 
 int
 main(int argc, char* argv[])

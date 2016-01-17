@@ -1,36 +1,108 @@
 #include "client.h"
-#include <QHostAddress>
 
 Client::Client(QObject *parent) : QObject(parent) {
-  if (!this->connect(&client, SIGNAL(connected()), this,
-                     SLOT(startTransfer()))) {
+  if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
     qDebug() << "Could not start client";
   } else {
     qDebug() << "Client started";
   }
+  connect(&socket, SIGNAL(readyRead()), this, SLOT(getCommand()));
+
+  // hostfound() signal connect?
 }
 
-Client::~Client() { client.close(); }
-
-/**
- * @brief Client::start starts a connection
- * @param address IP-Address of the server
- * @param port  Port of the server
- */
-void Client::start(QString address, quint16 port) {
-  QHostAddress addr(address);
-  client.connectToHost(addr, port);
+Client::~Client() {
+  qDebug() << "Destroy Client";
+  socket.close();
 }
 
-/**
- * @brief Client::startTransfer sends a message to the server
- */
-void Client::startTransfer() { client.write("Ready for Command\n", 18); }
+void Client::sendInfo() {
+  QByteArray message;
+  message.setNum(0).append("\n");
+  socket.write(message);
+  message.setNum((float)getMemoryUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getCpuUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getDiskUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getFreeMemory()).append("\n");
+  socket.write(message);
+  message.setNum((float)getAllMemory()).append("\n");
+  socket.write(message);
+  message.setNum((float)getFreeDisk()).append("\n");
+  socket.write(message);
+  message.setNum((float)getTotalDisk()).append("\n");
+  socket.write(message);
+}
 
-/**
- * @brief Client::getCpuUsage
- * @return current CPU-Usage in percent
- */
+void Client::start(quint16 port) {
+  this->findCamera();
+
+  QHostAddress addr(this->findServer());
+
+  this->syncTime();
+
+  if (timesync) {
+    //  qDebug() << "Time synced";
+  } else {
+    // qDebug() << "Time Server not avaivble";
+  }
+
+  socket.connectToHost(addr, port);
+
+  if (socket.waitForConnected()) {  // Timeout included in waitfor
+    qDebug() << "Client connected";
+  } else {
+    qDebug() << "Client not connected";
+  }
+}
+
+void Client::getCommand() {
+  QByteArray message;
+  message = socket.readAll();
+  int command = message.toInt();
+  switch (command) {
+    case 0:
+      sendInfo();
+      break;
+    case 1:
+      break;
+    case 2:
+      break;
+    default:
+      message.append(" command unknown \n");
+      socket.write(message);
+      break;
+  }
+}
+
+std::string Client::isConnected() { return "yes"; }
+
+QTcpSocket::SocketState Client::getState() const { return socket.state(); }
+
+QString Client::findServer() {
+  /*
+   * Find SERVER IP = DHCP
+   * NEED TIMEOUT INCLUDED
+   *
+   */
+  QString address = "127.0.0.1";  // HARDCODED
+
+  return address;
+}
+
+void Client::syncTime() {
+  // HARDCODED
+  timesync = true;
+  return;
+}
+
+void Client::findCamera() {
+  // qDebug() << "Camera found";
+  return;
+};
+
 double Client::getCpuUsage() {
   double percent;
   FILE *file;
@@ -50,10 +122,6 @@ double Client::getCpuUsage() {
   return percent;
 }
 
-/**
- * @brief Client::getAllMemory
- * @return total memory in KB
- */
 long Client::getAllMemory() {
   QFile file("/proc/meminfo");
   if (!file.open(QIODevice::ReadOnly)) {
@@ -70,10 +138,6 @@ long Client::getAllMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-/**
- * @brief Client::getFreeMemory
- * @return free memory in KB
- */
 long Client::getFreeMemory() {
   QFile file("/proc/meminfo");
   if (!file.open(QIODevice::ReadOnly)) {
@@ -91,19 +155,11 @@ long Client::getFreeMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-/**
- * @brief Client::getFreeDisk
- * @return free disk space in KB
- */
 ulong Client::getFreeDisk() {
   QStorageInfo info("/");
   return info.bytesAvailable() / 1024;
 }
 
-/**
- * @brief Client::getDiskUsage
- * @return disk usage in percent
- */
 double Client::getDiskUsage() {
   return 100 - (getFreeDisk() / (float)getTotalDisk()) * 100;
 }
@@ -111,20 +167,10 @@ double Client::getDiskUsage() {
 float Client::getMemoryUsage() {
   long free_mem = getFreeMemory();
   long total_mem = getAllMemory();
-  return 100 - (free_mem / ((float)total_mem)) * 100;  // Percentage used
+  return 100 - (free_mem / ((float)total_mem)) * 100;
 }
 
-/**
- * @brief Client::getTotalDisk
- * @return total disk space in KB
- */
 ulong Client::getTotalDisk() {
   QStorageInfo info("/");
   return info.bytesTotal() / 1024;
 }
-
-/**
- * @brief Client::isConnected is used to test the connection
- * @return "yes"
- */
-std::string Client::isConnected() { return "yes"; }

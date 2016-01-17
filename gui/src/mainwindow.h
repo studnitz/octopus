@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../server/src/myserver.h"
-#include "../server/src/mythread.h"
+#include "../server/src/server.h"
+#include "../server/src/serverthread.h"
 #include <QHostInfo>
 
 // Videoplayer
@@ -14,7 +14,6 @@
 
 namespace Ui {
 class MainWindow;
-
 }
 
 class MainWindow : public QMainWindow
@@ -24,7 +23,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    MyServer* server;
+    Server* server;
 
 private slots:
     void on_recordButton_clicked();
