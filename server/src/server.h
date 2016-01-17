@@ -10,7 +10,7 @@ class Server : public QTcpServer {
   Q_OBJECT
 
  public:
-  explicit Server(QObject *parent = 0);
+  Server(QObject *parent = 0);
   ~Server();
   /**
  * @brief getNumClients
@@ -18,10 +18,10 @@ class Server : public QTcpServer {
  */
   int getNumClients();
   /**
-   * @brief startServer
-   * starts Server
+   * @brief startServer starts Server
+   * @param port default 1234
    */
-  void startServer();
+  void startServer(int port = 1234);
   /**
    * @brief getClients
    * @return List of ServerThreads which are equal to the connected Clients
@@ -30,9 +30,8 @@ class Server : public QTcpServer {
 
 signals:
   /**
-   * @brief broadcastCommand
+   * @brief broadcastCommand sends command to all connected Clients
    * @param command command value
-   * sends command to all connected Clients
    */
   void broadcastCommand(int command);
 

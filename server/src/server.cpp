@@ -5,9 +5,7 @@ Server::Server(QObject* parent) : QTcpServer(parent) {
 
 Server::~Server() { qDebug() << "Destroy Server"; }
 
-void Server::startServer() {
-  int port = 1234;
-
+void Server::startServer(int port) {
   if (!this->listen(QHostAddress::LocalHost, port)) {
     qDebug() << "Could not start server";
   } else {
@@ -32,8 +30,9 @@ void Server::readInfo() {
   QList<ServerThread*> clients = getClients();
   QListIterator<ServerThread*> it(clients);
   while (it.hasNext()) {
-    for (int i = 0; i < 6; ++i) {
-      qDebug() << it.peekNext()->ClientInfo[i];
+    QVectorIterator<float> cIt(it.next()->ClientInfo);
+    while (cIt.hasNext()) {
+      qDebug() << cIt.next();
     }
   }
 }
