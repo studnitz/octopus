@@ -16,7 +16,17 @@ class Client : public QObject {
  *
  * IP is found by found Server
  */
-  void start(quint16 port);
+  void start(quint16 port = 1234);
+
+  /**
+   * @brief findServer finds local Server
+   * @return ServerIP default localhost or DHCP at eth0
+   */
+  QHostAddress findServer();
+  /**
+   * @brief Client::getCpuUsage
+   * @return current CPU-Usage in percent
+   */
   double getCpuUsage();
 
   /**
@@ -86,12 +96,7 @@ signals:
    * Client Socket
    */
   QTcpSocket socket;
-  /**
-   * @brief findServer
-   * @return ServerIP
-   * DUMMY
-   */
-  QString findServer();
+
   /**
    * @brief findCamera
    * DUMMY
@@ -108,10 +113,6 @@ signals:
    * @return "yes"
    */
   std::string isConnected();
-  /**
-   * @brief Client::getCpuUsage
-   * @return current CPU-Usage in percent
-   */
 };
 
 #endif  // TCPCLIENT_H

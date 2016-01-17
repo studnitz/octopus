@@ -12,9 +12,10 @@ class communication : public QObject {
  private Q_SLOTS:
   void initTestCase();
   void cleanupTestCase();
-  void testCase1();
-  void testCase2();
-  void testCase3();
+  void OneClientConnected();
+  void TwoClientConnected();
+  void ServerGetInfo();
+  void FindServer();
 };
 
 communication::communication() {}
@@ -26,12 +27,12 @@ void communication::cleanupTestCase() {}
 /*
  * 1 Client connect and stay connected
  */
-void communication::testCase1() {
+void communication::OneClientConnected() {
   Server server;
   server.startServer();
 
   Client client1;
-  client1.start(1234);
+  client1.start();
   while (server.getNumClients() == 0) {
     QTest::qWait(200);
   }
@@ -41,56 +42,49 @@ void communication::testCase1() {
 /*
  * 2 Clients connect and stay connected
  */
-void communication::testCase2() {
+void communication::TwoClientConnected() {
   Server server;
   server.startServer();
   Client client1;
-  client1.start(1234);
+  client1.start();
   while (server.getNumClients() == 0) {
     QTest::qWait(200);
   }
   QVERIFY(QAbstractSocket::ConnectedState == client1.getState());
   QVERIFY(server.getNumClients() == 1);
   Client client2;
-  client2.start(1234);
+  client2.start();
   while (server.getNumClients() == 1) {
     QTest::qWait(200);
   }
   QVERIFY(QAbstractSocket::ConnectedState == client2.getState());
   QVERIFY(QAbstractSocket::ConnectedState == client1.getState());
   QVERIFY(server.getNumClients() == 2);
-
-  QList<ServerThread*> clients = server.getClients();
-
-  while (clients.first()->ClientInfo[0] == 0) {
-    QTest::qWait(200);
-  }
 }
 
-void communication::testCase3() {
+void communication::ServerGetInfo() {
   Server server;
+  Client client1, client2;
   server.startServer();
-  Client client1;
-  client1.start(1234);
-  while (server.getNumClients() == 0) {
-    QTest::qWait(200);
-  }
-  Client client2;
-  client2.start(1234);
-  while (server.getNumClients() == 1) {
+  client1.start();
+  client2.start();
+  while (server.getNumClients() != 2) {
     QTest::qWait(200);
   }
   QList<ServerThread*> clients = server.getClients();
-
   while (clients.first()->ClientInfo[0] == 0) {
     QTest::qWait(200);
   }
   while (clients.at(1)->ClientInfo[0] == 0) {
     QTest::qWait(200);
   }
-
   QVERIFY(clients.at(0)->ClientInfo[0] != 0);
   QVERIFY(clients.at(1)->ClientInfo[0] != 0);
+}
+
+void communication::FindServer(){
+    Client client;
+    QVERIFY(client.findServer()==QHostAddress("127.0.0.1"));
 }
 
 QTEST_MAIN(communication)

@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QTcpSocket>
 #include <QTcpServer>
+#include <QVector>
 
 class ServerThread : public QThread {
   Q_OBJECT
@@ -40,7 +41,7 @@ class ServerThread : public QThread {
    * 6 total disk
    *
    */
-  float ClientInfo[10];
+  QVector<float> ClientInfo;
   /**
    * @brief socket
    * socket connected to client

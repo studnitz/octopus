@@ -17,6 +17,8 @@ void ServerThread::run() {
   connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
   connect(socket, SIGNAL(readyRead()), this, SLOT(getData()));
   ClientIP = socket->peerAddress().toString();
+  // Actually 7 Informations are saved
+  ClientInfo.fill(0, 7);
 
   // We'll have multiple clients, we want to know which is which
   qDebug() << socketDescriptor << "IP:" << ClientIP << " Client connected";
@@ -27,15 +29,16 @@ void ServerThread::run() {
 }
 
 void ServerThread::getData() {
+  QMutableVectorIterator<float> it(ClientInfo);
   QString data =
       QString(socket->readLine().replace("\n", "").replace("\"", ""));
   int messageCode = data.toInt();
   switch (messageCode) {
     case 0:
-      // READING 7 INFOS from CLIENT MESSAGE
-      for (int i = 0; i < 7; ++i) {
+      while (it.hasNext() && socket->canReadLine()) {
         data = QString(socket->readLine().replace("\n", "").replace("\"", ""));
-        ClientInfo[i] = data.toFloat();
+        it.next();
+        it.setValue(data.toFloat());
       }
       emit newInfo();
       break;
@@ -45,12 +48,9 @@ void ServerThread::getData() {
 }
 
 void ServerThread::sendCommand(int value) {
-  // qDebug() << "send command";
   QByteArray message;
   message.setNum(value);
-  // qDebug() << message;
   socket->write(message);
-  // qDebug() << " command written";
 }
 
 void ServerThread::disconnected() {
