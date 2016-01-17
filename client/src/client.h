@@ -24,14 +24,14 @@ class Client : public QObject {
   QTcpSocket::SocketState getState() const;
 
  private slots:
-   void sendInfo();
+  void sendInfo();
   /**
    * @brief waitForCommand
    * @description slot started after connection established
   */
   void waitForCommand();
 
- private:
+ public:
   bool timesync;
   short numCamera;
 
@@ -55,13 +55,13 @@ class Client : public QObject {
    * @brief Client::getFreeMemory
    * @return free memory in KB
    */
-  long getFreeMemory();
+  int getFreeMemory();
 
   /**
     * @brief Client::getAllMemory
     * @return total memory in KB
     */
-  long getAllMemory();
+  int getAllMemory();
   /**
    * @brief getMemoryUsage
    * @return memory usage in percent
@@ -76,12 +76,12 @@ class Client : public QObject {
    * @brief Client::getFreeDisk
    * @return free disk space in KB
    */
-  ulong getFreeDisk();
+  int getFreeDisk();
   /**
    * @brief Client::getTotalDisk
    * @return total disk space in KB
    */
-  ulong getTotalDisk();
+  int getTotalDisk();
 };
 
 #endif  // TCPCLIENT_H

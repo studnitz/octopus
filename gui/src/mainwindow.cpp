@@ -84,80 +84,80 @@ void MainWindow::on_pushButton_2_clicked() { printClients(); }
 
 void MainWindow::printClients() {
   /* some magic to check for clients */
-  qDebug()<< "start 1";
+  qDebug() << "start 1";
   emit this->getinfo();
-
 }
 
+QColor MainWindow::getColorFromPercent(int percent) {
+  int red = 0;
+  int green = 0;
+  // Zwischen 50 und 100 ist rot immer 255, zwsichen
+  // 0 und 50 steigt rot langsam an
+  red = percent < 50 ? 255 * (2 * percent / 100.0) : 255;
+  // Zwischen 0 und 50 ist gruen immer 255, zwischen 50 und 100 nimmt gruen ab
+  green = percent > 50 ? 255 - (255 * ((2 * percent - 100) / 100.0)) : 255;
 
-void MainWindow::continueUpdateClientList(){
-    qDebug()<<"gui:: back in gui 7";
-    // Row-Count auf 0 setzen, damit bei mehrmaligem Wiederholen der
-    // Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
-      ui->tableWidget->setRowCount(0);
-      // Eine Liste von Clients durchlaufen
-      for (int i = 0; i < server->getClients().size(); i++) {
-        /* In das tableWidget neue tableItems erstellen. Links Clientname.
-     * Rechts Leerer String, der später eingefärbt wird.
-     * WICHTIG: Erhöhen der rowCount!
-     */
-
-        // emit getinfo();
-        ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
-
-        QHostInfo HI = QHostInfo::fromName(
-            server->getClients()
-                .at(i)
-                ->ClientIP);  // Host-Info/-Name. Funktioniert noch
-        // nicht wie es soll.
-        ui->tableWidget->setItem(
-            i, 0, new QTableWidgetItem(
-                      QString::number(i).append(" ").append(HI.hostName())));
-
-
-        int DiskUsage = server->getClients().at(i)->ClientInfo[2];
-        int MemUsage = server->getClients().at(i)->ClientInfo[1];
-        int CPUUsage = server->getClients().at(i)->ClientInfo[0];
-
-        ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
-        ui->tableWidget->item(i, 1)->setToolTip(
-            "Disk Usage " +
-            QString::number(DiskUsage));
-        qDebug() << DiskUsage << "   " << MemUsage << "   " << CPUUsage;
-        if (DiskUsage > 75) {
-          ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("red"));
-        } else if (DiskUsage> 50) {
-          ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("yellow"));
-        } else {
-          ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("green"));
-        }
-
-        ui->tableWidget->setItem(i, 2, new QTableWidgetItem(""));
-        ui->tableWidget->item(i, 2)->setToolTip(
-            "RAM Usage " +
-            QString::number(MemUsage));
-        if (MemUsage > 75) {
-          ui->tableWidget->item(i, 2)->setBackgroundColor(QColor("red"));
-        } else if (MemUsage > 50) {
-          ui->tableWidget->item(i, 2)->setBackgroundColor(QColor("yellow"));
-        } else {
-          ui->tableWidget->item(i, 2)->setBackgroundColor(QColor("green"));
-        }
-
-        ui->tableWidget->setItem(i, 3, new QTableWidgetItem(""));
-        ui->tableWidget->item(i, 3)->setToolTip(
-            "CPU Usage " +
-            QString::number(CPUUsage));
-        if (CPUUsage > 75) {
-          ui->tableWidget->item(i, 3)->setBackgroundColor(QColor("red"));
-        } else if (CPUUsage > 50) {
-          ui->tableWidget->item(i, 3)->setBackgroundColor(QColor("yellow"));
-        } else {
-          ui->tableWidget->item(i, 3)->setBackgroundColor(QColor("green"));
-        }
-      }
+  // QColor aus RGB, A (Helligkeit) ist default 255
+  return QColor(red, green, 0);
 }
 
+void MainWindow::continueUpdateClientList() {
+  qDebug() << "gui:: back in gui 7";
+  // Row-Count auf 0 setzen, damit bei mehrmaligem Wiederholen der
+  // Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
+  ui->tableWidget->setRowCount(0);
+  // Eine Liste von Clients durchlaufen
+  for (int i = 0; i < server->getClients().size(); i++) {
+    /* In das tableWidget neue tableItems erstellen. Links Clientname.
+ * Rechts Leerer String, der später eingefärbt wird.
+ * WICHTIG: Erhöhen der rowCount!
+ */
+
+    // emit getinfo();
+    ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+
+    QHostInfo HI = QHostInfo::fromName(
+        server->getClients()
+            .at(i)
+            ->ClientIP);  // Host-Info/-Name. Funktioniert noch
+    // nicht wie es soll.
+    ui->tableWidget->setItem(
+        i, 0, new QTableWidgetItem(
+                  QString::number(i).append(" ").append(HI.hostName())));
+
+    int DiskUsage = server->getClients().at(i)->ClientInfo[2];
+    int MemUsage = server->getClients().at(i)->ClientInfo[0];
+    int CPUUsage = server->getClients().at(i)->ClientInfo[1];
+
+    ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
+    ui->tableWidget->item(i, 1)
+        ->setToolTip("Disk Usage " + QString::number(DiskUsage));
+    qDebug() << DiskUsage << "   " << MemUsage << "   " << CPUUsage;
+    ui->tableWidget->item(i, 1)
+        ->setBackgroundColor(getColorFromPercent(DiskUsage));
+    ui->tableWidget->item(i, 1)->setFont(QFont("Arial", 8));
+
+    ui->tableWidget->setItem(i, 2, new QTableWidgetItem(""));
+    ui->tableWidget->item(i, 2)
+        ->setToolTip("RAM Usage " + QString::number(MemUsage));
+    ui->tableWidget->item(i, 2)
+        ->setBackgroundColor(getColorFromPercent(MemUsage));
+    ui->tableWidget->item(i, 2)->setFont(QFont("Arial", 8));
+
+    ui->tableWidget->setItem(i, 3, new QTableWidgetItem(""));
+    ui->tableWidget->item(i, 3)
+        ->setToolTip("CPU Usage " + QString::number(CPUUsage));
+    ui->tableWidget->item(i, 3)
+        ->setBackgroundColor(getColorFromPercent(CPUUsage));
+    ui->tableWidget->item(i, 3)->setFont(QFont("Arial", 8));
+
+    if (showPercentage) {
+      ui->tableWidget->item(i, 1)->setText(QString::number(DiskUsage));
+      ui->tableWidget->item(i, 2)->setText(QString::number(MemUsage));
+      ui->tableWidget->item(i, 3)->setText(QString::number(CPUUsage));
+    }
+  }
+}
 
 /**
  *  Pausiert Aufnahme oder spielt sie ab, abhängig von PlayingState.
@@ -226,4 +226,9 @@ void MainWindow::on_stopButton_clicked() {
  */
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index) {
   player->setMedia(playlist->media(index.row()));
+}
+
+void MainWindow::on_pushButton_Percent_clicked() {
+  showPercentage = !showPercentage;
+  continueUpdateClientList();
 }

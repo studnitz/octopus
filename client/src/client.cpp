@@ -50,15 +50,15 @@ void Client::waitForCommand() {
   switch (command) {
     case 0:
       qDebug() << "sending Info about Memory Usage";
-      message.setNum(getMemoryUsage());
+      message.setNum((int)getMemoryUsage());
       break;
     case 1:
       qDebug() << "sending Info about CPU Usage";
-      message.setNum(getCpuUsage());
+      message.setNum((int)getCpuUsage());
       break;
     case 2:
       qDebug() << "sending Info about Disk Usage";
-      message.setNum(getDiskUsage());
+      message.setNum((int)getDiskUsage());
       break;
     case 3:
       qDebug() << "sending Info about Free Memory";
@@ -118,10 +118,10 @@ void Client::findCamera() {
 double Client::getCpuUsage() {
   double percent;
   FILE *file;
-  unsigned long long totalUser, totalUserLow, totalSys, totalIdle, total;
+  unsigned int totalUser, totalUserLow, totalSys, totalIdle, total;
 
   file = fopen("/proc/stat", "r");
-  fscanf(file, "cpu %llu %llu %llu %llu", &totalUser, &totalUserLow, &totalSys,
+  fscanf(file, "cpu %d %d %d %d", &totalUser, &totalUserLow, &totalSys,
          &totalIdle);
   fclose(file);
 
@@ -134,7 +134,7 @@ double Client::getCpuUsage() {
   return percent;
 }
 
-long Client::getAllMemory() {
+int Client::getAllMemory() {
   QFile file("/proc/meminfo");
   if (!file.open(QIODevice::ReadOnly)) {
     qDebug() << file.errorString();
@@ -142,7 +142,6 @@ long Client::getAllMemory() {
 
   QTextStream in(&file);
   QString line = in.readLine();
-
   QRegExp rx("[ ]");
   QStringList list = line.split(rx, QString::SkipEmptyParts);
 
@@ -150,7 +149,7 @@ long Client::getAllMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-long Client::getFreeMemory() {
+int Client::getFreeMemory() {
   QFile file("/proc/meminfo");
   if (!file.open(QIODevice::ReadOnly)) {
     qDebug() << file.errorString();
@@ -159,7 +158,7 @@ long Client::getFreeMemory() {
   QTextStream in(&file);
   QString line = in.readLine();
   line = in.readLine();
-
+  line = in.readLine();
   QRegExp rx("[ ]");
   QStringList list = line.split(rx, QString::SkipEmptyParts);
 
@@ -167,7 +166,7 @@ long Client::getFreeMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-ulong Client::getFreeDisk() {
+int Client::getFreeDisk() {
   QStorageInfo info("/");
   return info.bytesAvailable() / 1024;
 }
@@ -177,12 +176,12 @@ double Client::getDiskUsage() {
 }
 
 float Client::getMemoryUsage() {
-  long free_mem = getFreeMemory();
-  long total_mem = getAllMemory();
+  int free_mem = getFreeMemory();
+  int total_mem = getAllMemory();
   return 100 - (free_mem / ((float)total_mem)) * 100;
 }
 
-ulong Client::getTotalDisk() {
+int Client::getTotalDisk() {
   QStorageInfo info("/");
   return info.bytesTotal() / 1024;
 }
