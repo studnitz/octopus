@@ -1,5 +1,8 @@
 #include "client.h"
 
+#include <QStorageInfo>
+
+
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
     qDebug() << "Could not start client";

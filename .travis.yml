@@ -1,0 +1,19 @@
+language: cpp
+
+sudo: required
+dist: trusty
+
+before_install:
+    - sudo apt-add-repository -y ppa:beineri/opt-qt551-trusty 
+    - sudo apt-get -qq update
+    - sudo apt-get install -y libboost-dev qt55base qt55declarative qt55multimedia libgstreamer1.0-dev libgstreamer-plugins-good1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev
+    - source /opt/qt55/bin/qt55-env.sh
+install:
+    - ./install_gstreamerqt.sh
+    - export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig/:$PKG_CONFIG_PATH"
+    - echo $PKG_CONFIG_PATH
+    - pkg-config --libs Qt5GStreamer-1.0
+script:
+    - qmake -v
+    - qmake octopus.pro
+    - make
