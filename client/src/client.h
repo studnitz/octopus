@@ -2,42 +2,72 @@
 #define TCPCLIENT_H
 
 #include <QObject>
-
 #include <QtNetwork>
 #include <QTcpSocket>
-#include <QDebug>
-#include <QString>
 
 class Client : public QObject {
   Q_OBJECT
  public:
   explicit Client(QObject *parent = 0);
   ~Client();
-  /*
-   * start by given port
-   */
+  /**
+ * @brief start
+ * @param port connect to this port
+ *
+ * IP is found by found Server
+ */
   void start(quint16 port);
- signals:
+signals:
 
  public slots:
-
-  QTcpSocket::SocketState getState() const;
-
- private slots:
-   void sendInfo(QByteArray message);
   /**
-   * @brief waitForCommand
-   * @description slot started after connection established
-  */
+   * @brief getState
+   * @return status of Client Socket
+   */
+  QTcpSocket::SocketState getState() const;
+ private slots:
+  /**
+    * @brief sendInfo
+    * sends Informations to Server
+    */
+  void sendInfo();
+  /**
+   * @brief getCommand
+   * started when ReadyRead is emitted to get new Command
+   */
   void getCommand();
 
  private:
+  /**
+   * @brief timesync
+   * DUMMY
+   */
   bool timesync;
+  /**
+   * @brief numCamera
+   * DUMMY
+   */
   short numCamera;
-
+  /**
+   * @brief socket
+   * Client Socket
+   */
   QTcpSocket socket;
+  /**
+   * @brief findServer
+   * @return ServerIP
+   * DUMMY
+   */
   QString findServer();
+  /**
+   * @brief findCamera
+   * DUMMY
+   */
   void findCamera();
+  /**
+   * @brief syncTime
+   * DUMMY
+   */
   void syncTime();
 
   /**

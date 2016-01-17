@@ -1,5 +1,4 @@
 #include "client.h"
-#include <QHostAddress>
 
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
@@ -17,21 +16,24 @@ Client::~Client() {
   socket.close();
 }
 
-void Client::sendInfo(QByteArray message) {
-    message.append("0").append("\n");
-    message.append(getMemoryUsage()).append("\n");
-    message.append(getCpuUsage()).append("\n");
-    message.append(getDiskUsage()).append("\n");
-    message.append((int)getFreeMemory()).append("\n");
-    message.append((int)getAllMemory()).append("\n");
-    message.append((int)getFreeDisk()).append("\n");
-    message.append((int)getTotalDisk()).append("\n");
-    socket.write(message);
-    QString a;
-    a.fromUtf8(message);
-    qDebug() << "Info Send";
-    qDebug() << a;
-    qDebug() << socket.write(message);
+void Client::sendInfo() {
+  QByteArray message;
+  message.setNum(0).append("\n");
+  socket.write(message);
+  message.setNum((float)getMemoryUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getCpuUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getDiskUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getFreeMemory()).append("\n");
+  socket.write(message);
+  message.setNum((float)getAllMemory()).append("\n");
+  socket.write(message);
+  message.setNum((float)getFreeDisk()).append("\n");
+  socket.write(message);
+  message.setNum((float)getTotalDisk()).append("\n");
+  socket.write(message);
 }
 
 void Client::start(quint16 port) {
@@ -42,9 +44,9 @@ void Client::start(quint16 port) {
   this->syncTime();
 
   if (timesync) {
-  //  qDebug() << "Time synced";
+    //  qDebug() << "Time synced";
   } else {
-   // qDebug() << "Time Server not avaivble";
+    // qDebug() << "Time Server not avaivble";
   }
 
   socket.connectToHost(addr, port);
@@ -60,11 +62,9 @@ void Client::getCommand() {
   QByteArray message;
   message = socket.readAll();
   int command = message.toInt();
-  qDebug() << message << "Command recieved";
-
   switch (command) {
     case 0:
-      sendInfo(message);
+      sendInfo();
       break;
     case 1:
       break;
@@ -75,7 +75,6 @@ void Client::getCommand() {
       socket.write(message);
       break;
   }
-
 }
 
 std::string Client::isConnected() { return "yes"; }
@@ -100,7 +99,7 @@ void Client::syncTime() {
 }
 
 void Client::findCamera() {
-  //qDebug() << "Camera found";
+  // qDebug() << "Camera found";
   return;
 };
 
