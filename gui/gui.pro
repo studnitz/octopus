@@ -1,23 +1,23 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2015-12-03T17:24:53
-#
-#-------------------------------------------------
-
-QT       += core gui
+    QT       += core gui network multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = gui
-TEMPLATE = app
+TARGET =    octopus-gui
+TEMPLATE =  app
 
 
-SOURCES += \
-    src/mainwindow.cpp \
-    src/main.cpp
+SOURCES += src/main.cpp         \
+        src/mainwindow.cpp      \
+        src/playlistmodel.cpp   \
+        src/videoplayer.cpp     \
+    ../server/src/server.cpp  \
+    ../server/src/serverthread.cpp
+HEADERS  += src/mainwindow.h    \
+        src/playlistmodel.h     \
+        src/videoplayer.h       \
+    ../server/src/server.h    \
+    ../server/src/serverthread.h
 
-HEADERS  += src/mainwindow.h
+FORMS    += forms/mainwindow.ui
 
-
-FORMS    += src/mainwindow.ui
-
+CONFIG   += c++11

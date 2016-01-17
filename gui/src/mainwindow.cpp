@@ -82,7 +82,7 @@ void MainWindow::printClients() {
   // Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
   ui->tableWidget->setRowCount(0);
   // Eine Liste von Clients durchlaufen
-  for (int i = 0; i < server->findChildren<MyThread*>().size(); i++) {
+  for (int i = 0; i < server->findChildren<ServerThread*>().size(); i++) {
     /* In das tableWidget neue tableItems erstellen. Links Clientname.
  * Rechts Leerer String, der später eingefärbt wird.
  * WICHTIG: Erhöhen der rowCount!
@@ -90,13 +90,13 @@ void MainWindow::printClients() {
 
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
     int SocketDescriptor =
-        server->findChildren<MyThread*>()
+        server->findChildren<ServerThread*>()
             .at(i)
             ->socketDescriptor;  // Socket-Descriptor, int der
     // die Socket eindeutig
     // identifiziert
     QTcpSocket* socket =
-        server->findChildren<MyThread*>()
+        server->findChildren<ServerThread*>()
             .at(i)
             ->socket;  // Socket-Pointer, verweist auf das Socket-Object
     QHostInfo HI = QHostInfo::fromName(
@@ -110,9 +110,9 @@ void MainWindow::printClients() {
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
 
     // Dummyvergleiche fuer mehr bunte Farben.
-    if (server->findChildren<MyThread*>().at(i)->socketDescriptor > 18) {
+    if (server->findChildren<ServerThread*>().at(i)->socketDescriptor > 18) {
       ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("red"));
-    } else if (server->findChildren<MyThread*>().at(i)->socketDescriptor > 10) {
+    } else if (server->findChildren<ServerThread*>().at(i)->socketDescriptor > 10) {
       ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("yellow"));
     } else {
       ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("green"));
