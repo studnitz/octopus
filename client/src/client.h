@@ -11,7 +11,7 @@ class Client : public QObject {
   explicit Client(QObject *parent = 0);
   ~Client();
   /**
- * @brief start
+ * @brief start starts Client
  * @param port connect to this port
  *
  * IP is found by found Server
@@ -71,7 +71,7 @@ signals:
   void syncTime();
 
   /**
-   * @brief Client::isConnected is used to test the connection
+   * @brief isConnected is used to test the connection
    * @return "yes"
    */
   std::string isConnected();
@@ -82,13 +82,13 @@ signals:
   double getCpuUsage();
 
   /**
-   * @brief Client::getFreeMemory
+   * @brief getFreeMemory
    * @return free memory in KB
    */
   long getFreeMemory();
 
   /**
-    * @brief Client::getAllMemory
+    * @brief getAllMemory
     * @return total memory in KB
     */
   long getAllMemory();
@@ -98,17 +98,17 @@ signals:
    */
   float getMemoryUsage();
   /**
-   * @brief Client::getDiskUsage
+   * @brief getDiskUsage
    * @return disk usage in percent
    */
   double getDiskUsage();
   /**
-   * @brief Client::getFreeDisk
+   * @brief getFreeDisk
    * @return free disk space in KB
    */
   ulong getFreeDisk();
   /**
-   * @brief Client::getTotalDisk
+   * @brief getTotalDisk
    * @return total disk space in KB
    */
   ulong getTotalDisk();

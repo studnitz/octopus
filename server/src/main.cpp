@@ -1,10 +1,25 @@
 #include <QCoreApplication>
+#include "myserver.h"
+#include "mythread.h"
+#include <iostream>
 
-#include "server.h"
 
-int main(int argc, char *argv[]) {
-  QCoreApplication a(argc, argv);
-  Server server;
-  server.startServer();
-  return a.exec();
+MyServer server;
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+    // Make a server and starts it
+
+    server.startServer();
+
+
+
+    return a.exec();
+}
+
+
+QList<MyThread*> client_threads(){
+    return server.findChildren<MyThread*>();
 }
