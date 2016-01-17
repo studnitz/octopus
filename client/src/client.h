@@ -17,6 +17,39 @@ class Client : public QObject {
  * IP is found by found Server
  */
   void start(quint16 port);
+  double getCpuUsage();
+
+  /**
+   * @brief getFreeMemory
+   * @return free memory in KB
+   */
+  long getFreeMemory();
+
+  /**
+    * @brief getAllMemory
+    * @return total memory in KB
+    */
+  long getAllMemory();
+  /**
+   * @brief getMemoryUsage
+   * @return memory usage in percent
+   */
+  float getMemoryUsage();
+  /**
+   * @brief getDiskUsage
+   * @return disk usage in percent
+   */
+  double getDiskUsage();
+  /**
+   * @brief getFreeDisk
+   * @return free disk space in KB
+   */
+  ulong getFreeDisk();
+  /**
+   * @brief getTotalDisk
+   * @return total disk space in KB
+   */
+  ulong getTotalDisk();
 signals:
 
  public slots:
@@ -79,39 +112,6 @@ signals:
    * @brief Client::getCpuUsage
    * @return current CPU-Usage in percent
    */
-  double getCpuUsage();
-
-  /**
-   * @brief getFreeMemory
-   * @return free memory in KB
-   */
-  long getFreeMemory();
-
-  /**
-    * @brief getAllMemory
-    * @return total memory in KB
-    */
-  long getAllMemory();
-  /**
-   * @brief getMemoryUsage
-   * @return memory usage in percent
-   */
-  float getMemoryUsage();
-  /**
-   * @brief getDiskUsage
-   * @return disk usage in percent
-   */
-  double getDiskUsage();
-  /**
-   * @brief getFreeDisk
-   * @return free disk space in KB
-   */
-  ulong getFreeDisk();
-  /**
-   * @brief getTotalDisk
-   * @return total disk space in KB
-   */
-  ulong getTotalDisk();
 };
 
 #endif  // TCPCLIENT_H
