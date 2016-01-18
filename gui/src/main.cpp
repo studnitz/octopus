@@ -1,7 +1,7 @@
 #include "mainwindow.h"
-#include "../server/server.h"
+#include "../server/src/server.h"
+#include "../server/src/serverthread.h"
 #include <QApplication>
-#include <QObject>
 
 Server server;
 
@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
 
   MainWindow w;
   QObject::connect(&w, SIGNAL(getinfo()), &server, SLOT(getInfo()));
-  QObject::connect(&server, SIGNAL(continueGuiUpdate()), &w, SLOT(continueUpdateClientList()));
+  //QObject::connect(&server, SIGNAL(gotInfo()), &w, SLOT(continueUpdateClientList()));
   w.server = &server;
   w.show();
 

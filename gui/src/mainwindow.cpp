@@ -6,8 +6,6 @@
 #include <QMessageBox>
 #include <stdio.h>
 #include <QHostInfo>
-#include <cstdlib>
-#include <ctime>
 
 // Videoplayer
 #include <QtWidgets>
@@ -26,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
-  // Initialisierung der Tabelle
+  // Initalizing the table
   ui->tableWidget->setColumnCount(4);
   ui->tableWidget->setRowCount(1);
   ui->tableWidget->setColumnWidth(0, 149);
@@ -34,6 +32,10 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tableWidget->setColumnWidth(2, 20);
   ui->tableWidget->setColumnWidth(3, 20);
   ui->tableWidget->setShowGrid(false);
+
+  QTimer *timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(continueUpdateClientList()));
+  timer->start(1000);
 
   // Videoplayer-Setup
   player = new QMediaPlayer(this);
@@ -50,11 +52,15 @@ MainWindow::MainWindow(QWidget *parent)
   ui->listView->setModel(playlistModel);
 }
 
-MainWindow::~MainWindow() { delete ui; }
+MainWindow::~MainWindow() {
+  for (int i = 0; i < videoPlayer->size(); i++)
+    videoPlayer->at(i)->disconnect();
+  delete ui;
+}
 
 void MainWindow::on_recordButton_clicked() {
   /*
- * Button ändert die Schrift, wenn man ihn anklickt
+ * Button changes text, when its clicked
  */
   static bool startStopFlag = false;
   if (startStopFlag == false) {
@@ -91,52 +97,49 @@ void MainWindow::printClients() {
 QColor MainWindow::getColorFromPercent(int percent) {
   int red = 0;
   int green = 0;
-  // Zwischen 50 und 100 ist rot immer 255, zwsichen
-  // 0 und 50 steigt rot langsam an
+  // between 50 an 100 red is 255
+  // between 0 an 50 red slowly increases
   red = percent < 50 ? 255 * (2 * percent / 100.0) : 255;
-  // Zwischen 0 und 50 ist gruen immer 255, zwischen 50 und 100 nimmt gruen ab
+  // between 0 and 50 green is 255
+  // between 50 and 100 green slowly decreases
   green = percent > 50 ? 255 - (255 * ((2 * percent - 100) / 100.0)) : 255;
 
-  // QColor aus RGB, A (Helligkeit) ist default 255
+  // QColor from RGB, A (Brightness) is default 255
   return QColor(red, green, 0);
 }
 
 void MainWindow::continueUpdateClientList() {
-  qDebug() << "gui:: back in gui 7";
-  // Row-Count auf 0 setzen, damit bei mehrmaligem Wiederholen der
-  // Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
-  ui->tableWidget->setRowCount(0);
-  // Eine Liste von Clients durchlaufen
-  for (int i = 0; i < server->getClients().size(); i++) {
-    /* In das tableWidget neue tableItems erstellen. Links Clientname.
- * Rechts Leerer String, der später eingefärbt wird.
- * WICHTIG: Erhöhen der rowCount!
- */
+  // emit signal to get new Infos
+  emit this->getinfo();
 
-    // emit getinfo();
+  // Initialize RowCount with 0
+  ui->tableWidget->setRowCount(0);
+
+  // Update each Row/Client. Iterator cant be used here because index is needed
+  for (int i = 0; i < server->getClients().size(); i++) {
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
 
     QHostInfo HI = QHostInfo::fromName(
         server->getClients()
             .at(i)
-            ->ClientIP);  // Host-Info/-Name. Funktioniert noch
-    // nicht wie es soll.
+            ->ClientIP);  // Host-Info/-Name. Not really working as it should
     ui->tableWidget->setItem(
         i, 0, new QTableWidgetItem(
                   QString::number(i).append(" ").append(HI.hostName())));
-
+    // get ClientInfos
     int DiskUsage = server->getClients().at(i)->ClientInfo[2];
     int MemUsage = server->getClients().at(i)->ClientInfo[0];
     int CPUUsage = server->getClients().at(i)->ClientInfo[1];
 
+    // Update 'LED' of DiskUsage
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
     ui->tableWidget->item(i, 1)
         ->setToolTip("Disk Usage " + QString::number(DiskUsage));
-    qDebug() << DiskUsage << "   " << MemUsage << "   " << CPUUsage;
     ui->tableWidget->item(i, 1)
         ->setBackgroundColor(getColorFromPercent(DiskUsage));
     ui->tableWidget->item(i, 1)->setFont(QFont("Arial", 8));
 
+    // Update 'LED' of MemUsage
     ui->tableWidget->setItem(i, 2, new QTableWidgetItem(""));
     ui->tableWidget->item(i, 2)
         ->setToolTip("RAM Usage " + QString::number(MemUsage));
@@ -144,6 +147,7 @@ void MainWindow::continueUpdateClientList() {
         ->setBackgroundColor(getColorFromPercent(MemUsage));
     ui->tableWidget->item(i, 2)->setFont(QFont("Arial", 8));
 
+    // Update 'LED' of CPUUsage
     ui->tableWidget->setItem(i, 3, new QTableWidgetItem(""));
     ui->tableWidget->item(i, 3)
         ->setToolTip("CPU Usage " + QString::number(CPUUsage));
@@ -151,18 +155,30 @@ void MainWindow::continueUpdateClientList() {
         ->setBackgroundColor(getColorFromPercent(CPUUsage));
     ui->tableWidget->item(i, 3)->setFont(QFont("Arial", 8));
 
+    // Adds Usage in Percent to the 'LED'
     if (showPercentage) {
       ui->tableWidget->item(i, 1)->setText(QString::number(DiskUsage));
       ui->tableWidget->item(i, 2)->setText(QString::number(MemUsage));
       ui->tableWidget->item(i, 3)->setText(QString::number(CPUUsage));
+      if (DiskUsage > 70) {
+        ui->tableWidget->item(i, 1)->setTextColor(QColor("white"));
+      } else {
+        ui->tableWidget->item(i, 1)->setTextColor(QColor("black"));
+      }
+      if (MemUsage > 70) {
+        ui->tableWidget->item(i, 2)->setTextColor(QColor("white"));
+      } else {
+        ui->tableWidget->item(i, 2)->setTextColor(QColor("black"));
+      }
+      if (CPUUsage > 70) {
+        ui->tableWidget->item(i, 3)->setTextColor(QColor("white"));
+      } else {
+        ui->tableWidget->item(i, 3)->setTextColor(QColor("black"));
+      }
     }
   }
 }
 
-/**
- *  Pausiert Aufnahme oder spielt sie ab, abhängig von PlayingState.
- *  Verändert außerdem die Button-Beschriftung.
- */
 void MainWindow::on_playButton_clicked() {
   switch (player->state()) {
     case QMediaPlayer::PlayingState:
@@ -180,50 +196,41 @@ void MainWindow::on_playButton_clicked() {
   }
 }
 
-/**
- * Button bietet Funktionalität zum Öffnen von Aufnahmen.
- */
 void MainWindow::on_openFileButton_clicked() {
   // Öffnen der Aufzeichnungen
   QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open movies"),
                                                         QDir::currentPath());
-  // Erste der Aufzeichnung automatisch in Player laden
-  player->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
 
-  // Aufzeichnungen in Playlist laden
-  for (int i = 0; i < fileNames.size(); i++) {
-    playlist->addMedia(QUrl::fromLocalFile(fileNames.at(i)));
-    log(QString("Lade ").append(fileNames.at(i)).append("..."));
+  if (!fileNames.empty()) {
+    // Erste der Aufzeichnung automatisch in Player laden
+    // player->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
+
+    // Aufzeichnungen in Playlist laden
+    for (int i = 0; i < fileNames.size(); i++) {
+      playlist->addMedia(QUrl::fromLocalFile(fileNames.at(i)));
+      log(QString("Lade ").append(fileNames.at(i)).append("..."));
+    }
+    playlist->setCurrentIndex(playlist->mediaCount());
+
+    // PlaylistModel befüllen mit Playlist-Inhalt
+    playlistModel->setPlaylist(playlist);
+
+    // Indexbereich der Liste aktualisieren
+    ui->listView->setCurrentIndex(
+        playlistModel->index(playlist->currentIndex(), 0));
   }
-  playlist->setCurrentIndex(playlist->mediaCount());
-
-  // PlaylistModel befüllen mit Playlist-Inhalt
-  playlistModel->setPlaylist(playlist);
-
-  // Indexbereich der Liste aktualisieren
-  ui->listView->setCurrentIndex(
-      playlistModel->index(playlist->currentIndex(), 0));
 }
 
-/**
- * Hilfsfunktion zum Füllen des Debug-Fensters.
- */
 void MainWindow::log(QString msg) {
   ui->debugTextEdit->setText(
       msg.append("\n").append(ui->debugTextEdit->toPlainText()));
 }
 
-/**
- * Stoppen der aktuellen Aufnahme.
- */
 void MainWindow::on_stopButton_clicked() {
   player->stop();
   log("Stoppe Wiedergabe der Aufnahme");
 }
 
-/**
- * Auswählen der Aufnahme, die abgespielt werden soll.
- */
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index) {
   player->setMedia(playlist->media(index.row()));
 }

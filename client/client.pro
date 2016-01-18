@@ -8,9 +8,11 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += \
+SOURCES += src/main.cpp \
     src/client.cpp \
-    src/main.cpp
 
 HEADERS += \
-    src/client.h
+    src/client.h \
+
+
+CONFIG += link_pkgconfig

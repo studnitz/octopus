@@ -2,8 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../server/server.h"
+#include "../server/src/server.h"
+#include "../server/src/serverthread.h"
 #include <QHostInfo>
+
+// Videoplayer
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include "playlistmodel.h"
+#include "videoplayer.h"
 
 namespace Ui {
 class MainWindow;
@@ -63,6 +70,7 @@ public slots:
      */
     void on_listView_doubleClicked(const QModelIndex &index);
 
+
 private slots:
     /**
      * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
@@ -71,7 +79,14 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QList<QString> *clients;
+    QList<QString> *clients;    // TODO: Kann weg?
+
+    QMediaPlayer *player;
+    QList<VideoPlayer*> *videoPlayer;
+    PlaylistModel *playlistModel;
+    QMediaPlaylist *playlist;
+
+
     void recordStart();
     void recordStop();
     /**

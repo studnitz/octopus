@@ -1,8 +1,6 @@
 #include "server.h"
-
 Server::Server(QObject* parent) : QTcpServer(parent) {
-   qDebug() << "Server created";
-
+  qDebug() << "Server created";
 }
 
 Server::~Server() { qDebug() << "Destroy Server"; }
@@ -22,36 +20,28 @@ void Server::incomingConnection(qintptr socketDescriptor) {
   ServerThread* thread = new ServerThread(socketDescriptor, this);
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
   connect(this, &Server::broadcastCommand, thread, &ServerThread::sendCommand);
-  connect(thread,SIGNAL(ready()),this,SLOT(getInfo()));
+  connect(thread, SIGNAL(ready()), this, SLOT(getInfo()));
+  //connect(thread, SIGNAL(newInfo()), this, SLOT(readInfo()));
   thread->start();
 
   qDebug() << "New Client connected";
 }
 
-void Server::getInfo(){
-    qDebug()<< "server::getinfo 2";
-    if(getNumClients()!=0){
+void Server::getInfo() { this->broadcastCommand(0); }
+
+void Server::readInfo() {
+  QList<ServerThread*> clients = getClients();
+  QListIterator<ServerThread*> it(clients);
+  emit gotInfo();
+  while (it.hasNext()) {
     for (int i = 0; i < 6; ++i) {
-        this->broadcastCommand(i);
+      qDebug() << it.peekNext()->ClientInfo[i];
     }
-    qDebug()<< "server::gotinfo";
-//    QList<ServerThread*> clients = getClients();
-//    QListIterator<ServerThread*> it(clients);
-//    while (it.hasNext()){
-//        for (int i = 0; i < 6; ++i) {
-//            qDebug() << it.peekNext()->ClientInfo[i];
-//        }
-
-//    }
-    }
-    qDebug()<< "server:: tcpbroadcasting/gettinginfo done, back to gui 6";
-    emit this->continueGuiUpdate();
+  }
 }
 
-QList<ServerThread*> Server::getClients(){
-    return findChildren<ServerThread*>();
+QList<ServerThread*> Server::getClients() {
+  return findChildren<ServerThread*>();
 }
-
-void Server::sendCommand(int command) { emit this->broadcastCommand(command); }
 
 int Server::getNumClients() { return getClients().size(); }

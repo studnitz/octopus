@@ -2,22 +2,37 @@
 #include <QHostAddress>
 
 Client::Client(QObject *parent) : QObject(parent) {
-  if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(sendInfo()))) {
+  if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
     qDebug() << "Could not start client";
   } else {
     qDebug() << "Client started";
   }
-  connect(&socket, SIGNAL(readyRead()), this, SLOT(waitForCommand()));
+  connect(&socket, SIGNAL(readyRead()), this, SLOT(getCommand()));
 
   // hostfound() signal connect?
 }
 
-Client::~Client() {
-  qDebug() << "Destroy Client";
-  socket.close();
-}
+Client::~Client() { socket.close(); }
 
-void Client::sendInfo() {}
+void Client::sendInfo() {
+  QByteArray message;
+  message.setNum(0).append("\n");
+  socket.write(message);
+  message.setNum((float)getMemoryUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getCpuUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getDiskUsage()).append("\n");
+  socket.write(message);
+  message.setNum((float)getFreeMemory()).append("\n");
+  socket.write(message);
+  message.setNum((float)getAllMemory()).append("\n");
+  socket.write(message);
+  message.setNum((float)getFreeDisk()).append("\n");
+  socket.write(message);
+  message.setNum((float)getTotalDisk()).append("\n");
+  socket.write(message);
+}
 
 void Client::start(quint16 port) {
   this->findCamera();
@@ -27,9 +42,9 @@ void Client::start(quint16 port) {
   this->syncTime();
 
   if (timesync) {
-    qDebug() << "Time synced";
+    //  qDebug() << "Time synced";
   } else {
-    qDebug() << "Time Server not avaivble";
+    // qDebug() << "Time Server not avaivble";
   }
 
   socket.connectToHost(addr, port);
@@ -41,52 +56,23 @@ void Client::start(quint16 port) {
   }
 }
 
-void Client::waitForCommand() {
+void Client::getCommand() {
   QByteArray message;
   message = socket.readAll();
   int command = message.toInt();
-  qDebug() << message << "Command recieved";
-
   switch (command) {
     case 0:
-      qDebug() << "sending Info about Memory Usage";
-      message.setNum((int)getMemoryUsage());
+      sendInfo();
       break;
     case 1:
-      qDebug() << "sending Info about CPU Usage";
-      message.setNum((int)getCpuUsage());
       break;
     case 2:
-      qDebug() << "sending Info about Disk Usage";
-      message.setNum((int)getDiskUsage());
-      break;
-    case 3:
-      qDebug() << "sending Info about Free Memory";
-      message.setNum((int)getFreeMemory());
-      break;
-    case 4:
-      qDebug() << "sending Info about All Memory";
-      message.setNum((int)getAllMemory());
-      break;
-    case 5:
-      qDebug() << "sending Info about Free Disk";
-      message.setNum((int)getFreeDisk());
-      break;
-    case 6:
-      qDebug() << "sending Info about Total Disk";
-      message.setNum((int)getTotalDisk());
-      break;
-    case 7:
-      break;
-    case 8:
-      break;
-    case 9:
       break;
     default:
-      message.append("command unknown \n");
+      message.append(" command unknown \n");
+      socket.write(message);
       break;
   }
-  socket.write(message);
 }
 
 std::string Client::isConnected() { return "yes"; }
@@ -111,7 +97,7 @@ void Client::syncTime() {
 }
 
 void Client::findCamera() {
-  qDebug() << "Camera found";
+  // qDebug() << "Camera found";
   return;
 };
 
@@ -142,6 +128,7 @@ int Client::getAllMemory() {
 
   QTextStream in(&file);
   QString line = in.readLine();
+
   QRegExp rx("[ ]");
   QStringList list = line.split(rx, QString::SkipEmptyParts);
 
