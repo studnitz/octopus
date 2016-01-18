@@ -1,19 +1,19 @@
 #include <QString>
 #include <QtTest>
 #include <QCoreApplication>
-#include <client.h>
 
-class ClientBefehlTestsTest : public QObject {
+#include "client.h"
+
+class ClientBefehle : public QObject {
   Q_OBJECT
 
  public:
-  ClientBefehlTestsTest();
+  ClientBefehle();
 
  private Q_SLOTS:
   void initTestCase();
   void cleanupTestCase();
-  void testCase1_data();
-  void testCase1();
+
   void DiskUsageCorrectness();
   void DiskUsageBorders();
   void MemUsageCorrectness();
@@ -21,15 +21,13 @@ class ClientBefehlTestsTest : public QObject {
   void CPUUsageBorders();
 };
 
-ClientBefehlTestsTest::ClientBefehlTestsTest() {
-  DiskUsageCorrectness();
-  DiskUsageBorders();
-  MemUsageCorrectness();
-  MemUsageBorders();
-  CPUUsageBorders();
-}
+ClientBefehle::ClientBefehle() {}
 
-void ClientBefehlTestsTest::DiskUsageCorrectness() {
+void ClientBefehle::initTestCase() {}
+
+void ClientBefehle::cleanupTestCase() {}
+
+void ClientBefehle::DiskUsageCorrectness() {
   Client* client = new Client();
   long Free = client->getFreeDisk();
   long Total = client->getTotalDisk();
@@ -38,12 +36,12 @@ void ClientBefehlTestsTest::DiskUsageCorrectness() {
           Usage >= client->getDiskUsage() - 1);
 }
 
-void ClientBefehlTestsTest::DiskUsageBorders() {
+void ClientBefehle::DiskUsageBorders() {
   Client* client = new Client();
   QVERIFY(client->getDiskUsage() > 0 && client->getDiskUsage() < 100);
 }
 
-void ClientBefehlTestsTest::MemUsageCorrectness() {
+void ClientBefehle::MemUsageCorrectness() {
   Client* client = new Client();
   long freeMem = client->getFreeMemory();
   long totMem = client->getAllMemory();
@@ -51,29 +49,16 @@ void ClientBefehlTestsTest::MemUsageCorrectness() {
   QVERIFY(Usage <= client->getMemoryUsage() + 1 &&
           Usage >= client->getMemoryUsage() - 1);
 }
-void ClientBefehlTestsTest::MemUsageBorders() {
+void ClientBefehle::MemUsageBorders() {
   Client* client = new Client();
   QVERIFY(client->getMemoryUsage() > 0 && client->getMemoryUsage() < 100);
 }
 
-void ClientBefehlTestsTest::CPUUsageBorders() {
+void ClientBefehle::CPUUsageBorders() {
   Client* client = new Client();
   QVERIFY(client->getCpuUsage() > 0 && client->getCpuUsage() < 100);
 }
-void ClientBefehlTestsTest::initTestCase() {}
 
-void ClientBefehlTestsTest::cleanupTestCase() {}
+QTEST_MAIN(ClientBefehle)
 
-void ClientBefehlTestsTest::testCase1_data() {
-  QTest::addColumn<QString>("data");
-  QTest::newRow("0") << QString();
-}
-
-void ClientBefehlTestsTest::testCase1() {
-  QFETCH(QString, data);
-  QVERIFY2(true, "Failure");
-}
-
-QTEST_MAIN(ClientBefehlTestsTest)
-
-#include "tst_clientbefehlteststest.moc"
+#include "tst_clientbefehle.moc"

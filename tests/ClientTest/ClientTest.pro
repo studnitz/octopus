@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2015-12-28T15:51:49
+# Project created by QtCreator 2016-01-18T15:02:07
 #
 #-------------------------------------------------
 
@@ -8,16 +8,21 @@ QT       += network testlib
 
 QT       -= gui
 
-TARGET = tst_clientbefehlteststest
+TARGET = tst_clientbefehle
 CONFIG   += console
 CONFIG   -= app_bundle
 
 TEMPLATE = app
 
 
-INCLUDEPATH += ../client/src/
-
-SOURCES += tst_clientbefehlteststest.cpp
-SOURCES += ../client/src/client.cpp
-HEADERS += ../client/src/client.h
+SOURCES += tst_clientbefehle.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
+
+INCLUDEPATH += \
+    ../../client/src/
+
+SOURCES += \
+    ../../client/src/client.cpp
+
+HEADERS += \
+    ../../client/src/client.h
