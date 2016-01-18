@@ -17,3 +17,5 @@ script:
     - qmake -v
     - qmake octopus.pro
     - make
+notifications:
+    slack: bptud:dEBgbHi0ZjLFGsAPBsD5SbPH
