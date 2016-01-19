@@ -1,0 +1,9 @@
+Folgender Befehl kann genutzt werden um den RAM vollzublasen:
+
+stress --vm-bytes $(awk '/MemFree/{printf "%d\n", $2 * 0.8;}' < /proc/meminfo)k --vm-keep -m 1
+
+
+Dazu sollte 'stress' installiert sein.
+Statt 0.8 kann man auch andere Werte nehmen um den RAM nicht ganz vollzupumpen.
+
+Perfekt für Vorführzwecke, um Welten besser als Firefox-tabs :D

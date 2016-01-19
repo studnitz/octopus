@@ -7,14 +7,13 @@
 #include <stdio.h>
 #include <QHostInfo>
 
-//Videoplayer
+// Videoplayer
 #include <QtWidgets>
 #include <QVideoWidget>
 #include <QVideoSurfaceFormat>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include "playlistmodel.h"
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -130,7 +129,7 @@ void MainWindow::continueUpdateClientList() {
     // Update 'LED' of DiskUsage
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
     ui->tableWidget->item(i, 1)
-        ->setToolTip("Disk Usage " + QString::number(DiskUsage));
+        ->setToolTip("Disk Usage: " + QString::number(DiskUsage) + "%");
     ui->tableWidget->item(i, 1)
         ->setBackgroundColor(getColorFromPercent(DiskUsage));
     ui->tableWidget->item(i, 1)->setFont(QFont("Arial", 8));
@@ -138,7 +137,7 @@ void MainWindow::continueUpdateClientList() {
     // Update 'LED' of MemUsage
     ui->tableWidget->setItem(i, 2, new QTableWidgetItem(""));
     ui->tableWidget->item(i, 2)
-        ->setToolTip("RAM Usage " + QString::number(MemUsage));
+        ->setToolTip("RAM Usage: " + QString::number(MemUsage) + "%");
     ui->tableWidget->item(i, 2)
         ->setBackgroundColor(getColorFromPercent(MemUsage));
     ui->tableWidget->item(i, 2)->setFont(QFont("Arial", 8));
@@ -146,7 +145,7 @@ void MainWindow::continueUpdateClientList() {
     // Update 'LED' of CPUUsage
     ui->tableWidget->setItem(i, 3, new QTableWidgetItem(""));
     ui->tableWidget->item(i, 3)
-        ->setToolTip("CPU Usage " + QString::number(CPUUsage));
+        ->setToolTip("CPU Usage: " + QString::number(CPUUsage) + "%");
     ui->tableWidget->item(i, 3)
         ->setBackgroundColor(getColorFromPercent(CPUUsage));
     ui->tableWidget->item(i, 3)->setFont(QFont("Arial", 8));
@@ -211,9 +210,10 @@ void MainWindow::on_openFileButton_clicked() {
     // PlaylistModel befüllen mit Playlist-Inhalt
     playlistModel->setPlaylist(playlist);
 
-        // Indexbereich der Liste aktualisieren
-        ui->listView->setCurrentIndex(playlistModel->index(playlist->currentIndex(), 0));
-    }
+    // Indexbereich der Liste aktualisieren
+    ui->listView->setCurrentIndex(
+        playlistModel->index(playlist->currentIndex(), 0));
+  }
 }
 
 void MainWindow::log(QString msg) {
@@ -229,110 +229,107 @@ void MainWindow::on_stopButton_clicked() {
 /**
  * Auswählen der Aufnahme, die abgespielt werden soll.
  */
-void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
-{
-    //player->setMedia(playlist->media(index.row()));
+void MainWindow::on_listView_doubleClicked(const QModelIndex &index) {
+  // player->setMedia(playlist->media(index.row()));
 }
 
-void MainWindow::videoPlayerClicked(int index)
-{
-    /*
-    // Dialogfenster erstellen
-    QDialog *optDialog = new QDialog(this);
-    optDialog->resize(500,150);
-    optDialog->setWindowTitle(QString("Einstellungen vom Player mit ID=").append(QString::number(index)).append(""));
-    optDialog->move(this->x()+200,this->y()+300);
+void MainWindow::videoPlayerClicked(int index) {
+  /*
+  // Dialogfenster erstellen
+  QDialog *optDialog = new QDialog(this);
+  optDialog->resize(500,150);
+  optDialog->setWindowTitle(QString("Einstellungen vom Player mit
+  ID=").append(QString::number(index)).append(""));
+  optDialog->move(this->x()+200,this->y()+300);
 
-    // Infotexte erstellen
-    QLabel *posXLabel   = new QLabel(QString("Position X:"), optDialog);
-    QLabel *posYLabel   = new QLabel(QString("Position Y:"), optDialog);
-    QLabel *widthLabel  = new QLabel(QString("Breite:"));
-    QLabel *heightLabel = new QLabel(QString("Höhe:"));
-    posXLabel->move(10,10);
-    posYLabel->move(120,10);
-    widthLabel->move(10,75);
-    heightLabel->move(120,75);
+  // Infotexte erstellen
+  QLabel *posXLabel   = new QLabel(QString("Position X:"), optDialog);
+  QLabel *posYLabel   = new QLabel(QString("Position Y:"), optDialog);
+  QLabel *widthLabel  = new QLabel(QString("Breite:"));
+  QLabel *heightLabel = new QLabel(QString("Höhe:"));
+  posXLabel->move(10,10);
+  posYLabel->move(120,10);
+  widthLabel->move(10,75);
+  heightLabel->move(120,75);
 
-    // Eingabefenster erstellen und befüllen
-    QSpinBox *posXInput     = new QSpinBox(optDialog);
-    QSpinBox *posYInput     = new QSpinBox(optDialog);
-    QSpinBox *widthInput    = new QSpinBox(optDialog);
-    QSpinBox *heightInput   = new QSpinBox(optDialog);
-    posXInput->setMaximum(9999);
-    posYInput->setMaximum(9999);
-    widthInput->setMaximum(9999);
-    heightInput->setMaximum(9999);
-    posXInput->move(10,35);
-    posYInput->move(120,35);
-    widthInput->move(10,90);
-    heightInput->move(120,90);
-    posXInput->setValue(videoPlayer->x());
-    posYInput->setValue(videoPlayer->y());
-    widthInput->setValue(videoPlayer->width());
-    heightInput->setValue(videoPlayer->height());
+  // Eingabefenster erstellen und befüllen
+  QSpinBox *posXInput     = new QSpinBox(optDialog);
+  QSpinBox *posYInput     = new QSpinBox(optDialog);
+  QSpinBox *widthInput    = new QSpinBox(optDialog);
+  QSpinBox *heightInput   = new QSpinBox(optDialog);
+  posXInput->setMaximum(9999);
+  posYInput->setMaximum(9999);
+  widthInput->setMaximum(9999);
+  heightInput->setMaximum(9999);
+  posXInput->move(10,35);
+  posYInput->move(120,35);
+  widthInput->move(10,90);
+  heightInput->move(120,90);
+  posXInput->setValue(videoPlayer->x());
+  posYInput->setValue(videoPlayer->y());
+  widthInput->setValue(videoPlayer->width());
+  heightInput->setValue(videoPlayer->height());
 
 
-    // Save-Button erstellen und connecten
-    QPushButton *saveButton = new QPushButton("Speichern", optDialog);
-    saveButton->move(400,10);
-    connect(saveButton, &QPushButton::pressed,
-            [this, &posXInput, &posYInput, &widthInput, &heightInput]() {
-                videoPlayer->move(posXInput->value(), posYInput->value());
-                videoPlayer->resize(widthInput->value(), heightInput->value());
-    });
+  // Save-Button erstellen und connecten
+  QPushButton *saveButton = new QPushButton("Speichern", optDialog);
+  saveButton->move(400,10);
+  connect(saveButton, &QPushButton::pressed,
+          [this, &posXInput, &posYInput, &widthInput, &heightInput]() {
+              videoPlayer->move(posXInput->value(), posYInput->value());
+              videoPlayer->resize(widthInput->value(), heightInput->value());
+  });
 
-    optDialog->exec();
+  optDialog->exec();
 
-    // Connection trennen und Dialog zerstören
-    saveButton->disconnect();
-    optDialog->deleteLater();
-    */
+  // Connection trennen und Dialog zerstören
+  saveButton->disconnect();
+  optDialog->deleteLater();
+  */
 }
 
-void MainWindow::on_addPlayerButton_clicked()
-{
-    // ---- Parameter variabel wählbar
-    int initialMarginX = 10;
-    int initialMarginY = 10;
-    int marginX = 1;
-    int marginY = 1;
-    int newWidth = 240;
-    int newHeight = 180;
-    // -------------------------------
+void MainWindow::on_addPlayerButton_clicked() {
+  // ---- Parameter variabel wählbar
+  int initialMarginX = 10;
+  int initialMarginY = 10;
+  int marginX = 1;
+  int marginY = 1;
+  int newWidth = 240;
+  int newHeight = 180;
+  // -------------------------------
 
-    int index = player->size();
+  int index = player->size();
 
-    player->append(new QMediaPlayer(this));
-    videoPlayer->append(new VideoPlayer(ui->tab_2, index));
+  player->append(new QMediaPlayer(this));
+  videoPlayer->append(new VideoPlayer(ui->tab_2, index));
 
-    // Beim ersten Aufruf der Prozedur
-    if (videoPlayer->size() == 1) {
-
-        player->at(0)->setVideoOutput(videoPlayer->at(0));
-        videoPlayer->at(0)->move(initialMarginX, initialMarginY);
-        videoPlayer->at(0)->resize(newWidth, newHeight);
-        videoPlayer->at(0)->show();
+  // Beim ersten Aufruf der Prozedur
+  if (videoPlayer->size() == 1) {
+    player->at(0)->setVideoOutput(videoPlayer->at(0));
+    videoPlayer->at(0)->move(initialMarginX, initialMarginY);
+    videoPlayer->at(0)->resize(newWidth, newHeight);
+    videoPlayer->at(0)->show();
     // Sonst
+  } else {
+    int newX = videoPlayer->at(index - 1)->x();
+    int newY = videoPlayer->at(index - 1)->y();
+
+    if (newY + videoPlayer->at(index - 1)->height() + newHeight >
+        ui->tabWidget->height()) {
+      newY = initialMarginY;
+      newX += marginX + newWidth;
     } else {
-        int newX = videoPlayer->at(index-1)->x();
-        int newY = videoPlayer->at(index-1)->y();
-
-        if (newY + videoPlayer->at(index-1)->height() + newHeight > ui->tabWidget->height()) {
-            newY = initialMarginY;
-            newX += marginX + newWidth;
-        } else {
-            newY += marginY + newHeight;
-        }
-
-        player->at(index)->setVideoOutput(videoPlayer->at(index));
-        videoPlayer->at(index)->move(newX, newY);
-        videoPlayer->at(index)->resize(newWidth, newHeight);
-        videoPlayer->at(index)->show();
+      newY += marginY + newHeight;
     }
+
+    player->at(index)->setVideoOutput(videoPlayer->at(index));
+    videoPlayer->at(index)->move(newX, newY);
+    videoPlayer->at(index)->resize(newWidth, newHeight);
+    videoPlayer->at(index)->show();
+  }
 }
 
-void MainWindow::on_pushButton_Percent_clicked()
-{
-    showPercentage = !showPercentage;
-    continueUpdateClientList();
+void MainWindow::on_pushButton_Percent_clicked() {
+  showPercentage = !showPercentage;
+  continueUpdateClientList();
 }
