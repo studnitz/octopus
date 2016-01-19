@@ -2,33 +2,29 @@
 #define TCPCLIENT_H
 
 #include <QObject>
-
-#include <QtNetwork>
+//#include <QtNetwork> wtf
 #include <QTcpSocket>
-#include <QDebug>
-#include <QString>
-#include <iostream>
+#include <QHostAddress>
+#include <QNetworkInterface>
 
 class Client : public QObject {
   Q_OBJECT
-public:
-  explicit Client(QObject* parent = 0);
-  ~Client();
-  /*
-   * start by given port
-   */
-  void start(quint16 port);
- signals:
-
-
- private slots:
-
  public:
+  explicit Client(QObject *parent = 0);
+  ~Client();
   /**
-   * @brief Client::isConnected is used to test the connection
-   * @return "yes"
+ * @brief start starts Client
+ * @param port connect to this port
+ *
+ * IP is found by found Server
+ */
+  void start(quint16 port = 1234);
+
+  /**
+   * @brief findServer finds local Server
+   * @return ServerIP default localhost or DHCP at eth0
    */
-  std::string isConnected();
+  QHostAddress findServer();
   /**
    * @brief Client::getCpuUsage
    * @return current CPU-Usage in percent
@@ -98,12 +94,7 @@ signals:
    * Client Socket
    */
   QTcpSocket socket;
-  /**
-   * @brief findServer
-   * @return ServerIP
-   * DUMMY
-   */
-  QString findServer();
+
   /**
    * @brief findCamera
    * DUMMY
@@ -114,6 +105,12 @@ signals:
    * DUMMY
    */
   void syncTime();
+
+  /**
+   * @brief isConnected is used to test the connection
+   * @return "yes"
+   */
+  std::string isConnected();
 };
 
-#endif // TCPCLIENT_H
+#endif  // TCPCLIENT_H

@@ -1,12 +1,12 @@
 #include <QCoreApplication>
 #include "client.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   QCoreApplication a(argc, argv);
 
   Client client;
   while (client.getState() == QAbstractSocket::UnconnectedState) {
-    client.start(1234);
+    client.start();
   }
   return a.exec();
 }

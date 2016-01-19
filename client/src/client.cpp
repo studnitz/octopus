@@ -1,5 +1,7 @@
 #include "client.h"
-#include <QHostAddress>
+
+#include <QStorageInfo>
+
 
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
@@ -12,7 +14,10 @@ Client::Client(QObject *parent) : QObject(parent) {
   // hostfound() signal connect?
 }
 
-Client::~Client() { socket.close(); }
+Client::~Client() {
+  qDebug() << "Destroy Client";
+  socket.close();
+}
 
 void Client::sendInfo() {
   QByteArray message;
@@ -35,11 +40,11 @@ void Client::sendInfo() {
 }
 
 void Client::start(quint16 port) {
-  this->findCamera();
+  findCamera();
 
-  QHostAddress addr(this->findServer());
+  QHostAddress addr(findServer());
 
-  this->syncTime();
+  syncTime();
 
   if (timesync) {
     //  qDebug() << "Time synced";
@@ -79,15 +84,23 @@ std::string Client::isConnected() { return "yes"; }
 
 QTcpSocket::SocketState Client::getState() const { return socket.state(); }
 
-QString Client::findServer() {
-  /*
-   * Find SERVER IP = DHCP
-   * NEED TIMEOUT INCLUDED
-   *
-   */
-  QString address = "127.0.0.1";  // HARDCODED
-
-  return address;
+QHostAddress Client::findServer() {
+  QHostAddress serverIP;
+  QNetworkInterface iface;
+  QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
+  QListIterator<QNetworkInterface> it(interfaces);
+  while(it.hasNext()) {
+    iface = it.next();
+    if (iface.humanReadableName() == "eth0") {
+      QList<QNetworkAddressEntry> entries = iface.addressEntries();
+      QNetworkAddressEntry entry = entries.first();
+      serverIP = entry.broadcast();
+      return serverIP;
+    }
+  }
+  // DEFAULT LOCAL HOST
+  serverIP = QHostAddress("127.0.0.1");
+  return serverIP;
 }
 
 void Client::syncTime() {

@@ -70,6 +70,8 @@ public slots:
      */
     void on_listView_doubleClicked(const QModelIndex &index);
 
+    void videoPlayerClicked(int index);
+    void on_addPlayerButton_clicked();
 
 private slots:
     /**
@@ -81,7 +83,7 @@ private:
     Ui::MainWindow *ui;
     QList<QString> *clients;    // TODO: Kann weg?
 
-    QMediaPlayer *player;
+    QList<QMediaPlayer*> *player;
     QList<VideoPlayer*> *videoPlayer;
     PlaylistModel *playlistModel;
     QMediaPlaylist *playlist;

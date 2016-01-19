@@ -2,19 +2,21 @@
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = octopus-gui
-TEMPLATE = app
+TARGET =    octopus-gui
+TEMPLATE =  app
 
 
 SOURCES += src/main.cpp         \
         src/mainwindow.cpp      \
         src/playlistmodel.cpp   \
-    ../server/src/server.cpp        \
+        src/videoplayer.cpp     \
+    ../server/src/server.cpp  \
     ../server/src/serverthread.cpp
 
 HEADERS  += src/mainwindow.h    \
-    src/playlistmodel.h         \
-    ../server/src/server.h          \
+        src/playlistmodel.h     \
+        src/videoplayer.h       \
+    ../server/src/server.h    \
     ../server/src/serverthread.h
 
 FORMS    += forms/mainwindow.ui
