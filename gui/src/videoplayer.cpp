@@ -8,7 +8,7 @@ VideoPlayer::VideoPlayer(QWidget *parent, quint8 index) : QVideoWidget(parent) {
 }
 
 void VideoPlayer::contextMenuEvent(QContextMenuEvent *e) {
-
+  // Create context menu
   QMenu myContext;
   myContext.addAction("Einstellungen");
   myContext.addAction("Player löschen");
@@ -16,6 +16,7 @@ void VideoPlayer::contextMenuEvent(QContextMenuEvent *e) {
 
   if (selectedItem) {
     if (QString::compare(selectedItem->text(), "Player löschen") == 0) {
+      // Open confirmation dialog for deleting
       QMessageBox msgBox;
       msgBox.setWindowTitle("Player löschen");
       msgBox.setInformativeText("Sind sie sich sicher?");
@@ -26,10 +27,12 @@ void VideoPlayer::contextMenuEvent(QContextMenuEvent *e) {
       msgBox.setDefaultButton(QMessageBox::Apply);
 
       if (msgBox.exec() == QMessageBox::Apply) {
+        // Delete player
         emit playerDelete(this->index);
       }
     } else if (QString::compare(selectedItem->text(), "Einstellungen") == 0) {
-        emit playerOpenOptions(this->index);
-      }
+      // Open options for this player
+      emit playerOpenOptions(this->index);
     }
+  }
 }

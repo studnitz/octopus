@@ -22,12 +22,14 @@ class VideoPlayer : public QVideoWidget {
 
 signals:
   /**
-   * @brief playerOpenOptions Fired when 'Einstellungen' in the context menu is clicked.
+   * @brief playerOpenOptions Fired when 'Einstellungen' in the context menu is
+   * clicked.
    * @param index ID of the player
    */
   void playerOpenOptions(quint8 index);
   /**
-   * @brief playerDelete Fired when 'Player löschen' in the context menu is clicked.
+   * @brief playerDelete Fired when 'Player löschen' in the context menu is
+   * clicked.
    * @param index ID of the player
    */
   void playerDelete(quint8 index);

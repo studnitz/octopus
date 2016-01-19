@@ -33,8 +33,10 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-  for (int i = 0; i < videoPlayer->size(); i++)
-    videoPlayer->at(i)->disconnect();
+  QList<VideoPlayer *>::iterator i;
+  for (i = videoPlayer->begin(); i != videoPlayer->end(); ++i) {
+    (*i)->disconnect();
+  }
   delete ui;
 }
 
@@ -112,14 +114,19 @@ void MainWindow::printClients() {
 }
 
 void MainWindow::on_playButton_clicked() {
+  QList<QMediaPlayer *>::iterator i;
   switch (player->at(0)->state()) {
     case QMediaPlayer::PlayingState:
-      for (QList<QMediaPlayer*>::iterator i = player->begin(); i != player->end(); ++i) (*i)->pause();
+      for (i = player->begin(); i != player->end(); ++i) {
+        (*i)->pause();
+      }
       ui->playButton->setText("Play");
       log("Pausiere Wiedergabe der Aufnahme");
       break;
     default:
-      for (QList<QMediaPlayer*>::iterator i = player->begin(); i != player->end(); ++i) (*i)->play();
+      for (i = player->begin(); i != player->end(); ++i) {
+        (*i)->play();
+      }
       if (player->at(0)->state() == QMediaPlayer::PlayingState) {
         ui->playButton->setText("Pause");
         log("Starte Wiedergabe der Aufnahme");
@@ -129,26 +136,25 @@ void MainWindow::on_playButton_clicked() {
 }
 
 void MainWindow::on_openFileButton_clicked() {
-
   QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open movies"),
                                                         QDir::currentPath());
   if (!fileNames.empty()) {
+    QList<QMediaPlayer *>::iterator j;
     // Load first recording into players automatically
-    for (int i = 0; i < player->size(); i++) {
-      player->at(i)->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
+    for (j = player->begin(); j != player->end(); ++j) {
+      (*j)->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
     }
 
     // Fill playlist with files
-    for (int i = 0; i < fileNames.size(); i++) {
-      playlist->addMedia(QUrl::fromLocalFile(fileNames.at(i)));
-      log(QString("Lade ").append(fileNames.at(i)).append("..."));
+    QStringList::iterator i;
+    for (i = fileNames.begin(); i != fileNames.end(); ++i) {
+      playlist->addMedia(QUrl::fromLocalFile(*i));
+      log(QString("Lade ").append(*i).append("..."));
     }
     playlist->setCurrentIndex(playlist->mediaCount());
 
-    // Link model with playlist
+    // Link playlist, playlistModel and listView
     playlistModel->setPlaylist(playlist);
-
-    // Link model with listView
     ui->listView->setCurrentIndex(
         playlistModel->index(playlist->currentIndex(), 0));
   }
@@ -160,14 +166,16 @@ void MainWindow::log(QString msg) {
 }
 
 void MainWindow::on_stopButton_clicked() {
-  for (int i = 0; i < player->size(); i++) {
-    player->at(i)->stop();
+  QList<QMediaPlayer *>::iterator i;
+  for (i = player->begin(); i != player->end(); ++i) {
+    (*i)->stop();
   }
   log("Stoppe Wiedergabe der Aufnahme");
 }
 
 void MainWindow::on_listView_doubleClicked(const QModelIndex &index) {
-  for (QList<QMediaPlayer*>::iterator i = player->begin(); i != player->end(); ++i) {
+  QList<QMediaPlayer *>::iterator i;
+  for (i = player->begin(); i != player->end(); ++i) {
     (*i)->setMedia(playlist->media(index.row()));
   }
 }
@@ -220,7 +228,6 @@ void MainWindow::videoPlayerOpenOptions(quint8 index) {
           });
   optDialog->exec();
 
-
   saveButton->disconnect();
   optDialog->deleteLater();
 }
@@ -229,8 +236,9 @@ void MainWindow::videoPlayerDelete(quint8 index) {
   videoPlayer->at(index)->disconnect();
   delete videoPlayer->at(index);
   delete player->at(index);
-  for (int i = index; i < videoPlayer->size(); i++) {
-    videoPlayer->at(i)->index -= 1;
+  QList<VideoPlayer *>::iterator i;
+  for (i = videoPlayer->begin() + index; i != videoPlayer->end(); ++i) {
+    (*i)->index -= 1;
   }
   player->removeAt(index);
   videoPlayer->removeAt(index);
@@ -238,15 +246,15 @@ void MainWindow::videoPlayerDelete(quint8 index) {
 
 void MainWindow::on_addPlayerButton_clicked() {
   // ---- Adjustable parameters
-  qint16 initialMarginX = 10;
-  qint16 initialMarginY = 10;
+  quint16 initialMarginX = 10;
+  quint16 initialMarginY = 10;
   qint16 marginX = 1;
   qint16 marginY = 1;
-  qint16 newWidth = 240;
-  qint16 newHeight = 180;
+  quint16 newWidth = 240;
+  quint16 newHeight = 180;
   // -------------------------------
 
-  qint16 newX, newY;
+  quint16 newX, newY;
   quint8 index = getFreePlayerId();
 
   // Calculate new position

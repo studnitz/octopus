@@ -28,12 +28,14 @@ class MainWindow : public QMainWindow {
   void on_pushButton_2_clicked();
 
   /**
-   * @brief on_playButton_clicked Plays or pauses all players, depending on current state.
+   * @brief on_playButton_clicked Plays or pauses all players, depending on
+   * current state.
    */
   void on_playButton_clicked();
 
   /**
-   * @brief on_openFileButton_clicked Opens a dialog to load recordings into the program to play them later.
+   * @brief on_openFileButton_clicked Opens a dialog to load recordings into the
+   * program to play them later.
    */
   void on_openFileButton_clicked();
 
@@ -43,19 +45,22 @@ class MainWindow : public QMainWindow {
   void on_stopButton_clicked();
 
   /**
-   * @brief on_listView_doubleClicked Loads the recordings from a file, that was double-clicked on into the video players.
+   * @brief on_listView_doubleClicked Loads the recordings from a file, that was
+   * double-clicked on into the video players.
    * @param index Gives information which file was double-clicked on
    */
   void on_listView_doubleClicked(const QModelIndex &index);
 
   /**
    * @brief on_addPlayerButton_clicked Adds a player to the UI
-   * You can choose various parameters for new player instances: initialMarginX, initialMarginY, marginX, marginY, newWidth, new Height.
+   * You can choose various parameters for new player instances: initialMarginX,
+   * initialMarginY, marginX, marginY, newWidth, new Height.
    */
   void on_addPlayerButton_clicked();
 
   /**
-   * @brief videoPlayerOpenOptions Opens an option dialog for setting the geometry of a player.
+   * @brief videoPlayerOpenOptions Opens an option dialog for setting the
+   * geometry of a player.
    * @param index Index of the player to be done changes to
    * Called when the video player emits its playerDelete signal.
    */
@@ -72,15 +77,18 @@ class MainWindow : public QMainWindow {
 
   /**
    * @brief player List of players
-   * The players implement the functionality. They hold references to the files and it's also them who get calls for stopping or playing the sources.
+   * The players implement the functionality. They hold references to the files
+   * and it's also them who get calls for stopping or playing the sources.
    */
-  QList<QMediaPlayer*> *player;
+  QList<QMediaPlayer *> *player;
 
   /**
    * @brief videoPlayer List of video players
-   * The VideoPlayer class inherits from QVideoPlayer. It is the output object for the stream that is decoded by the player object. Also it has some overridden events compared to QVideoPlayer.
+   * The VideoPlayer class inherits from QVideoPlayer. It is the output object
+   * for the stream that is decoded by the player object. Also it has some
+   * overridden events compared to QVideoPlayer.
    */
-  QList<VideoPlayer*> *videoPlayer;
+  QList<VideoPlayer *> *videoPlayer;
 
   void recordStart();
   void recordStop();
@@ -93,7 +101,8 @@ class MainWindow : public QMainWindow {
   void log(QString msg);
 
   /**
-   * @brief getFreePlayerId Finds an ID that is not used by another player at the moment.
+   * @brief getFreePlayerId Finds an ID that is not used by another player at
+   * the moment.
    * @return The free ID
    */
   quint8 getFreePlayerId();
