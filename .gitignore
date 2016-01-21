@@ -5,7 +5,7 @@
 *.aux
 *.pdf
 *.toc
-
+*.pro.user
 
 # Cached files #
 ################
@@ -54,3 +54,4 @@ Thumbs.db
 
 *-Debug*
 *.pro.user*
+*.autosave

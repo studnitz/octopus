@@ -3,6 +3,7 @@
 
 #include <QStandardItemModel>
 #include <QList>
+#include <QHostInfo>
 
 // Videoplayer
 #include <QtWidgets>
@@ -17,12 +18,18 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
-  /* --- RECORD-TAB: table set-up --- */
-  ui->tableWidget->setColumnCount(2);
+  // Initalizing the table
+  ui->tableWidget->setColumnCount(4);
   ui->tableWidget->setRowCount(1);
-  ui->tableWidget->setColumnWidth(0, 160);
+  ui->tableWidget->setColumnWidth(0, 149);
   ui->tableWidget->setColumnWidth(1, 20);
+  ui->tableWidget->setColumnWidth(2, 20);
+  ui->tableWidget->setColumnWidth(3, 20);
   ui->tableWidget->setShowGrid(false);
+
+  QTimer *timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(continueUpdateClientList()));
+  timer->start(1000);
 
   /* --- PLAY-TAB: videoplayer set-up --- */
   player = new QList<QMediaPlayer *>();
@@ -54,61 +61,106 @@ void MainWindow::on_recordButton_clicked() {
 }
 
 void MainWindow::recordStart() {
-  /* magic */
+    /* magic */
 
-  log("Aufzeichnung wurde gestartet.");
+    log("Aufzeichnung wurde gestartet.");
 }
 
 void MainWindow::recordStop() {
-  /* magic */
+    /* magic */
 
-  log("Aufzeichnung wurde gestoppt.");
+    log("Aufzeichnung wurde gestoppt.");
 }
 
 void MainWindow::on_pushButton_2_clicked() { printClients(); }
 
 void MainWindow::printClients() {
   /* some magic to check for clients */
+  qDebug() << "start 1";
+  emit this->getinfo();
+}
 
-  // Row-Count auf 0 setzen, damit bei mehrmaligem Wiederholen der
-  // Aktualisierung, die Liste nur so lange ist,wie sie Elemente hat.
+QColor MainWindow::getColorFromPercent(int percent) {
+  int red = 0;
+  int green = 0;
+  // between 50 an 100 red is 255
+  // between 0 an 50 red slowly increases
+  red = percent < 50 ? 255 * (2 * percent / 100.0) : 255;
+  // between 0 and 50 green is 255
+  // between 50 and 100 green slowly decreases
+  green = percent > 50 ? 255 - (255 * ((2 * percent - 100) / 100.0)) : 255;
+
+  // QColor from RGB, A (Brightness) is default 255
+  return QColor(red, green, 0);
+}
+
+void MainWindow::continueUpdateClientList() {
+  // emit signal to get new Infos
+  emit this->getinfo();
+
+  // Initialize RowCount with 0
   ui->tableWidget->setRowCount(0);
-  // Eine Liste von Clients durchlaufen
-  for (int i = 0; i < server->findChildren<MyThread *>().size(); i++) {
-    /* In das tableWidget neue tableItems erstellen. Links Clientname.
- * Rechts Leerer String, der später eingefärbt wird.
- * WICHTIG: Erhöhen der rowCount!
- */
 
+  // Update each Row/Client. Iterator cant be used here because index is needed
+  for (int i = 0; i < server->getClients().size(); i++) {
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
-    int SocketDescriptor =
-        server->findChildren<MyThread *>()
-            .at(i)
-            ->socketDescriptor;  // Socket-Descriptor, int der
-    // die Socket eindeutig
-    // identifiziert
-    QTcpSocket *socket =
-        server->findChildren<MyThread *>()
-            .at(i)
-            ->socket;  // Socket-Pointer, verweist auf das Socket-Object
-    QHostInfo HI = QHostInfo::fromName(
-        socket->peerAddress()
-            .toString());  // Host-Info/-Name. Funktioniert noch
-    // nicht wie es soll.
-    ui->tableWidget->setItem(
-        i, 0, new QTableWidgetItem(QString::number(SocketDescriptor)
-                                       .append(" ")
-                                       .append(HI.hostName())));
-    ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
 
-    // Dummyvergleiche fuer mehr bunte Farben.
-    if (server->findChildren<MyThread *>().at(i)->socketDescriptor > 18) {
-      ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("red"));
-    } else if (server->findChildren<MyThread *>().at(i)->socketDescriptor >
-               10) {
-      ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("yellow"));
-    } else {
-      ui->tableWidget->item(i, 1)->setBackgroundColor(QColor("green"));
+    QHostInfo HI = QHostInfo::fromName(
+        server->getClients()
+            .at(i)
+            ->ClientIP);  // Host-Info/-Name. Not really working as it should
+    ui->tableWidget->setItem(
+        i, 0, new QTableWidgetItem(
+                  QString::number(i).append(" ").append(HI.hostName())));
+    // get ClientInfos
+    int DiskUsage = server->getClients().at(i)->ClientInfo[2];
+    int MemUsage = server->getClients().at(i)->ClientInfo[0];
+    int CPUUsage = server->getClients().at(i)->ClientInfo[1];
+
+    // Update 'LED' of DiskUsage
+    ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
+    ui->tableWidget->item(i, 1)
+        ->setToolTip("Disk Usage: " + QString::number(DiskUsage) + "%");
+    ui->tableWidget->item(i, 1)
+        ->setBackgroundColor(getColorFromPercent(DiskUsage));
+    ui->tableWidget->item(i, 1)->setFont(QFont("Arial", 8));
+
+    // Update 'LED' of MemUsage
+    ui->tableWidget->setItem(i, 2, new QTableWidgetItem(""));
+    ui->tableWidget->item(i, 2)
+        ->setToolTip("RAM Usage: " + QString::number(MemUsage) + "%");
+    ui->tableWidget->item(i, 2)
+        ->setBackgroundColor(getColorFromPercent(MemUsage));
+    ui->tableWidget->item(i, 2)->setFont(QFont("Arial", 8));
+
+    // Update 'LED' of CPUUsage
+    ui->tableWidget->setItem(i, 3, new QTableWidgetItem(""));
+    ui->tableWidget->item(i, 3)
+        ->setToolTip("CPU Usage: " + QString::number(CPUUsage) + "%");
+    ui->tableWidget->item(i, 3)
+        ->setBackgroundColor(getColorFromPercent(CPUUsage));
+    ui->tableWidget->item(i, 3)->setFont(QFont("Arial", 8));
+
+    // Adds Usage in Percent to the 'LED'
+    if (showPercentage) {
+      ui->tableWidget->item(i, 1)->setText(QString::number(DiskUsage));
+      ui->tableWidget->item(i, 2)->setText(QString::number(MemUsage));
+      ui->tableWidget->item(i, 3)->setText(QString::number(CPUUsage));
+      if (DiskUsage > 70) {
+        ui->tableWidget->item(i, 1)->setTextColor(QColor("white"));
+      } else {
+        ui->tableWidget->item(i, 1)->setTextColor(QColor("black"));
+      }
+      if (MemUsage > 70) {
+        ui->tableWidget->item(i, 2)->setTextColor(QColor("white"));
+      } else {
+        ui->tableWidget->item(i, 2)->setTextColor(QColor("black"));
+      }
+      if (CPUUsage > 70) {
+        ui->tableWidget->item(i, 3)->setTextColor(QColor("white"));
+      } else {
+        ui->tableWidget->item(i, 3)->setTextColor(QColor("black"));
+      }
     }
   }
 }

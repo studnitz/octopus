@@ -1,4 +1,5 @@
 # Octopus
+[![Build Status](https://travis-ci.org/studnitz/octopus.svg?branch=master)](https://travis-ci.org/studnitz/octopus)
 ## Record video and images from multiple sources simulteanously
 ### Bachelor Praktikum WS 2015/2016
 

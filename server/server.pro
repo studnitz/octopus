@@ -9,10 +9,11 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += src/main.cpp \
-    src/myserver.cpp \
-    src/mythread.cpp
+    src/server.cpp \
+    src/serverthread.cpp
 
 HEADERS += \
-    src/myserver.h \
-    src/mythread.h
+    src/server.h \
+    src/serverthread.h
+
 

@@ -31,8 +31,8 @@ ClientBefehlTestsTest::ClientBefehlTestsTest() {
 
 void ClientBefehlTestsTest::DiskUsageCorrectness() {
   Client* client = new Client();
-  long Free = client->getFreeDisk();
-  long Total = client->getTotalDisk();
+  int Free = client->getFreeDisk();
+  int Total = client->getTotalDisk();
   float Usage = 100 - (Free / (float)Total) * 100;
   QVERIFY(Usage <= client->getDiskUsage() + 1 &&
           Usage >= client->getDiskUsage() - 1);
@@ -45,8 +45,8 @@ void ClientBefehlTestsTest::DiskUsageBorders() {
 
 void ClientBefehlTestsTest::MemUsageCorrectness() {
   Client* client = new Client();
-  long freeMem = client->getFreeMemory();
-  long totMem = client->getAllMemory();
+  int freeMem = client->getFreeMemory();
+  int totMem = client->getAllMemory();
   float Usage = (100 - freeMem / (float)totMem * 100);
   QVERIFY(Usage <= client->getMemoryUsage() + 1 &&
           Usage >= client->getMemoryUsage() - 1);

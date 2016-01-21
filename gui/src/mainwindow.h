@@ -2,16 +2,19 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../server/src/myserver.h"
-#include "../server/src/mythread.h"
+#include "../server/src/server.h"
+#include "../server/src/serverthread.h"
 #include <QHostInfo>
 
 // Videoplayer
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include "playlistmodel.h"
 #include "videoplayer.h"
 
 namespace Ui {
 class MainWindow;
+
 }
 
 class MainWindow : public QMainWindow {
@@ -21,11 +24,18 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
   MyServer *server;
+  bool showPercentage = 0;
 
- private slots:
-  void on_recordButton_clicked();
+public slots:
+    /**
+     * @brief on_recordButton_clicked GUI
+     */
+    void on_recordButton_clicked();
 
-  void on_pushButton_2_clicked();
+    /**
+     * @brief on_pushButton_2_clicked GUI
+     */
+    void on_pushButton_2_clicked();
 
   /**
    * @brief on_playButton_clicked Plays or pauses all players, depending on
@@ -33,11 +43,16 @@ class MainWindow : public QMainWindow {
    */
   void on_playButton_clicked();
 
+    /**
+     * @brief continueUpdateClientList updates the Client List in the GUI
+     */
+    void continueUpdateClientList();
+
   /**
    * @brief on_openFileButton_clicked Opens a dialog to load recordings into the
    * program to play them later.
    */
-  void on_openFileButton_clicked();
+    void on_openFileButton_clicked();
 
   /**
    * @brief on_stopButton_clicked Stops the playback of all players.
@@ -72,8 +87,15 @@ class MainWindow : public QMainWindow {
    */
   void videoPlayerDelete(quint8 index);
 
- private:
-  Ui::MainWindow *ui;
+private slots:
+    /**
+     * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
+     */
+    void on_pushButton_Percent_clicked();
+
+private:
+    Ui::MainWindow *ui;
+    QList<QString> *clients;    // TODO: Kann weg?
 
   /**
    * @brief player List of players
