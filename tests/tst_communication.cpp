@@ -1,3 +1,4 @@
+#include <QString>
 #include <QtTest>
 #include "client.h"
 #include "server.h"
@@ -41,6 +42,8 @@ void communication::OneClientConnected() {
 }
 /*
  * 2 Clients connect and stay connected
+ *
+ *
  */
 void communication::TwoClientConnected() {
   Server server;

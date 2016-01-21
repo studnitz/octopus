@@ -12,6 +12,7 @@ SOURCES += src/main.cpp         \
         src/videoplayer.cpp     \
     ../server/src/server.cpp  \
     ../server/src/serverthread.cpp
+
 HEADERS  += src/mainwindow.h    \
         src/playlistmodel.h     \
         src/videoplayer.h       \
