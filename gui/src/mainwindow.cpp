@@ -346,3 +346,9 @@ quint8 MainWindow::getFreePlayerId() {
   if (videoPlayer->empty()) return 0;
   return videoPlayer->last()->index + 1;
 }
+
+void MainWindow::on_pushButton_Percent_clicked()
+{
+    showPercentage = !showPercentage;
+    continueUpdateClientList();
+}

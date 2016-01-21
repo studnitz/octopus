@@ -23,8 +23,11 @@ class MainWindow : public QMainWindow {
  public:
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
-  MyServer *server;
+  Server *server;
   bool showPercentage = 0;
+
+signals:
+  void getinfo();
 
 public slots:
     /**
@@ -115,6 +118,8 @@ private:
   void recordStart();
   void recordStop();
   void printClients();
+
+  QColor getColorFromPercent(int percent);
 
   /**
    * @brief log Helper function for writing info messages into the log section.

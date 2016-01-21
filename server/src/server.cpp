@@ -6,7 +6,7 @@ Server::Server(QObject* parent) : QTcpServer(parent) {
 Server::~Server() { qDebug() << "Destroy Server"; }
 
 void Server::startServer(int port) {
-  if (!this->listen(QHostAddress::LocalHost, port)) {
+  if (!this->listen(QHostAddress::Any, port)) {
     qDebug() << "Could not start server";
   } else {
     qDebug() << "Listening to port " << serverAddress() << port << "...";
