@@ -19,6 +19,7 @@ void Server::incomingConnection(qintptr socketDescriptor) {
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
   connect(this, &Server::broadcastCommand, thread, &ServerThread::sendCommand);
   connect(thread, SIGNAL(ready()), this, SLOT(getInfo()));
+  //connect(thread, SIGNAL(newInfo()), this, SLOT(readInfo()));
   thread->start();
 
   qDebug() << "New Client connected";
@@ -29,6 +30,7 @@ void Server::getInfo() { this->broadcastCommand(0); }
 void Server::readInfo() {
   QList<ServerThread*> clients = getClients();
   QListIterator<ServerThread*> it(clients);
+  emit gotInfo();
   while (it.hasNext()) {
     QVectorIterator<float> cIt(it.next()->ClientInfo);
     while (cIt.hasNext()) {

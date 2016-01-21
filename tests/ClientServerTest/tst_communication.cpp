@@ -45,6 +45,8 @@ void Communication::OneClientConnected() {
 }
 /*
  * 2 Clients connect and stay connected
+ *
+ *
  */
 void Communication::TwoClientConnected() {
   Server server;

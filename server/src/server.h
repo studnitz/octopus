@@ -35,6 +35,8 @@ signals:
    */
   void broadcastCommand(int command);
 
+  void gotInfo();
+
  public slots:
   /**
    * @brief getInfo
