@@ -38,6 +38,7 @@ signals:
   void gotInfo();
 
  public slots:
+  void recordLocally();
   /**
    * @brief getInfo
    * sends Command to all Clients to send new Information

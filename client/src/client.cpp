@@ -2,7 +2,6 @@
 
 #include <QStorageInfo>
 
-
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
     qDebug() << "Could not start client";
@@ -10,6 +9,7 @@ Client::Client(QObject *parent) : QObject(parent) {
     qDebug() << "Client started";
   }
   connect(&socket, SIGNAL(readyRead()), this, SLOT(getCommand()));
+
 
   // hostfound() signal connect?
 }
@@ -70,8 +70,11 @@ void Client::getCommand() {
       sendInfo();
       break;
     case 1:
+      recorder.stop();
       break;
     case 2:
+      recorder.recordLocally();
+      qDebug() << "started recording locally";
       break;
     default:
       message.append(" command unknown \n");
@@ -89,7 +92,7 @@ QHostAddress Client::findServer() {
   QNetworkInterface iface;
   QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
   QListIterator<QNetworkInterface> it(interfaces);
-  while(it.hasNext()) {
+  while (it.hasNext()) {
     iface = it.next();
     if (iface.humanReadableName() == "eth0") {
       QList<QNetworkAddressEntry> entries = iface.addressEntries();

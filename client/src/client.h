@@ -7,6 +7,8 @@
 #include <QHostAddress>
 #include <QNetworkInterface>
 
+#include "gst_recorder.h"
+
 class Client : public QObject {
   Q_OBJECT
  public:
@@ -58,7 +60,7 @@ class Client : public QObject {
    * @return total disk space in KB
    */
   int getTotalDisk();
-signals:
+ signals:
 
  public slots:
   /**
@@ -79,6 +81,8 @@ signals:
   void getCommand();
 
  private:
+ GstRecorder recorder;
+
   /**
    * @brief timesync
    * DUMMY

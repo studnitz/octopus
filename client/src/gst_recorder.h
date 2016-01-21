@@ -17,7 +17,8 @@
 class GstRecorder : public QObject {
   Q_OBJECT
 public:
-  GstRecorder(QObject *parent = 0);
+   GstRecorder(QObject *parent = 0);
+  ~GstRecorder();
 
   /**
    * @brief recordLocally records locally to disk using x264enc

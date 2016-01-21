@@ -3,7 +3,9 @@
 #include <QDateTime>
 #include "gst_recorder.h"
 
-GstRecorder::GstRecorder(QObject *parent) : QObject(parent) {}
+GstRecorder::GstRecorder(QObject *parent) : QObject(parent) { QGst::init(); }
+
+GstRecorder::~GstRecorder() {}
 
 QGst::BinPtr GstRecorder::createVideoSrcBin() {
   QGst::BinPtr videoBin;
@@ -13,8 +15,8 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
     if (!encoder) {
       // if we don't have omx (when we're not on a RPI), use x264enc instead
       videoBin = QGst::Bin::fromDescription(
-          "v4l2src device=/dev/video1 ! x264enc tune=zerolatency "
-          "byte-stream=true "); //! h264parse ! matroskamux");
+          "v4l2src device=/dev/video0 ! x264enc tune=zerolatency "
+          "byte-stream=true ");  //! h264parse ! matroskamux");
       qDebug() << "Using x264enc on device /dev/video1";
     } else {
       videoBin = QGst::Bin::fromDescription("v4l2src ! omxh264enc ");
@@ -104,7 +106,7 @@ void GstRecorder::createRtpSink(quint16 port, QString address) {
   QGst::ElementPtr RtcpUdpSink = QGst::ElementFactory::make("udpsink");
   RtcpUdpSink->setProperty("port", port + 1);
   RtcpUdpSink->setProperty("host", address);
-  RtcpUdpSink->setProperty("sync", false); // needed for real-time
+  RtcpUdpSink->setProperty("sync", false);  // needed for real-time
   RtcpUdpSink->setProperty("async", false);
   m_pipeline->add(RtcpUdpSink);
   rtpbin->link("send_rtcp_src_0", RtcpUdpSink);
@@ -132,19 +134,19 @@ void GstRecorder::stop() {
 
 void GstRecorder::onBusMessage(const QGst::MessagePtr &message) {
   switch (message->type()) {
-  case QGst::MessageEos:
-    // got end-of-stream - stop the pipeline
-    stop();
-    break;
-  case QGst::MessageError:
-    // check if the pipeline exists before destroying it,
-    // as we might get multiple error messages
-    if (m_pipeline) {
+    case QGst::MessageEos:
+      // got end-of-stream - stop the pipeline
       stop();
-    }
-    qDebug() << message.staticCast<QGst::ErrorMessage>()->error().message();
-    break;
-  default:
-    break;
+      break;
+    case QGst::MessageError:
+      // check if the pipeline exists before destroying it,
+      // as we might get multiple error messages
+      if (m_pipeline) {
+        stop();
+      }
+      qDebug() << message.staticCast<QGst::ErrorMessage>()->error().message();
+      break;
+    default:
+      break;
   }
 }
