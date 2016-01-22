@@ -52,7 +52,8 @@ signals:
    */
   void readInfo();
 
- protected:
+  void stopRecordings();
+protected:
   /**
    * @brief incomingConnection
    * @param socketDescriptor

@@ -72,12 +72,14 @@ void MainWindow::on_recordButton_clicked() {
 void MainWindow::recordStart() {
   /* magic */
 
+  server->recordLocally();
   log("Aufzeichnung wurde gestartet.");
 }
 
 void MainWindow::recordStop() {
   /* magic */
 
+  server->stopRecordings();
   log("Aufzeichnung wurde gestoppt.");
 }
 

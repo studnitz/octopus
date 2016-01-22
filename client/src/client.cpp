@@ -71,6 +71,7 @@ void Client::getCommand() {
       break;
     case 1:
       recorder.stop();
+      qDebug() << "Recording stopped";
       break;
     case 2:
       recorder.recordLocally();
