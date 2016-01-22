@@ -1,6 +1,3 @@
-#include <QDebug>
-#include <QDir>
-#include <QDateTime>
 #include "gst_recorder.h"
 
 GstRecorder::GstRecorder(QObject *parent) : QObject(parent) {}
