@@ -3,19 +3,36 @@
 
 #include <QVideoWidget>
 
-class VideoPlayer : public QVideoWidget
-{
-    Q_OBJECT
+class VideoPlayer : public QVideoWidget {
+  Q_OBJECT
 
-public:
-    VideoPlayer(QWidget *parent = 0, int index = 0);
-    void mousePressEvent(QMouseEvent *e);
+ public:
+  VideoPlayer(QWidget *parent = 0, quint8 index = 0);
 
-private:
-    int index;
+  /**
+   * @brief contextMenuEvent Event handler for context-menu opening.
+   * @param e Details about the event
+   */
+  void contextMenuEvent(QContextMenuEvent *e);
+
+  /**
+   * @brief index Unique ID of the player.
+   */
+  quint8 index;
 
 signals:
-    void playerClicked(int index);
+  /**
+   * @brief playerOpenOptions Fired when 'Einstellungen' in the context menu is
+   * clicked.
+   * @param index ID of the player
+   */
+  void playerOpenOptions(quint8 index);
+  /**
+   * @brief playerDelete Fired when 'Player löschen' in the context menu is
+   * clicked.
+   * @param index ID of the player
+   */
+  void playerDelete(quint8 index);
 };
 
-#endif // VIDEOPLAYER_H
+#endif  // VIDEOPLAYER_H
