@@ -27,6 +27,24 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tableWidget->setColumnWidth(3, 20);
   ui->tableWidget->setShowGrid(false);
 
+  QMenu* menuFile = ui->menuBar->addMenu(tr("Datei"));
+  QAction* speichern = new QAction(tr("Speichern"), this);
+  menuFile->addAction(speichern);
+  QMenu* menuEdit = ui->menuBar->addMenu(tr("Bearbeiten"));
+  QAction* settings = new QAction(tr("Einstellungen"), this);
+  menuEdit->addAction(settings);
+  QMenu* menuExtras = ui->menuBar->addMenu(tr("Extras"));
+  QAction* about = new QAction(tr("Über"), this);
+  menuExtras->addAction(about);
+  QAction* close = new QAction(tr("Schließen"), this);
+  menuFile->addAction(close);
+  connect(speichern, SIGNAL(triggered()), this, SLOT(saveFile()));
+  connect(settings, SIGNAL(triggered()), this, SLOT(settings()));
+  connect(about, SIGNAL(triggered()), this, SLOT(about()));
+  connect(close, SIGNAL(triggered()), this, SLOT(close()));
+
+
+
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(continueUpdateClientList()));
   timer->start(1000);
@@ -58,6 +76,41 @@ void MainWindow::on_recordButton_clicked() {
     recordStop();
     startStopFlag = false;
   }
+}
+void MainWindow::saveFile(){
+qDebug()<<"save";
+}
+
+void MainWindow::settings(){
+qDebug()<<"settings";
+}
+
+void MainWindow::about(){
+// Create dialog
+QDialog *aboutDialog = new QDialog(this);
+aboutDialog->resize(300, 150);
+aboutDialog->setWindowTitle(QString("Über"));
+aboutDialog->move(this->x() + 250, this->y() + 300);
+
+// Create info label
+QLabel *aboutLabel = new QLabel(QString("Octopus: Vernetztes Video Capturetool\nVersion 0.313b"), aboutDialog);
+aboutLabel->move(10, 10);
+
+// Create save button and connect functinality
+QPushButton *closeButton = new QPushButton("Schließen", aboutDialog);
+closeButton->move(115, 120);
+connect(closeButton, &QPushButton::pressed,
+        [this, aboutDialog]() {
+          aboutDialog->close();
+        });
+aboutDialog->exec();
+
+closeButton->disconnect();
+aboutDialog->deleteLater();
+}
+
+void MainWindow::closeWindow(){
+    this->close();
 }
 
 void MainWindow::recordStart() {

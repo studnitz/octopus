@@ -90,6 +90,23 @@ public slots:
    */
   void videoPlayerDelete(quint8 index);
 
+  /**
+   * @brief saveFile save a File
+   */
+  void saveFile();
+  /**
+   * @brief settings Settings of the program
+   */
+  void settings();
+  /**
+   * @brief about Information about the program
+   */
+  void about();
+  /**
+   * @brief closeWindow Close MainWindow
+   */
+  void closeWindow();
+
 private slots:
     /**
      * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
