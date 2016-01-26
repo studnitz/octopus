@@ -99,7 +99,7 @@ QHostAddress Client::findServer() {
     }
   }
   // DEFAULT LOCAL HOST
-  serverIP = QHostAddress("192.168.1.25");
+  serverIP = QHostAddress("127.0.0.1");
   return serverIP;
 }
 
