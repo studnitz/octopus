@@ -1,34 +1,37 @@
 #include <QString>
 #include <QtTest>
+#include <QCoreApplication>
+
 #include "client.h"
 #include "server.h"
 #include "serverthread.h"
 
-class communication : public QObject {
+class Communication : public QObject {
   Q_OBJECT
 
  public:
-  communication();
+  Communication();
 
  private Q_SLOTS:
   void initTestCase();
   void cleanupTestCase();
+
   void OneClientConnected();
   void TwoClientConnected();
   void ServerGetInfo();
   void FindServer();
 };
 
-communication::communication() {}
+Communication::Communication() {}
 
-void communication::initTestCase() {}
+void Communication::initTestCase() {}
 
-void communication::cleanupTestCase() {}
+void Communication::cleanupTestCase() {}
 
 /*
  * 1 Client connect and stay connected
  */
-void communication::OneClientConnected() {
+void Communication::OneClientConnected() {
   Server server;
   server.startServer();
 
@@ -45,7 +48,7 @@ void communication::OneClientConnected() {
  *
  *
  */
-void communication::TwoClientConnected() {
+void Communication::TwoClientConnected() {
   Server server;
   server.startServer();
   Client client1;
@@ -65,7 +68,7 @@ void communication::TwoClientConnected() {
   QVERIFY(server.getNumClients() == 2);
 }
 
-void communication::ServerGetInfo() {
+void Communication::ServerGetInfo() {
   Server server;
   Client client1, client2;
   server.startServer();
@@ -85,11 +88,11 @@ void communication::ServerGetInfo() {
   QVERIFY(clients.at(1)->ClientInfo[0] != 0);
 }
 
-void communication::FindServer(){
-    Client client;
-    QVERIFY(client.findServer()==QHostAddress("127.0.0.1"));
+void Communication::FindServer() {
+  Client client;
+  QVERIFY(client.findServer() == QHostAddress("127.0.0.1"));
 }
 
-QTEST_MAIN(communication)
+QTEST_MAIN(Communication)
 
 #include "tst_communication.moc"
