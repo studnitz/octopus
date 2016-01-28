@@ -6,6 +6,7 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 #include <QNetworkInterface>
+#include <QStorageInfo>
 
 class Client : public QObject {
   Q_OBJECT
@@ -18,7 +19,7 @@ class Client : public QObject {
  *
  * IP is found by found Server
  */
-  void start(quint16 port = 1234);
+  void start(QString serverIp = "127.0.0.1", quint16 port = 1234);
 
   /**
    * @brief findServer finds local Server
@@ -58,7 +59,7 @@ class Client : public QObject {
    * @return total disk space in KB
    */
   int getTotalDisk();
-signals:
+ signals:
 
  public slots:
   /**

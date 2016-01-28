@@ -39,10 +39,16 @@ void Client::sendInfo() {
   socket.write(message);
 }
 
-void Client::start(quint16 port) {
+void Client::start(QString ip, quint16 port) {
   findCamera();
-
-  QHostAddress addr(findServer());
+  QHostAddress serverIp;
+  if (ip == "127.0.0.1") {
+    qDebug() << "Searching Server";
+    serverIp = findServer();
+  } else {
+    qDebug() << "Connecting to" << ip;
+    serverIp = QHostAddress(ip);
+  }
 
   syncTime();
 
@@ -52,7 +58,7 @@ void Client::start(quint16 port) {
     // qDebug() << "Time Server not avaivble";
   }
 
-  socket.connectToHost(addr, port);
+  socket.connectToHost(serverIp, port);
 
   if (socket.waitForConnected()) {  // Timeout included in waitfor
     qDebug() << "Client connected";
@@ -89,16 +95,21 @@ QHostAddress Client::findServer() {
   QNetworkInterface iface;
   QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
   QListIterator<QNetworkInterface> it(interfaces);
-  while(it.hasNext()) {
+  while (it.hasNext()) {
     iface = it.next();
     if (iface.humanReadableName() == "eth0") {
       QList<QNetworkAddressEntry> entries = iface.addressEntries();
-      QNetworkAddressEntry entry = entries.first();
-      serverIP = entry.broadcast();
-      return serverIP;
+      if (!entries.isEmpty()) {
+        QNetworkAddressEntry entry = entries.first();
+        serverIP = entry.broadcast();
+        return serverIP;
+      } else {
+        qDebug() << "No LAN Cable connected";
+        break;
+      }
     }
   }
-  // DEFAULT LOCAL HOST
+  qDebug() << "Connecting to localhost";
   serverIP = QHostAddress("127.0.0.1");
   return serverIP;
 }

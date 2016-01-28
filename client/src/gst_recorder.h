@@ -12,7 +12,7 @@
 #include <QGst/Event>
 #include <QGst/Message>
 #include <QGst/Bus>
-#include <QHostAddress>
+#include <QDir>
 
 class GstRecorder : public QObject {
   Q_OBJECT
