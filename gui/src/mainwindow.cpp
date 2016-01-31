@@ -17,7 +17,8 @@ QMediaPlaylist *playlist;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
-
+  this->setWindowTitle(
+      QString("octopus: Vernetztes Videocapture Tool ").append(versionOctopus));
   // Initalizing the table
   ui->tableWidget->setColumnCount(4);
   ui->tableWidget->setRowCount(1);
@@ -27,23 +28,21 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tableWidget->setColumnWidth(3, 20);
   ui->tableWidget->setShowGrid(false);
 
-  QMenu* menuFile = ui->menuBar->addMenu(tr("Datei"));
-  QAction* speichern = new QAction(tr("Speichern"), this);
+  QMenu *menuFile = ui->menuBar->addMenu(tr("Datei"));
+  QAction *speichern = new QAction(tr("Speichern"), this);
   menuFile->addAction(speichern);
-  QMenu* menuEdit = ui->menuBar->addMenu(tr("Bearbeiten"));
-  QAction* settings = new QAction(tr("Einstellungen"), this);
+  QMenu *menuEdit = ui->menuBar->addMenu(tr("Bearbeiten"));
+  QAction *settings = new QAction(tr("Einstellungen"), this);
   menuEdit->addAction(settings);
-  QMenu* menuExtras = ui->menuBar->addMenu(tr("Extras"));
-  QAction* about = new QAction(tr("Über"), this);
+  QMenu *menuExtras = ui->menuBar->addMenu(tr("Extras"));
+  QAction *about = new QAction(tr("Über"), this);
   menuExtras->addAction(about);
-  QAction* close = new QAction(tr("Schließen"), this);
+  QAction *close = new QAction(tr("Schließen"), this);
   menuFile->addAction(close);
   connect(speichern, SIGNAL(triggered()), this, SLOT(saveFile()));
-  connect(settings, SIGNAL(triggered()), this, SLOT(settings()));
+  connect(settings, SIGNAL(triggered()), this, SLOT(settingsDialog()));
   connect(about, SIGNAL(triggered()), this, SLOT(about()));
   connect(close, SIGNAL(triggered()), this, SLOT(close()));
-
-
 
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(continueUpdateClientList()));
@@ -63,6 +62,7 @@ MainWindow::~MainWindow() {
     (*i)->disconnect();
   }
   delete ui;
+  delete settings;
 }
 
 void MainWindow::on_recordButton_clicked() {
@@ -77,52 +77,146 @@ void MainWindow::on_recordButton_clicked() {
     startStopFlag = false;
   }
 }
-void MainWindow::saveFile(){
-qDebug()<<"save";
+void MainWindow::saveFile() { qDebug() << "save"; }
+
+void MainWindow::settingsDialog() {
+  int settingIntervall = settings->value("octopus/Intervall").toInt();
+  int settingQuality = settings->value("octopus/Quality").toInt();
+  int settingGridWidth = settings->value("octopus/GridWidth").toInt();
+  int settingGridHeigth = settings->value("octopus/GridHeigth").toInt();
+  int settingLocation = settings->value("octopus/Location").toInt();
+  int yAufnahme = 5;
+  int yWiedergabe = 170;
+
+  // Create Dialog
+  QDialog *settingsDialog = new QDialog(this);
+  settingsDialog->resize(500, 500);
+  settingsDialog->setWindowTitle(QString("Einstellungen"));
+  QLabel *settingAufnahme = new QLabel(QString("Aufnahme:"), settingsDialog);
+  settingAufnahme->move(5, yAufnahme);
+  QFrame* line = new QFrame(settingsDialog);
+  line->setFrameShape(QFrame::HLine);
+  line->setFrameShadow(QFrame::Sunken);
+  line->resize(480, line->height());
+  line->move(10, yWiedergabe -30);
+  QLabel *settingWiedergabe = new QLabel(QString("Wiedergabe"), settingsDialog);
+  settingWiedergabe->move(5, yWiedergabe);
+
+  QLabel *intervallLabel =
+      new QLabel(QString("Intervall für erneuern der Client-Status-LEDs:"),
+                 settingsDialog);
+  intervallLabel->move(10, yAufnahme + 35);
+  QComboBox *clientStatusIntervall = new QComboBox(settingsDialog);
+  clientStatusIntervall->addItem(tr("0.5 Sekunden"));
+  clientStatusIntervall->addItem(tr("1 Sekunde"));
+  clientStatusIntervall->addItem(tr("2 Sekunden"));
+  clientStatusIntervall->addItem(tr("5 Sekunden"));
+  clientStatusIntervall->addItem(tr("10 Sekunden"));
+  clientStatusIntervall->addItem(tr("20 Sekunden"));
+  clientStatusIntervall->move(270, yAufnahme + 30);
+  clientStatusIntervall->setCurrentIndex(settingIntervall);
+
+  QLabel *qualityLabel =
+      new QLabel(QString("Qualität der Aufnahmen:"), settingsDialog);
+  qualityLabel->move(10, yAufnahme + 75);
+  QComboBox *recordQuality = new QComboBox(settingsDialog);
+  recordQuality->addItem(tr("144p"));
+  recordQuality->addItem(tr("240p"));
+  recordQuality->addItem(tr("360p"));
+  recordQuality->addItem(tr("720p"));
+  recordQuality->addItem(tr("1080p"));
+  recordQuality->move(270, yAufnahme + 70);
+  recordQuality->setCurrentIndex(settingQuality);
+
+  QLabel *gridWidthLabel = new QLabel(QString("Gridbreite:"), settingsDialog);
+  gridWidthLabel->move(10, yWiedergabe + 35);
+  QSpinBox *gridWidthInput = new QSpinBox(settingsDialog);
+  gridWidthInput->move(73, yWiedergabe + 30);
+  gridWidthInput->setMaximum(9999);
+  gridWidthInput->setValue(settingGridWidth);
+  QLabel *gridHeigthLabel = new QLabel(QString("Gridhöhe:"), settingsDialog);
+  gridHeigthLabel->move(163, yWiedergabe + 35);
+  QSpinBox *gridHeigthInput = new QSpinBox(settingsDialog);
+  gridHeigthInput->move(220, yWiedergabe + 30);
+  gridHeigthInput->setMaximum(9999);
+  gridHeigthInput->setValue(settingGridHeigth);
+
+  QLabel *storeLocationLabel =
+      new QLabel(QString("Speicherort für die Aufnamen:"), settingsDialog);
+  storeLocationLabel->move(10, yAufnahme + 115);
+  QComboBox *storeLocation = new QComboBox(settingsDialog);
+  storeLocation->addItem(tr("SD-Karte der Clients"));
+  storeLocation->addItem(tr("SD-Karte des Servers"));
+  storeLocation->addItem(tr("Festplatte"));
+  storeLocation->addItem(tr("Clients, dann auf Server holen"));
+  storeLocation->addItem(tr("Clients, dann auf Festplatte holen"));
+  storeLocation->move(270, yAufnahme + 110);
+  storeLocation->setCurrentIndex(settingLocation);
+
+  QPushButton *closeButton = new QPushButton("Schließen", settingsDialog);
+  closeButton->move(173, 460);
+  connect(closeButton, &QPushButton::pressed,
+          [this, settingsDialog]() { settingsDialog->close(); });
+
+  QPushButton *saveButton = new QPushButton("Speichern", settingsDialog);
+  saveButton->move(257, 460);
+  connect(
+      saveButton, &QPushButton::pressed,
+      [this, settingsDialog, clientStatusIntervall, recordQuality,
+       storeLocation, gridWidthInput, gridHeigthInput]() {
+        settingsDialog->close();
+        settings->setValue("octopus/Intervall",
+                           clientStatusIntervall->currentIndex());
+        settings->setValue("octopus/Quality", recordQuality->currentIndex());
+        settings->setValue("octopus/Location", storeLocation->currentIndex());
+        settings->setValue("octopus/GridWidth", gridWidthInput->value());
+        settings->setValue("octopus/GridHeigth", gridHeigthInput->value());
+        log("Einstellungen gespeichert");
+
+      });
+
+  settingsDialog->exec();
+  closeButton->disconnect();
+  settingsDialog->deleteLater();
 }
 
-void MainWindow::settings(){
-qDebug()<<"settings";
+void MainWindow::about() {
+  // Create dialog
+  QDialog *aboutDialog = new QDialog(this);
+  aboutDialog->resize(300, 150);
+  aboutDialog->setWindowTitle(QString("Über"));
+  aboutDialog->move(this->x() + 250, this->y() + 300);
+
+  // Create info label
+  QLabel *aboutLabel =
+      new QLabel(QString("Octopus: Vernetztes Video Capturetool\nVersion ")
+                     .append(versionOctopus),
+                 aboutDialog);
+  aboutLabel->move(10, 10);
+
+  // Create save button and connect functinality
+  QPushButton *closeButton = new QPushButton("Schließen", aboutDialog);
+  closeButton->move(115, 120);
+  connect(closeButton, &QPushButton::pressed,
+          [this, aboutDialog]() { aboutDialog->close(); });
+  aboutDialog->exec();
+
+  closeButton->disconnect();
+  aboutDialog->deleteLater();
 }
 
-void MainWindow::about(){
-// Create dialog
-QDialog *aboutDialog = new QDialog(this);
-aboutDialog->resize(300, 150);
-aboutDialog->setWindowTitle(QString("Über"));
-aboutDialog->move(this->x() + 250, this->y() + 300);
-
-// Create info label
-QLabel *aboutLabel = new QLabel(QString("Octopus: Vernetztes Video Capturetool\nVersion 0.313b"), aboutDialog);
-aboutLabel->move(10, 10);
-
-// Create save button and connect functinality
-QPushButton *closeButton = new QPushButton("Schließen", aboutDialog);
-closeButton->move(115, 120);
-connect(closeButton, &QPushButton::pressed,
-        [this, aboutDialog]() {
-          aboutDialog->close();
-        });
-aboutDialog->exec();
-
-closeButton->disconnect();
-aboutDialog->deleteLater();
-}
-
-void MainWindow::closeWindow(){
-    this->close();
-}
+void MainWindow::closeWindow() { this->close(); }
 
 void MainWindow::recordStart() {
-    /* magic */
+  /* magic */
 
-    log("Aufzeichnung wurde gestartet.");
+  log("Aufzeichnung wurde gestartet.");
 }
 
 void MainWindow::recordStop() {
-    /* magic */
+  /* magic */
 
-    log("Aufzeichnung wurde gestoppt.");
+  log("Aufzeichnung wurde gestoppt.");
 }
 
 void MainWindow::on_pushButton_2_clicked() { printClients(); }
@@ -324,13 +418,12 @@ void MainWindow::videoPlayerOpenOptions(quint8 index) {
   // Create save button and connect functinality
   QPushButton *saveButton = new QPushButton("Speichern", optDialog);
   saveButton->move(400, 10);
-  connect(saveButton, &QPushButton::pressed,
-          [this, index, &posXInput, &posYInput, &widthInput, &heightInput]() {
-            videoPlayer->at(index)
-                ->move(posXInput->value(), posYInput->value());
-            videoPlayer->at(index)
-                ->resize(widthInput->value(), heightInput->value());
-          });
+  connect(saveButton, &QPushButton::pressed, [this, index, &posXInput,
+                                              &posYInput, &widthInput,
+                                              &heightInput]() {
+    videoPlayer->at(index)->move(posXInput->value(), posYInput->value());
+    videoPlayer->at(index)->resize(widthInput->value(), heightInput->value());
+  });
   optDialog->exec();
 
   saveButton->disconnect();
@@ -400,8 +493,25 @@ quint8 MainWindow::getFreePlayerId() {
   return videoPlayer->last()->index + 1;
 }
 
-void MainWindow::on_pushButton_Percent_clicked()
+void MainWindow::on_pushButton_Percent_clicked() {
+  showPercentage = !showPercentage;
+  continueUpdateClientList();
+}
+
+void MainWindow::on_pushButton_clicked()
 {
-    showPercentage = !showPercentage;
-    continueUpdateClientList();
+    int newHeight =0;
+    int newPos = 0;
+
+    if(ui->debugTextEdit->height()  == 20 ){
+        newHeight = 120;
+        newPos =    570;
+        ui->pushButton->setText("-");
+    }else{
+        newHeight=20;
+        newPos= 670;
+        ui->pushButton->setText("+");
+    }
+    ui->debugTextEdit->resize(ui->debugTextEdit->width(), newHeight);
+    ui->debugTextEdit->move(ui->debugTextEdit->x(),newPos);
 }

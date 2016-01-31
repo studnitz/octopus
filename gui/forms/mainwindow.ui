@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>835</width>
-    <height>738</height>
+    <width>837</width>
+    <height>718</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>octopus video-capture tool v0.1</string>
+   <string>octopus video-capture tool</string>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -20,10 +20,10 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>10</y>
+      <x>10</x>
+      <y>0</y>
       <width>821</width>
-      <height>601</height>
+      <height>661</height>
      </rect>
     </property>
     <property name="toolTip">
@@ -339,9 +339,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>610</y>
-      <width>821</width>
-      <height>91</height>
+      <y>670</y>
+      <width>801</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="font">
@@ -353,13 +353,26 @@
      <set>Qt::NoTextInteraction</set>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>670</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>835</width>
+     <width>837</width>
      <height>22</height>
     </rect>
    </property>

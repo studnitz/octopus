@@ -5,6 +5,7 @@
 #include "../server/src/server.h"
 #include "../server/src/serverthread.h"
 #include <QHostInfo>
+#include <QSettings>
 
 // Videoplayer
 #include <QMediaPlayer>
@@ -25,6 +26,8 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
   Server *server;
   bool showPercentage = 0;
+  QString versionOctopus = "0.313b";
+  QSettings* settings = new QSettings(QString("TUD IAD"), QString("octopus"));
 
 signals:
   void getinfo();
@@ -97,7 +100,7 @@ public slots:
   /**
    * @brief settings Settings of the program
    */
-  void settings();
+  void settingsDialog();
   /**
    * @brief about Information about the program
    */
@@ -112,6 +115,8 @@ private slots:
      * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
      */
     void on_pushButton_Percent_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
