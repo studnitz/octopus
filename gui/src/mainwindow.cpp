@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->tableWidget->setColumnWidth(3, 20);
   ui->tableWidget->setShowGrid(false);
 
+  // Menubar init
   QMenu *menuFile = ui->menuBar->addMenu(tr("Datei"));
   QAction *speichern = new QAction(tr("Speichern"), this);
   menuFile->addAction(speichern);
@@ -77,9 +78,12 @@ void MainWindow::on_recordButton_clicked() {
     startStopFlag = false;
   }
 }
+
+// TODO functionality
 void MainWindow::saveFile() { qDebug() << "save"; }
 
 void MainWindow::settingsDialog() {
+  // read previous settings
   int settingIntervall = settings->value("octopus/Intervall").toInt();
   int settingQuality = settings->value("octopus/Quality").toInt();
   int settingGridWidth = settings->value("octopus/GridWidth").toInt();
@@ -88,17 +92,17 @@ void MainWindow::settingsDialog() {
   int yAufnahme = 5;
   int yWiedergabe = 170;
 
-  // Create Dialog
+  // Create Dialog & Controls
   QDialog *settingsDialog = new QDialog(this);
   settingsDialog->resize(500, 500);
   settingsDialog->setWindowTitle(QString("Einstellungen"));
   QLabel *settingAufnahme = new QLabel(QString("Aufnahme:"), settingsDialog);
   settingAufnahme->move(5, yAufnahme);
-  QFrame* line = new QFrame(settingsDialog);
+  QFrame *line = new QFrame(settingsDialog);
   line->setFrameShape(QFrame::HLine);
   line->setFrameShadow(QFrame::Sunken);
   line->resize(480, line->height());
-  line->move(10, yWiedergabe -30);
+  line->move(10, yWiedergabe - 30);
   QLabel *settingWiedergabe = new QLabel(QString("Wiedergabe"), settingsDialog);
   settingWiedergabe->move(5, yWiedergabe);
 
@@ -164,6 +168,7 @@ void MainWindow::settingsDialog() {
       saveButton, &QPushButton::pressed,
       [this, settingsDialog, clientStatusIntervall, recordQuality,
        storeLocation, gridWidthInput, gridHeigthInput]() {
+        // store settings
         settingsDialog->close();
         settings->setValue("octopus/Intervall",
                            clientStatusIntervall->currentIndex());
@@ -498,20 +503,19 @@ void MainWindow::on_pushButton_Percent_clicked() {
   continueUpdateClientList();
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    int newHeight =0;
-    int newPos = 0;
+void MainWindow::on_pushButton_clicked() {
+  int newHeight = 0;
+  int newPos = 0;
 
-    if(ui->debugTextEdit->height()  == 20 ){
-        newHeight = 120;
-        newPos =    570;
-        ui->pushButton->setText("-");
-    }else{
-        newHeight=20;
-        newPos= 670;
-        ui->pushButton->setText("+");
-    }
-    ui->debugTextEdit->resize(ui->debugTextEdit->width(), newHeight);
-    ui->debugTextEdit->move(ui->debugTextEdit->x(),newPos);
+  if (ui->debugTextEdit->height() == 20) {
+    newHeight = 120;
+    newPos = 570;
+    ui->pushButton->setText("-");
+  } else {
+    newHeight = 20;
+    newPos = 670;
+    ui->pushButton->setText("+");
+  }
+  ui->debugTextEdit->resize(ui->debugTextEdit->width(), newHeight);
+  ui->debugTextEdit->move(ui->debugTextEdit->x(), newPos);
 }

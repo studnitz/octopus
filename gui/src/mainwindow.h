@@ -15,7 +15,6 @@
 
 namespace Ui {
 class MainWindow;
-
 }
 
 class MainWindow : public QMainWindow {
@@ -26,22 +25,27 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
   Server *server;
   bool showPercentage = 0;
-  QString versionOctopus = "0.313b";
-  QSettings* settings = new QSettings(QString("TUD IAD"), QString("octopus"));
+  QString versionOctopus = "0.313b";  // Versionnumber
 
-signals:
+  /**
+   * @brief settings to store settings
+   * settings-file is in ~/.config/TUD\ IAD/octopus
+   */
+  QSettings *settings = new QSettings(QString("TUD IAD"), QString("octopus"));
+
+ signals:
   void getinfo();
 
-public slots:
-    /**
-     * @brief on_recordButton_clicked GUI
-     */
-    void on_recordButton_clicked();
+ public slots:
+  /**
+   * @brief on_recordButton_clicked GUI
+   */
+  void on_recordButton_clicked();
 
-    /**
-     * @brief on_pushButton_2_clicked GUI
-     */
-    void on_pushButton_2_clicked();
+  /**
+   * @brief on_pushButton_2_clicked GUI
+   */
+  void on_pushButton_2_clicked();
 
   /**
    * @brief on_playButton_clicked Plays or pauses all players, depending on
@@ -49,16 +53,16 @@ public slots:
    */
   void on_playButton_clicked();
 
-    /**
-     * @brief continueUpdateClientList updates the Client List in the GUI
-     */
-    void continueUpdateClientList();
+  /**
+   * @brief continueUpdateClientList updates the Client List in the GUI
+   */
+  void continueUpdateClientList();
 
   /**
    * @brief on_openFileButton_clicked Opens a dialog to load recordings into the
    * program to play them later.
    */
-    void on_openFileButton_clicked();
+  void on_openFileButton_clicked();
 
   /**
    * @brief on_stopButton_clicked Stops the playback of all players.
@@ -110,17 +114,19 @@ public slots:
    */
   void closeWindow();
 
-private slots:
-    /**
-     * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
-     */
-    void on_pushButton_Percent_clicked();
+ private slots:
+  /**
+   * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
+   */
+  void on_pushButton_Percent_clicked();
+  /**
+   * @brief on_pushButton_clicked toggle log size
+   */
+  void on_pushButton_clicked();
 
-    void on_pushButton_clicked();
-
-private:
-    Ui::MainWindow *ui;
-    QList<QString> *clients;    // TODO: Kann weg?
+ private:
+  Ui::MainWindow *ui;
+  QList<QString> *clients;  // TODO: Kann weg?
 
   /**
    * @brief player List of players
