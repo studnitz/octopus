@@ -5,6 +5,7 @@
 #include "../server/src/server.h"
 #include "../server/src/serverthread.h"
 #include <QHostInfo>
+#include <QSettings>
 
 // Videoplayer
 #include <QMediaPlayer>
@@ -14,7 +15,6 @@
 
 namespace Ui {
 class MainWindow;
-
 }
 
 class MainWindow : public QMainWindow {
@@ -25,20 +25,27 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
   Server *server;
   bool showPercentage = 0;
+  QString versionOctopus = "0.313b";  // Versionnumber
 
-signals:
+  /**
+   * @brief settings to store settings
+   * settings-file is in ~/.config/TUD\ IAD/octopus
+   */
+  QSettings *settings = new QSettings(QString("TUD IAD"), QString("octopus"));
+
+ signals:
   void getinfo();
 
-public slots:
-    /**
-     * @brief on_recordButton_clicked GUI
-     */
-    void on_recordButton_clicked();
+ public slots:
+  /**
+   * @brief on_recordButton_clicked GUI
+   */
+  void on_recordButton_clicked();
 
-    /**
-     * @brief on_pushButton_2_clicked GUI
-     */
-    void on_pushButton_2_clicked();
+  /**
+   * @brief on_pushButton_2_clicked GUI
+   */
+  void on_pushButton_2_clicked();
 
   /**
    * @brief on_playButton_clicked Plays or pauses all players, depending on
@@ -46,16 +53,16 @@ public slots:
    */
   void on_playButton_clicked();
 
-    /**
-     * @brief continueUpdateClientList updates the Client List in the GUI
-     */
-    void continueUpdateClientList();
+  /**
+   * @brief continueUpdateClientList updates the Client List in the GUI
+   */
+  void continueUpdateClientList();
 
   /**
    * @brief on_openFileButton_clicked Opens a dialog to load recordings into the
    * program to play them later.
    */
-    void on_openFileButton_clicked();
+  void on_openFileButton_clicked();
 
   /**
    * @brief on_stopButton_clicked Stops the playback of all players.
@@ -90,15 +97,36 @@ public slots:
    */
   void videoPlayerDelete(quint8 index);
 
-private slots:
-    /**
-     * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
-     */
-    void on_pushButton_Percent_clicked();
+  /**
+   * @brief saveFile save a File
+   */
+  void saveFile();
+  /**
+   * @brief settings Settings of the program
+   */
+  void settingsDialog();
+  /**
+   * @brief about Information about the program
+   */
+  void about();
+  /**
+   * @brief closeWindow Close MainWindow
+   */
+  void closeWindow();
 
-private:
-    Ui::MainWindow *ui;
-    QList<QString> *clients;    // TODO: Kann weg?
+ private slots:
+  /**
+   * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
+   */
+  void on_pushButton_Percent_clicked();
+  /**
+   * @brief on_pushButton_clicked toggle log size
+   */
+  void on_pushButton_clicked();
+
+ private:
+  Ui::MainWindow *ui;
+  QList<QString> *clients;  // TODO: Kann weg?
 
   /**
    * @brief player List of players
