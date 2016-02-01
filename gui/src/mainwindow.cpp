@@ -253,7 +253,10 @@ void MainWindow::continueUpdateClientList() {
   // Initialize RowCount with 0
   ui->tableWidget->setRowCount(0);
   QStringList headerLabels;
-  headerLabels << "Name" << "D" << "M" << "C";
+  headerLabels << "Name"
+               << "D"
+               << "M"
+               << "C";
   ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
   ui->tableWidget->horizontalHeaderItem(1)->setToolTip("Disk");
   ui->tableWidget->horizontalHeaderItem(2)->setToolTip("Memory");
@@ -511,18 +514,14 @@ void MainWindow::on_pushButton_Percent_clicked() {
 }
 
 void MainWindow::on_pushButton_clicked() {
-  int newHeight = 0;
-  int newPos = 0;
-
-  if (ui->debugTextEdit->height() == 20) {
-    newHeight = 120;
-    newPos = 570;
+  if (ui->pushButton->text() == "+") {
+    ui->debugTextEdit->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Expanding);
     ui->pushButton->setText("-");
   } else {
-    newHeight = 20;
-    newPos = 670;
+    ui->debugTextEdit->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Minimum);
     ui->pushButton->setText("+");
   }
-  ui->debugTextEdit->resize(ui->debugTextEdit->width(), newHeight);
-  ui->debugTextEdit->move(ui->debugTextEdit->x(), newPos);
+  ui->debugTextEdit->adjustSize();
 }
