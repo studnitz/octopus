@@ -11,6 +11,8 @@ class Grid {
   void addSource(VideoFile file, quint8 x, quint8 y);
   void deleteSource(quint8 x, quint8 y);
 
+  void resizeGrid(quint8 x, quint8 y);
+
  private:
   quint8 width;
   quint8 height;
