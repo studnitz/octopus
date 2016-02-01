@@ -10,7 +10,9 @@ class Recording : public QObject
   Q_OBJECT
 public:
   explicit Recording(QObject *parent = 0);
-  Recording(QDateTime datetime, Grid);
+  Recording(QDateTime datetime, Grid grid);
+  QDateTime datetime;
+  Grid grid;
 
 signals:
 

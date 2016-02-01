@@ -4,11 +4,17 @@
 #include <QObject>
 #include <QFile>
 
+class VideoFile {
+ public:
+  VideoFile(quint32 id = 0);  // empty Video-File
+  VideoFile(quint32 id, bool isRemote, QFile *file, QString hostname,
+            qint64 deltaMs = 0);
 
-class VideoFile
-{
-public:
-  VideoFile(quint32 id, bool isRemote = false, QFile videoFile);
+  quint32 id;
+  bool isRemote;
+  QFile *file;
+  QString hostname;
+  qint64 deltaMs;
 };
 
-#endif // VIDEOFILE_H
+#endif  // VIDEOFILE_H

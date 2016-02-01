@@ -2,16 +2,19 @@
 #define GRID_H
 
 #include <QObject>
+#include "videofile.h"
 
-class Grid : public QObject
-{
-  Q_OBJECT
-public:
-  explicit Grid(QObject *parent = 0);
+class Grid {
+ public:
+  Grid(quint8 width = 3, quint8 height = 3);
 
-signals:
+  void addSource(VideoFile file, quint8 x, quint8 y);
+  void deleteSource(quint8 x, quint8 y);
 
-public slots:
+ private:
+  quint8 width;
+  quint8 height;
+  QList<QList<VideoFile> > grid;
 };
 
-#endif // GRID_H
+#endif  // GRID_H
