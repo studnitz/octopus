@@ -252,6 +252,13 @@ void MainWindow::continueUpdateClientList() {
 
   // Initialize RowCount with 0
   ui->tableWidget->setRowCount(0);
+  QStringList headerLabels;
+  headerLabels << "Name" << "D" << "M" << "C";
+  ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
+  ui->tableWidget->horizontalHeaderItem(1)->setToolTip("Disk");
+  ui->tableWidget->horizontalHeaderItem(2)->setToolTip("Memory");
+  ui->tableWidget->horizontalHeaderItem(3)->setToolTip("CPU");
+  ui->tableWidget->horizontalHeader()->show();
 
   // Update each Row/Client. Iterator cant be used here because index is needed
   for (int i = 0; i < server->getClients().size(); i++) {
