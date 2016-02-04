@@ -22,10 +22,11 @@ MainWindow::MainWindow(QWidget *parent)
   // Initalizing the table
   ui->tableWidget->setColumnCount(4);
   ui->tableWidget->setRowCount(1);
-  ui->tableWidget->setColumnWidth(0, 149);
   ui->tableWidget->setColumnWidth(1, 20);
   ui->tableWidget->setColumnWidth(2, 20);
   ui->tableWidget->setColumnWidth(3, 20);
+  ui->tableWidget->horizontalHeader()->setSectionResizeMode(
+      0, QHeaderView::Stretch);
   ui->tableWidget->setShowGrid(false);
 
   // Menubar init
@@ -41,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
   QAction *close = new QAction(tr("Schließen"), this);
   menuFile->addAction(close);
   connect(speichern, SIGNAL(triggered()), this, SLOT(saveFile()));
-  connect(settings, SIGNAL(triggered()), this, SLOT(settingsDialog()));
+  connect(settings, SIGNAL(triggered()), this, SLOT(settingsDialogButton()));
   connect(about, SIGNAL(triggered()), this, SLOT(about()));
   connect(close, SIGNAL(triggered()), this, SLOT(close()));
 
@@ -82,107 +83,9 @@ void MainWindow::on_recordButton_clicked() {
 // TODO functionality
 void MainWindow::saveFile() { qDebug() << "save"; }
 
-void MainWindow::settingsDialog() {
-  // read previous settings
-  int settingIntervall = settings->value("octopus/Intervall").toInt();
-  int settingQuality = settings->value("octopus/Quality").toInt();
-  int settingGridWidth = settings->value("octopus/GridWidth").toInt();
-  int settingGridHeigth = settings->value("octopus/GridHeigth").toInt();
-  int settingLocation = settings->value("octopus/Location").toInt();
-  int yAufnahme = 5;
-  int yWiedergabe = 170;
-
-  // Create Dialog & Controls
-  QDialog *settingsDialog = new QDialog(this);
-  settingsDialog->resize(500, 500);
-  settingsDialog->setWindowTitle(QString("Einstellungen"));
-  QLabel *settingAufnahme = new QLabel(QString("Aufnahme:"), settingsDialog);
-  settingAufnahme->move(5, yAufnahme);
-  QFrame *line = new QFrame(settingsDialog);
-  line->setFrameShape(QFrame::HLine);
-  line->setFrameShadow(QFrame::Sunken);
-  line->resize(480, line->height());
-  line->move(10, yWiedergabe - 30);
-  QLabel *settingWiedergabe = new QLabel(QString("Wiedergabe"), settingsDialog);
-  settingWiedergabe->move(5, yWiedergabe);
-
-  QLabel *intervallLabel =
-      new QLabel(QString("Intervall für erneuern der Client-Status-LEDs:"),
-                 settingsDialog);
-  intervallLabel->move(10, yAufnahme + 35);
-  QComboBox *clientStatusIntervall = new QComboBox(settingsDialog);
-  clientStatusIntervall->addItem(tr("0.5 Sekunden"));
-  clientStatusIntervall->addItem(tr("1 Sekunde"));
-  clientStatusIntervall->addItem(tr("2 Sekunden"));
-  clientStatusIntervall->addItem(tr("5 Sekunden"));
-  clientStatusIntervall->addItem(tr("10 Sekunden"));
-  clientStatusIntervall->addItem(tr("20 Sekunden"));
-  clientStatusIntervall->move(270, yAufnahme + 30);
-  clientStatusIntervall->setCurrentIndex(settingIntervall);
-
-  QLabel *qualityLabel =
-      new QLabel(QString("Qualität der Aufnahmen:"), settingsDialog);
-  qualityLabel->move(10, yAufnahme + 75);
-  QComboBox *recordQuality = new QComboBox(settingsDialog);
-  recordQuality->addItem(tr("144p"));
-  recordQuality->addItem(tr("240p"));
-  recordQuality->addItem(tr("360p"));
-  recordQuality->addItem(tr("720p"));
-  recordQuality->addItem(tr("1080p"));
-  recordQuality->move(270, yAufnahme + 70);
-  recordQuality->setCurrentIndex(settingQuality);
-
-  QLabel *gridWidthLabel = new QLabel(QString("Gridbreite:"), settingsDialog);
-  gridWidthLabel->move(10, yWiedergabe + 35);
-  QSpinBox *gridWidthInput = new QSpinBox(settingsDialog);
-  gridWidthInput->move(73, yWiedergabe + 30);
-  gridWidthInput->setMaximum(9999);
-  gridWidthInput->setValue(settingGridWidth);
-  QLabel *gridHeigthLabel = new QLabel(QString("Gridhöhe:"), settingsDialog);
-  gridHeigthLabel->move(163, yWiedergabe + 35);
-  QSpinBox *gridHeigthInput = new QSpinBox(settingsDialog);
-  gridHeigthInput->move(220, yWiedergabe + 30);
-  gridHeigthInput->setMaximum(9999);
-  gridHeigthInput->setValue(settingGridHeigth);
-
-  QLabel *storeLocationLabel =
-      new QLabel(QString("Speicherort für die Aufnamen:"), settingsDialog);
-  storeLocationLabel->move(10, yAufnahme + 115);
-  QComboBox *storeLocation = new QComboBox(settingsDialog);
-  storeLocation->addItem(tr("SD-Karte der Clients"));
-  storeLocation->addItem(tr("SD-Karte des Servers"));
-  storeLocation->addItem(tr("Festplatte"));
-  storeLocation->addItem(tr("Clients, dann auf Server holen"));
-  storeLocation->addItem(tr("Clients, dann auf Festplatte holen"));
-  storeLocation->move(270, yAufnahme + 110);
-  storeLocation->setCurrentIndex(settingLocation);
-
-  QPushButton *closeButton = new QPushButton("Schließen", settingsDialog);
-  closeButton->move(173, 460);
-  connect(closeButton, &QPushButton::pressed,
-          [this, settingsDialog]() { settingsDialog->close(); });
-
-  QPushButton *saveButton = new QPushButton("Speichern", settingsDialog);
-  saveButton->move(257, 460);
-  connect(
-      saveButton, &QPushButton::pressed,
-      [this, settingsDialog, clientStatusIntervall, recordQuality,
-       storeLocation, gridWidthInput, gridHeigthInput]() {
-        // store settings
-        settingsDialog->close();
-        settings->setValue("octopus/Intervall",
-                           clientStatusIntervall->currentIndex());
-        settings->setValue("octopus/Quality", recordQuality->currentIndex());
-        settings->setValue("octopus/Location", storeLocation->currentIndex());
-        settings->setValue("octopus/GridWidth", gridWidthInput->value());
-        settings->setValue("octopus/GridHeigth", gridHeigthInput->value());
-        log("Einstellungen gespeichert");
-
-      });
-
-  settingsDialog->exec();
-  closeButton->disconnect();
-  settingsDialog->deleteLater();
+void MainWindow::settingsDialogButton() {
+  SettingsDialog *sD = new SettingsDialog();
+  sD->show();
 }
 
 void MainWindow::about() {
@@ -494,7 +397,7 @@ void MainWindow::on_addPlayerButton_clicked() {
   player->at(index)->setVideoOutput(videoPlayer->at(index));
   videoPlayer->at(index)->move(newX, newY);
   videoPlayer->at(index)->resize(newWidth, newHeight);
-  videoPlayer->at(index)->show(); 
+  videoPlayer->at(index)->show();
 
   // Connect videoPlayer slots
   connect(videoPlayer->at(index), &VideoPlayer::playerOpenOptions, this,
