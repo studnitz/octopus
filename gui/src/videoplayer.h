@@ -20,7 +20,7 @@ class VideoPlayer : public QVideoWidget {
    */
   quint8 index;
 
-signals:
+ signals:
   /**
    * @brief playerOpenOptions Fired when 'Einstellungen' in the context menu is
    * clicked.
