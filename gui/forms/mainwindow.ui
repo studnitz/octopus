@@ -45,7 +45,7 @@
        <string/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="tabBarAutoHide">
        <bool>false</bool>
@@ -151,7 +151,6 @@
               </widget>
              </item>
             </layout>
-            <zorder>frame_3</zorder>
             <zorder>recordButton</zorder>
             <zorder>pushButton_2</zorder>
            </widget>
@@ -268,10 +267,6 @@
          </layout>
         </item>
        </layout>
-       <zorder>verticalLayoutWidget</zorder>
-       <zorder>frame_3</zorder>
-       <zorder>verticalLayoutWidget_2</zorder>
-       <zorder>frame_5</zorder>
       </widget>
       <widget class="QWidget" name="tab_2">
        <property name="enabled">
@@ -377,9 +372,6 @@
          </layout>
         </item>
        </layout>
-       <zorder>verticalLayoutWidget</zorder>
-       <zorder>frame_6</zorder>
-       <zorder>listView</zorder>
        <zorder></zorder>
       </widget>
      </widget>
@@ -435,9 +427,6 @@
      </layout>
     </item>
    </layout>
-   <zorder>debugTextEdit</zorder>
-   <zorder>horizontalLayoutWidget</zorder>
-   <zorder>tabWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -445,7 +434,7 @@
      <x>0</x>
      <y>0</y>
      <width>1039</width>
-     <height>19</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>

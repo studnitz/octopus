@@ -458,6 +458,7 @@ void MainWindow::videoPlayerDelete(quint8 index) {
 }
 
 void MainWindow::on_addPlayerButton_clicked() {
+  /*
   // ---- Adjustable parameters
   quint16 initialMarginX = 10;
   quint16 initialMarginY = 10;
@@ -494,18 +495,94 @@ void MainWindow::on_addPlayerButton_clicked() {
   player->at(index)->setVideoOutput(videoPlayer->at(index));
   videoPlayer->at(index)->move(newX, newY);
   videoPlayer->at(index)->resize(newWidth, newHeight);
-  videoPlayer->at(index)->show(); 
+  videoPlayer->at(index)->show();
 
   // Connect videoPlayer slots
   connect(videoPlayer->at(index), &VideoPlayer::playerOpenOptions, this,
           &MainWindow::videoPlayerOpenOptions);
   connect(videoPlayer->at(index), &VideoPlayer::playerDelete, this,
           &MainWindow::videoPlayerDelete);
+  */
+
+  VideoFile vidFile2(0);
+  VideoFile vidFile1(1337, false, "/home/tosz/big-buck-bunny_trailer.webm",
+                     "self");
+  VideoFile vidFile3(0);
+  VideoFile vidFile4(1338, false, "/home/tosz/big-buck-bunny_trailer.webm",
+                     "self");
+
+  Grid grid(2, 2);
+  grid.addSource(vidFile1, 0, 0);
+  grid.addSource(vidFile2, 0, 1);
+  grid.addSource(vidFile3, 1, 0);
+  grid.addSource(vidFile4, 1, 1);
+
+  QDateTime dateTime(QDate(2016, 1, 1), QTime(8, 30, 0));
+
+  recording = new Recording(dateTime, grid);
+
+  loadPlayersFromRecording();
 }
 
 quint8 MainWindow::getFreePlayerId() {
   if (videoPlayer->empty()) return 0;
   return videoPlayer->last()->index + 1;
+}
+
+void MainWindow::loadPlayersFromRecording() {
+  QList<QList<VideoFile> > grid = recording->grid.grid;
+
+  // Durchlaufen des Rasters im Recording und suche nach Sources
+  for (int i = 0; i < grid.length(); ++i) {
+    for (int j = 0; j < grid.at(0).length(); ++j) {
+      // Wenn aktuelle VideoFile nicht leer ist
+      if (grid.at(i).at(j).id != 0) {
+        connectSourceToNewVideo(grid.at(i).at(j), i, j);
+      }
+    }
+  }
+}
+
+void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
+                                         int j) {
+  // ---- Adjustable parameters
+  quint16 initialMarginX = 10;
+  quint16 initialMarginY = 10;
+  qint16 marginX = 1;
+  qint16 marginY = 1;
+  quint8 playerRatioX = 16, playerRatioY = 9;
+  // -------------------------------
+
+  quint16 playerWidth =
+      ((ui->frame_6->width() - 2 * initialMarginX) / recording->grid.grid.length());
+  quint16 playerHeight = (playerWidth * playerRatioY) / playerRatioX;
+  quint16 playerGridPosX = i;
+  quint16 playerGridPosY = j;
+  quint8 playerIndex = getFreePlayerId();
+
+  quint16 playerPosX = playerWidth * playerGridPosX;
+  quint16 playerPosY = playerHeight * playerGridPosY;
+
+  // Create Player
+  player->append(new QMediaPlayer(this));
+  videoPlayer->append(new VideoPlayer(ui->frame_6, playerIndex));
+
+  // Apply new position
+  player->at(playerIndex)->setVideoOutput(videoPlayer->at(playerIndex));
+  videoPlayer->at(playerIndex)
+      ->move(initialMarginX + playerPosX, initialMarginY + playerPosY);
+  videoPlayer->at(playerIndex)
+      ->resize(playerWidth - marginX, playerHeight - marginY);
+  videoPlayer->at(playerIndex)->show();
+
+  // Connect Source
+  player->at(playerIndex)->setMedia(QUrl::fromLocalFile(source.filePath));
+
+  // Connect Signals
+  connect(videoPlayer->at(playerIndex), &VideoPlayer::playerOpenOptions, this,
+          &MainWindow::videoPlayerOpenOptions);
+  connect(videoPlayer->at(playerIndex), &VideoPlayer::playerDelete, this,
+          &MainWindow::videoPlayerDelete);
 }
 
 void MainWindow::on_pushButton_Percent_clicked() {

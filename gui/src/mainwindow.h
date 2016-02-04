@@ -13,6 +13,8 @@
 #include "playlistmodel.h"
 #include "videoplayer.h"
 
+#include "../server/src/recording.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -126,7 +128,8 @@ class MainWindow : public QMainWindow {
 
  private:
   Ui::MainWindow *ui;
-  QList<QString> *clients;  // TODO: Kann weg?
+
+  Recording *recording;
 
   /**
    * @brief player List of players
@@ -161,6 +164,10 @@ class MainWindow : public QMainWindow {
    * @return The free ID
    */
   quint8 getFreePlayerId();
+
+  void loadPlayersFromRecording();
+
+  void connectSourceToNewVideo(const VideoFile& source, int i, int j);
 };
 
 #endif  // MAINWINDOW_H
