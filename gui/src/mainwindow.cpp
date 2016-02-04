@@ -488,13 +488,13 @@ void MainWindow::on_addPlayerButton_clicked() {
   }
 
   player->append(new QMediaPlayer(this));
-  videoPlayer->append(new VideoPlayer(ui->tab_2, index));
+  videoPlayer->append(new VideoPlayer(ui->frame_6, index));
 
   // Apply new position
   player->at(index)->setVideoOutput(videoPlayer->at(index));
   videoPlayer->at(index)->move(newX, newY);
   videoPlayer->at(index)->resize(newWidth, newHeight);
-  videoPlayer->at(index)->show();
+  videoPlayer->at(index)->show(); 
 
   // Connect videoPlayer slots
   connect(videoPlayer->at(index), &VideoPlayer::playerOpenOptions, this,
