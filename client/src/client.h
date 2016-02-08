@@ -2,8 +2,11 @@
 #define TCPCLIENT_H
 
 #include <QObject>
-#include <QtNetwork>
+//#include <QtNetwork> wtf
 #include <QTcpSocket>
+#include <QHostAddress>
+#include <QNetworkInterface>
+#include <QStorageInfo>
 
 class Client : public QObject {
   Q_OBJECT
@@ -16,7 +19,7 @@ class Client : public QObject {
  *
  * IP is found by found Server
  */
-  void start(quint16 port = 1234);
+  void start(QString serverIp = "127.0.0.1", quint16 port = 1234);
 
   /**
    * @brief findServer finds local Server
@@ -30,37 +33,33 @@ class Client : public QObject {
   double getCpuUsage();
 
   /**
-   * @brief getFreeMemory
+   * @brief Client::getFreeMemory
    * @return free memory in KB
    */
-  long getFreeMemory();
+  int getFreeMemory();
 
   /**
-    * @brief getAllMemory
+    * @brief Client::getAllMemory
     * @return total memory in KB
     */
-  long getAllMemory();
+  int getAllMemory();
   /**
    * @brief getMemoryUsage
    * @return memory usage in percent
    */
   float getMemoryUsage();
   /**
-   * @brief getDiskUsage
+   * @brief Client::getDiskUsage
    * @return disk usage in percent
    */
   double getDiskUsage();
-  /**
-   * @brief getFreeDisk
-   * @return free disk space in KB
-   */
-  ulong getFreeDisk();
+  int getFreeDisk();
   /**
    * @brief getTotalDisk
    * @return total disk space in KB
    */
-  ulong getTotalDisk();
-signals:
+  int getTotalDisk();
+ signals:
 
  public slots:
   /**

@@ -28,32 +28,34 @@ class Server : public QTcpServer {
    */
   QList<ServerThread *> getClients();
 
-signals:
+ signals:
   /**
    * @brief broadcastCommand sends command to all connected Clients
    * @param command command value
    */
   void broadcastCommand(int command);
+  /**
+   * @brief gotInfo
+   */
+  void gotInfo();
 
  public slots:
   /**
-   * @brief getInfo
-   * sends Command to all Clients to send new Information
+   * @brief getInfo sends Command to all Clients to send new Information
    * is started when ready is emitted by Serverthread
    */
   void getInfo();
   /**
-   * @brief readInfo
-   * do something with new Information
+   * @brief readInfo do something with new Information
    * started when new Info is emitted by Serverthread
    */
   void readInfo();
 
  protected:
   /**
-   * @brief incomingConnection
+   * @brief incomingConnection starts a new ServerThread where client connection
+   * is handeld
    * @param socketDescriptor
-   * starts a new ServerThread where client connection is handeld
    */
   void incomingConnection(qintptr socketDescriptor);
 };

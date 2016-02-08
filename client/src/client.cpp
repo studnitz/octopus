@@ -1,5 +1,8 @@
 #include "client.h"
 
+#include <QStorageInfo>
+
+
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
     qDebug() << "Could not start client";
@@ -36,10 +39,16 @@ void Client::sendInfo() {
   socket.write(message);
 }
 
-void Client::start(quint16 port) {
+void Client::start(QString ip, quint16 port) {
   findCamera();
-
-  QHostAddress addr(findServer());
+  QHostAddress serverIp;
+  if (ip == "127.0.0.1") {
+    qDebug() << "Searching Server";
+    serverIp = findServer();
+  } else {
+    qDebug() << "Connecting to" << ip;
+    serverIp = QHostAddress(ip);
+  }
 
   syncTime();
 
@@ -49,7 +58,7 @@ void Client::start(quint16 port) {
     // qDebug() << "Time Server not avaivble";
   }
 
-  socket.connectToHost(addr, port);
+  socket.connectToHost(serverIp, port);
 
   if (socket.waitForConnected()) {  // Timeout included in waitfor
     qDebug() << "Client connected";
@@ -86,16 +95,21 @@ QHostAddress Client::findServer() {
   QNetworkInterface iface;
   QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
   QListIterator<QNetworkInterface> it(interfaces);
-  while(it.hasNext()) {
+  while (it.hasNext()) {
     iface = it.next();
     if (iface.humanReadableName() == "eth0") {
       QList<QNetworkAddressEntry> entries = iface.addressEntries();
-      QNetworkAddressEntry entry = entries.first();
-      serverIP = entry.broadcast();
-      return serverIP;
+      if (!entries.isEmpty()) {
+        QNetworkAddressEntry entry = entries.first();
+        serverIP = entry.broadcast();
+        return serverIP;
+      } else {
+        qDebug() << "No LAN Cable connected";
+        break;
+      }
     }
   }
-  // DEFAULT LOCAL HOST
+  qDebug() << "Connecting to localhost";
   serverIP = QHostAddress("127.0.0.1");
   return serverIP;
 }
@@ -114,10 +128,10 @@ void Client::findCamera() {
 double Client::getCpuUsage() {
   double percent;
   FILE *file;
-  unsigned long long totalUser, totalUserLow, totalSys, totalIdle, total;
+  unsigned int totalUser, totalUserLow, totalSys, totalIdle, total;
 
   file = fopen("/proc/stat", "r");
-  fscanf(file, "cpu %llu %llu %llu %llu", &totalUser, &totalUserLow, &totalSys,
+  fscanf(file, "cpu %d %d %d %d", &totalUser, &totalUserLow, &totalSys,
          &totalIdle);
   fclose(file);
 
@@ -130,7 +144,7 @@ double Client::getCpuUsage() {
   return percent;
 }
 
-long Client::getAllMemory() {
+int Client::getAllMemory() {
   QFile file("/proc/meminfo");
   if (!file.open(QIODevice::ReadOnly)) {
     qDebug() << file.errorString();
@@ -146,7 +160,7 @@ long Client::getAllMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-long Client::getFreeMemory() {
+int Client::getFreeMemory() {
   QFile file("/proc/meminfo");
   if (!file.open(QIODevice::ReadOnly)) {
     qDebug() << file.errorString();
@@ -155,7 +169,7 @@ long Client::getFreeMemory() {
   QTextStream in(&file);
   QString line = in.readLine();
   line = in.readLine();
-
+  line = in.readLine();
   QRegExp rx("[ ]");
   QStringList list = line.split(rx, QString::SkipEmptyParts);
 
@@ -163,7 +177,7 @@ long Client::getFreeMemory() {
   return atol(list.at(1).toStdString().c_str());
 }
 
-ulong Client::getFreeDisk() {
+int Client::getFreeDisk() {
   QStorageInfo info("/");
   return info.bytesAvailable() / 1024;
 }
@@ -173,12 +187,12 @@ double Client::getDiskUsage() {
 }
 
 float Client::getMemoryUsage() {
-  long free_mem = getFreeMemory();
-  long total_mem = getAllMemory();
+  int free_mem = getFreeMemory();
+  int total_mem = getAllMemory();
   return 100 - (free_mem / ((float)total_mem)) * 100;
 }
 
-ulong Client::getTotalDisk() {
+int Client::getTotalDisk() {
   QStorageInfo info("/");
   return info.bytesTotal() / 1024;
 }

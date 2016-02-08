@@ -12,11 +12,11 @@
 #include <QGst/Event>
 #include <QGst/Message>
 #include <QGst/Bus>
-#include <QHostAddress>
+#include <QDir>
 
 class GstRecorder : public QObject {
   Q_OBJECT
-public:
+ public:
   GstRecorder(QObject *parent = 0);
 
   /**
@@ -42,7 +42,7 @@ public:
    */
   void createRtpSink(quint16 port = 1337, QString address = "127.0.0.1");
 
-private:
+ private:
   /**
    * @brief createVideoSrcBin is used to create a video source (usually v4l2)
    * @return a pointer to the created video source
@@ -67,4 +67,4 @@ private:
   QGst::BinPtr createVideoMuxBin();
 };
 
-#endif // GST_RECORDER_h
+#endif  // GST_RECORDER_h
