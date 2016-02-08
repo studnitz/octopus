@@ -6,6 +6,7 @@
 #include "../server/src/serverthread.h"
 #include <QHostInfo>
 #include <QSettings>
+#include "settingsdialog.h"
 
 // Videoplayer
 #include <QMediaPlayer>
@@ -104,7 +105,7 @@ class MainWindow : public QMainWindow {
   /**
    * @brief settings Settings of the program
    */
-  void settingsDialog();
+  void settingsDialogButton();
   /**
    * @brief about Information about the program
    */

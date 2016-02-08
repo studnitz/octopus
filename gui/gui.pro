@@ -11,14 +11,17 @@ SOURCES += src/main.cpp         \
         src/playlistmodel.cpp   \
         src/videoplayer.cpp     \
     ../server/src/server.cpp  \
-    ../server/src/serverthread.cpp
+    ../server/src/serverthread.cpp \
+    src/settingsdialog.cpp
 
 HEADERS  += src/mainwindow.h    \
         src/playlistmodel.h     \
         src/videoplayer.h       \
     ../server/src/server.h    \
-    ../server/src/serverthread.h
+    ../server/src/serverthread.h \
+    src/settingsdialog.h
 
-FORMS    += forms/mainwindow.ui
+FORMS    += forms/mainwindow.ui \
+    forms/settingsdialog.ui
 
 CONFIG   += c++11
