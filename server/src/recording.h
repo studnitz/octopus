@@ -5,18 +5,21 @@
 #include <QObject>
 #include <QDateTime>
 
-class Recording : public QObject
-{
+class Recording : public QObject {
   Q_OBJECT
-public:
+ public:
   explicit Recording(QObject *parent = 0);
   Recording(QDateTime datetime, Grid grid);
   QDateTime datetime;
   Grid grid;
 
+  void read(const QJsonObject &json);
+  void write(QJsonObject &json) const;
+
+  bool saveRecording() const;
 signals:
 
-public slots:
+ public slots:
 };
 
-#endif // RECORDING_H
+#endif  // RECORDING_H

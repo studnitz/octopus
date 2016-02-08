@@ -13,6 +13,9 @@ class Grid {
 
   void resizeGrid(quint8 x, quint8 y);
 
+  void read(const QJsonObject &json);
+  void write(QJsonObject &json) const;
+
  private:
   quint8 width;
   quint8 height;
