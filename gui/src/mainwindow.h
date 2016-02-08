@@ -6,6 +6,7 @@
 #include "../server/src/serverthread.h"
 #include <QHostInfo>
 #include <QSettings>
+#include "settingsdialog.h"
 
 // Videoplayer
 #include <QMediaPlayer>
@@ -54,11 +55,6 @@ class MainWindow : public QMainWindow {
    * @brief on_recordButton_clicked GUI
    */
   void on_recordButton_clicked();
-
-  /**
-   * @brief on_pushButton_2_clicked GUI
-   */
-  void on_pushButton_2_clicked();
 
   /**
    * @brief on_playButton_clicked Plays or pauses all players, depending on
@@ -117,7 +113,7 @@ class MainWindow : public QMainWindow {
   /**
    * @brief settings Settings of the program
    */
-  void settingsDialog();
+  void settingsDialogButton();
   /**
    * @brief about Information about the program
    */
