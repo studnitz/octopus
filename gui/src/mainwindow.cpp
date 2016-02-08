@@ -329,24 +329,24 @@ void MainWindow::continueUpdateClientList() {
 
 void MainWindow::on_playButton_clicked() {
   QList<QMediaPlayer *>::iterator i;
-  switch (player->at(0)->state()) {
-    case QMediaPlayer::PlayingState:
-      for (i = player->begin(); i != player->end(); ++i) {
-        (*i)->pause();
-      }
-      ui->playButton->setText("Play");
-      log("Pausiere Wiedergabe der Aufnahme");
-      break;
-    default:
-      for (i = player->begin(); i != player->end(); ++i) {
-        (*i)->play();
-      }
-      if (player->at(0)->state() == QMediaPlayer::PlayingState) {
-        ui->playButton->setText("Pause");
-        log("Starte Wiedergabe der Aufnahme");
-      }
-      break;
-  }
+  if (!player->empty()) switch (player->at(0)->state()) {
+      case QMediaPlayer::PlayingState:
+        for (i = player->begin(); i != player->end(); ++i) {
+          (*i)->pause();
+        }
+        ui->playButton->setText("Play");
+        log("Pausiere Wiedergabe der Aufnahme");
+        break;
+      default:
+        for (i = player->begin(); i != player->end(); ++i) {
+          (*i)->play();
+        }
+        if (player->at(0)->state() == QMediaPlayer::PlayingState) {
+          ui->playButton->setText("Pause");
+          log("Starte Wiedergabe der Aufnahme");
+        }
+        break;
+    }
 }
 
 void MainWindow::on_openFileButton_clicked() {
@@ -510,12 +510,23 @@ void MainWindow::on_addPlayerButton_clicked() {
   VideoFile vidFile3(0);
   VideoFile vidFile4(1338, false, "/home/tosz/big-buck-bunny_trailer.webm",
                      "self");
+  VideoFile vidFile5(0);
+  VideoFile vidFile6(0);
+  VideoFile vidFile7(0);
+  VideoFile vidFile8(0);
+  VideoFile vidFile9(1339, false, "/home/tosz/big-buck-bunny_trailer.webm",
+                     "self");
 
-  Grid grid(2, 2);
+  Grid grid(3, 3);
   grid.addSource(vidFile1, 0, 0);
   grid.addSource(vidFile2, 0, 1);
-  grid.addSource(vidFile3, 1, 0);
-  grid.addSource(vidFile4, 1, 1);
+  grid.addSource(vidFile3, 0, 2);
+  grid.addSource(vidFile4, 1, 0);
+  grid.addSource(vidFile5, 1, 1);
+  grid.addSource(vidFile6, 1, 2);
+  grid.addSource(vidFile7, 2, 0);
+  grid.addSource(vidFile8, 2, 1);
+  grid.addSource(vidFile9, 2, 2);
 
   QDateTime dateTime(QDate(2016, 1, 1), QTime(8, 30, 0));
 
