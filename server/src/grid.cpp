@@ -1,5 +1,7 @@
 #include "grid.h"
 #include <QJsonArray>
+#include <QJsonDocument>
+#include <QDebug>
 Grid::Grid(quint8 width, quint8 height) : width(width), height(height) {
   grid = QList<QList<VideoFile> >();
   for (int i = 0; i < height; i++) {
@@ -23,7 +25,7 @@ void Grid::read(const QJsonObject &json) {
     QList<VideoFile> row = QList<VideoFile>();
     QJsonArray rowArray = gridArray[rowIndex].toArray();
     for (int columnIndex = 0; columnIndex < rowArray.size(); ++columnIndex) {
-      QJsonObject videoObject;
+      QJsonObject videoObject = rowArray[columnIndex].toObject();
       VideoFile video;
       video.read(videoObject);
       row.push_back(video);
