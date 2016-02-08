@@ -553,15 +553,33 @@ void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
   quint8 playerRatioX = 16, playerRatioY = 9;
   // -------------------------------
 
-  quint16 playerWidth =
-      ((ui->frame_6->width() - 2 * initialMarginX) / recording->grid.grid.length());
-  quint16 playerHeight = (playerWidth * playerRatioY) / playerRatioX;
+  quint16 playerWidth, playerHeight;
   quint16 playerGridPosX = i;
   quint16 playerGridPosY = j;
   quint8 playerIndex = getFreePlayerId();
 
-  quint16 playerPosX = playerWidth * playerGridPosX;
-  quint16 playerPosY = playerHeight * playerGridPosY;
+  double playerWidthDouble =
+      ((double)(ui->frame_6->width() - 2 * initialMarginX) /
+       recording->grid.grid.length());
+  double playerHeightDouble =
+      ((double)(ui->frame_6->height() - 2 * initialMarginY) /
+       recording->grid.grid.at(0).length());
+
+  // Determine if size should be height or width oriented depending
+  // on window-size, so players are in always visible area
+  if (qRound(playerWidthDouble / playerRatioX) <
+      qRound(playerHeightDouble / playerRatioY)) {
+    playerWidth = qRound(playerWidthDouble);
+    playerHeight = qRound((playerWidthDouble * playerRatioY) / playerRatioX);
+  } else {
+    playerHeight = qRound(playerHeightDouble);
+    playerWidth = qRound((playerHeightDouble * playerRatioX) / playerRatioY);
+  }
+
+  quint16 playerPosX =
+      playerWidth * playerGridPosX + initialMarginX + marginX * playerGridPosX;
+  quint16 playerPosY =
+      playerHeight * playerGridPosY + initialMarginY + marginY * playerGridPosY;
 
   // Create Player
   player->append(new QMediaPlayer(this));
@@ -569,10 +587,8 @@ void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
 
   // Apply new position
   player->at(playerIndex)->setVideoOutput(videoPlayer->at(playerIndex));
-  videoPlayer->at(playerIndex)
-      ->move(initialMarginX + playerPosX, initialMarginY + playerPosY);
-  videoPlayer->at(playerIndex)
-      ->resize(playerWidth - marginX, playerHeight - marginY);
+  videoPlayer->at(playerIndex)->move(playerPosX, playerPosY);
+  videoPlayer->at(playerIndex)->resize(playerWidth, playerHeight);
   videoPlayer->at(playerIndex)->show();
 
   // Connect Source
