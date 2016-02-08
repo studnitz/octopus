@@ -1,4 +1,5 @@
 #include "server.h"
+
 Server::Server(QObject* parent) : QTcpServer(parent) {
   qDebug() << "Server created";
 }
@@ -19,7 +20,7 @@ void Server::incomingConnection(qintptr socketDescriptor) {
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
   connect(this, &Server::broadcastCommand, thread, &ServerThread::sendCommand);
   connect(thread, SIGNAL(ready()), this, SLOT(getInfo()));
-  //connect(thread, SIGNAL(newInfo()), this, SLOT(readInfo()));
+  // connect(thread, SIGNAL(newInfo()), this, SLOT(readInfo()));
   thread->start();
 
   qDebug() << "New Client connected";

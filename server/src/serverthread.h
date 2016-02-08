@@ -52,7 +52,7 @@ class ServerThread : public QThread {
    */
   qintptr socketDescriptor;
 
-signals:
+ signals:
   /**
    * @brief error
    * @param socketerror
