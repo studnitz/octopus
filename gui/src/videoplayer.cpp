@@ -3,8 +3,9 @@
 #include <QMenu>
 #include <QMessageBox>
 
-VideoPlayer::VideoPlayer(QWidget *parent, quint8 index) : QVideoWidget(parent) {
+VideoPlayer::VideoPlayer(quint8 index, quint32 videoFileId, QWidget *parent) : QVideoWidget(parent) {
   this->index = index;
+  this->videoFileId = videoFileId;
 }
 
 void VideoPlayer::contextMenuEvent(QContextMenuEvent *e) {

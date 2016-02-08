@@ -2,6 +2,7 @@
 #define GRID_H
 
 #include <QObject>
+#include <QPair>
 #include "videofile.h"
 
 class Grid {
@@ -12,6 +13,7 @@ class Grid {
   void deleteSource(quint8 x, quint8 y);
 
   void resizeGrid(quint8 x, quint8 y);
+  QPair<int, int> getVideoFilePositionById(quint32 id);
 
   QList<QList<VideoFile> > grid;
  private:

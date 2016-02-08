@@ -395,40 +395,20 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index) {
 }
 
 void MainWindow::videoPlayerOpenOptions(quint8 index) {
-  // Create dialog
-  QDialog *optDialog = new QDialog(this);
-  optDialog->resize(500, 150);
-  optDialog->setWindowTitle(QString("Einstellungen vom Player mit ID=")
-                                .append(QString::number(index)));
-  optDialog->move(this->x() + 200, this->y() + 300);
+  PlayerSettingsDialog *psDialog = new PlayerSettingsDialog(index, this);
+  int result = psDialog->exec();
+  if (result == QDialogButtonBox::RejectRole) {
+    for (int i = 0; i < videoPlayer->length(); ++i) videoPlayerDelete(i);
 
-  // Create info labels
-  QLabel *posXLabel = new QLabel(QString("Position X:"), optDialog);
-  QLabel *posYLabel = new QLabel(QString("Position Y:"), optDialog);
-  QLabel *widthLabel = new QLabel(QString("Breite:"), optDialog);
-  QLabel *heightLabel = new QLabel(QString("Höhe:"), optDialog);
-  posXLabel->move(10, 10);
-  posYLabel->move(120, 10);
-  widthLabel->move(10, 75);
-  heightLabel->move(120, 75);
+    loadPlayersFromRecording();
 
-  // Create spin boxes for data display and fill them
-  QSpinBox *posXInput = new QSpinBox(optDialog);
-  QSpinBox *posYInput = new QSpinBox(optDialog);
-  QSpinBox *widthInput = new QSpinBox(optDialog);
-  QSpinBox *heightInput = new QSpinBox(optDialog);
-  posXInput->setMaximum(9999);
-  posYInput->setMaximum(9999);
-  widthInput->setMaximum(9999);
-  heightInput->setMaximum(9999);
-  posXInput->move(10, 30);
-  posYInput->move(120, 30);
-  widthInput->move(10, 95);
-  heightInput->move(120, 95);
-  posXInput->setValue(videoPlayer->at(index)->x());
-  posYInput->setValue(videoPlayer->at(index)->y());
-  widthInput->setValue(videoPlayer->at(index)->width());
-  heightInput->setValue(videoPlayer->at(index)->height());
+    QMessageBox msgBox;
+    msgBox.setText("Änderungen wurden gespeichert");
+    msgBox.exec();
+  }
+
+  psDialog->deleteLater();
+  /*
 
   // Create save button and connect functinality
   QPushButton *saveButton = new QPushButton("Speichern", optDialog);
@@ -443,6 +423,7 @@ void MainWindow::videoPlayerOpenOptions(quint8 index) {
 
   saveButton->disconnect();
   optDialog->deleteLater();
+  */
 }
 
 void MainWindow::videoPlayerDelete(quint8 index) {
@@ -458,52 +439,7 @@ void MainWindow::videoPlayerDelete(quint8 index) {
 }
 
 void MainWindow::on_addPlayerButton_clicked() {
-  /*
-  // ---- Adjustable parameters
-  quint16 initialMarginX = 10;
-  quint16 initialMarginY = 10;
-  qint16 marginX = 1;
-  qint16 marginY = 1;
-  quint16 newWidth = 240;
-  quint16 newHeight = 180;
-  // -------------------------------
-
-  quint16 newX, newY;
-  quint8 index = getFreePlayerId();
-
-  // Calculate new position
-  if (index == 0) {
-    newX = initialMarginX;
-    newY = initialMarginY;
-  } else {
-    newX = videoPlayer->at(index - 1)->x();
-    newY = videoPlayer->at(index - 1)->y();
-
-    if (newY + videoPlayer->at(index - 1)->height() + newHeight >
-        ui->tabWidget->height()) {
-      newY = initialMarginY;
-      newX += marginX + newWidth;
-    } else {
-      newY += marginY + newHeight;
-    }
-  }
-
-  player->append(new QMediaPlayer(this));
-  videoPlayer->append(new VideoPlayer(ui->frame_6, index));
-
-  // Apply new position
-  player->at(index)->setVideoOutput(videoPlayer->at(index));
-  videoPlayer->at(index)->move(newX, newY);
-  videoPlayer->at(index)->resize(newWidth, newHeight);
-  videoPlayer->at(index)->show();
-
-  // Connect videoPlayer slots
-  connect(videoPlayer->at(index), &VideoPlayer::playerOpenOptions, this,
-          &MainWindow::videoPlayerOpenOptions);
-  connect(videoPlayer->at(index), &VideoPlayer::playerDelete, this,
-          &MainWindow::videoPlayerDelete);
-  */
-
+  // ----- TEST DATA -----
   VideoFile vidFile2(0);
   VideoFile vidFile1(1337, false, "/home/tosz/big-buck-bunny_trailer.webm",
                      "self");
@@ -531,6 +467,7 @@ void MainWindow::on_addPlayerButton_clicked() {
   QDateTime dateTime(QDate(2016, 1, 1), QTime(8, 30, 0));
 
   recording = new Recording(dateTime, grid);
+  // -----------------------
 
   loadPlayersFromRecording();
 }
@@ -541,14 +478,12 @@ quint8 MainWindow::getFreePlayerId() {
 }
 
 void MainWindow::loadPlayersFromRecording() {
-  QList<QList<VideoFile> > grid = recording->grid.grid;
-
   // Durchlaufen des Rasters im Recording und suche nach Sources
-  for (int i = 0; i < grid.length(); ++i) {
-    for (int j = 0; j < grid.at(0).length(); ++j) {
+  for (int i = 0; i < recording->grid.grid.length(); ++i) {
+    for (int j = 0; j < recording->grid.grid.at(0).length(); ++j) {
       // Wenn aktuelle VideoFile nicht leer ist
-      if (grid.at(i).at(j).id != 0) {
-        connectSourceToNewVideo(grid.at(i).at(j), i, j);
+      if (recording->grid.grid.at(i).at(j).id != 0) {
+        connectSourceToNewVideo(recording->grid.grid.at(i).at(j), i, j);
       }
     }
   }
@@ -594,7 +529,7 @@ void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
 
   // Create Player
   player->append(new QMediaPlayer(this));
-  videoPlayer->append(new VideoPlayer(ui->frame_6, playerIndex));
+  videoPlayer->append(new VideoPlayer(playerIndex, source.id, ui->frame_6));
 
   // Apply new position
   player->at(playerIndex)->setVideoOutput(videoPlayer->at(playerIndex));

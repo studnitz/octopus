@@ -7,7 +7,7 @@ class VideoPlayer : public QVideoWidget {
   Q_OBJECT
 
  public:
-  VideoPlayer(QWidget *parent = 0, quint8 index = 0);
+  VideoPlayer(quint8 index, quint32 videoFileId, QWidget *parent = 0);
 
   /**
    * @brief contextMenuEvent Event handler for context-menu opening.
@@ -20,7 +20,12 @@ class VideoPlayer : public QVideoWidget {
    */
   quint8 index;
 
-signals:
+  /**
+   * @brief videoFileId ID of the Videofile that VideoPlayer is supposed to play
+   */
+  quint32 videoFileId;
+
+ signals:
   /**
    * @brief playerOpenOptions Fired when 'Einstellungen' in the context menu is
    * clicked.

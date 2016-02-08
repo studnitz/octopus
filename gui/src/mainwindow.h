@@ -14,6 +14,7 @@
 #include "videoplayer.h"
 
 #include "../server/src/recording.h"
+#include "src/playersettingsdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +35,16 @@ class MainWindow : public QMainWindow {
    * settings-file is in ~/.config/TUD\ IAD/octopus
    */
   QSettings *settings = new QSettings(QString("TUD IAD"), QString("octopus"));
+
+  /**
+   * @brief videoPlayer List of video players
+   * The VideoPlayer class inherits from QVideoPlayer. It is the output object
+   * for the stream that is decoded by the player object. Also it has some
+   * overridden events compared to QVideoPlayer.
+   */
+  QList<VideoPlayer *> *videoPlayer;
+
+  Recording *recording;
 
  signals:
   void getinfo();
@@ -126,10 +137,8 @@ class MainWindow : public QMainWindow {
    */
   void on_pushButton_clicked();
 
- private:
+ protected:
   Ui::MainWindow *ui;
-
-  Recording *recording;
 
   /**
    * @brief player List of players
@@ -139,24 +148,17 @@ class MainWindow : public QMainWindow {
   QList<QMediaPlayer *> *player;
 
   /**
-   * @brief videoPlayer List of video players
-   * The VideoPlayer class inherits from QVideoPlayer. It is the output object
-   * for the stream that is decoded by the player object. Also it has some
-   * overridden events compared to QVideoPlayer.
+   * @brief log Helper function for writing info messages into the log section.
+   * @param msg QString that holds the message
    */
-  QList<VideoPlayer *> *videoPlayer;
+  void log(QString msg);
 
+private:
   void recordStart();
   void recordStop();
   void printClients();
 
   QColor getColorFromPercent(int percent);
-
-  /**
-   * @brief log Helper function for writing info messages into the log section.
-   * @param msg QString that holds the message
-   */
-  void log(QString msg);
 
   /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at
