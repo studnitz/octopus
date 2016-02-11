@@ -45,6 +45,8 @@ class MainWindow : public QMainWindow {
    */
   QList<VideoPlayer *> *videoPlayer;
 
+  void loadPlayersFromRecording();
+
   Recording *recording;
 
  signals:
@@ -149,7 +151,7 @@ class MainWindow : public QMainWindow {
    */
   void log(QString msg);
 
-private:
+ private:
   void recordStart();
   void recordStop();
   void printClients();
@@ -163,9 +165,14 @@ private:
    */
   quint8 getFreePlayerId();
 
-  void loadPlayersFromRecording();
-
-  void connectSourceToNewVideo(const VideoFile& source, int i, int j);
+  /**
+   * @brief connectSourceToNewVideo Connects source to the player at position
+   * [i, j]
+   * @param source
+   * @param i
+   * @param j
+   */
+  void connectSourceToNewVideo(const VideoFile &source, int i, int j);
 };
 
 #endif  // MAINWINDOW_H

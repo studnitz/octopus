@@ -55,3 +55,11 @@ QPair<int, int> Grid::getVideoFilePositionById(quint32 id) {
 
   return QPair<int, int>(-1, -1);
 }
+
+VideoFile Grid::getVideoFileById(quint32 id) {
+  for (int i = 0; i < width; ++i)
+    for (int j = 0; j < height; ++j)
+      if (grid[i][j].id == id) return grid[i][j];
+
+  return VideoFile(0);
+}

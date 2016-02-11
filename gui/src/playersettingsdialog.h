@@ -15,9 +15,13 @@ public:
   explicit PlayerSettingsDialog(quint8 playerIndex, QWidget *parent = 0);
   ~PlayerSettingsDialog();
 
+private slots:
+  void on_buttonBox_accepted();
+
 private:
   Ui::PlayerSettingsDialog *ui;
   quint8 playerIndex;
+  bool changesDone;
 };
 
 #endif // PLAYERSETTINGSDIALOG_H

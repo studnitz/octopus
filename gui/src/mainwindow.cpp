@@ -297,16 +297,7 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index) {
 
 void MainWindow::videoPlayerOpenOptions(quint8 index) {
   PlayerSettingsDialog *psDialog = new PlayerSettingsDialog(index, this);
-  int result = psDialog->exec();
-  if (result == QDialogButtonBox::RejectRole) {
-    for (int i = 0; i < videoPlayer->length(); ++i) videoPlayerDelete(i);
-
-    loadPlayersFromRecording();
-
-    QMessageBox msgBox;
-    msgBox.setText("Änderungen wurden gespeichert");
-    msgBox.exec();
-  }
+  psDialog->exec();
 
   psDialog->deleteLater();
   /*

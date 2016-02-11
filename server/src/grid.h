@@ -46,8 +46,8 @@ class Grid {
   void write(QJsonObject &json) const;
 
   QPair<int, int> getVideoFilePositionById(quint32 id);
+  VideoFile getVideoFileById(quint32 id);
   QList<QList<VideoFile> > grid;
- private:
   quint8 width;
   quint8 height;
 };
