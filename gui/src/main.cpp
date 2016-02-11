@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "../server/src/server.h"
 #include "../server/src/serverthread.h"
+#include "../server/src/recording.h"
 #include <QApplication>
 
 Server server;

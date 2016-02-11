@@ -6,9 +6,8 @@
 #include <QDateTime>
 
 class Recording : public QObject {
-  Q_OBJECT
  public:
-  explicit Recording(QObject *parent = 0);
+  Recording();
   /**
    * @brief Recording Represents a recording with date and time and a grid.
    * @param datetime The current date and time of the start of the recording
@@ -42,9 +41,7 @@ class Recording : public QObject {
    * @return true if the file was loaded successfully, otherwise false.
    */
   bool loadRecording(QString path);
- signals:
 
- public slots:
 };
 
 #endif  // RECORDING_H

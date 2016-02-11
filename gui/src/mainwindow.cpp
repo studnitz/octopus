@@ -4,6 +4,8 @@
 #include <QStandardItemModel>
 #include <QList>
 #include <QHostInfo>
+#include <QDir>
+#include <QDebug>
 
 // Videoplayer
 #include <QtWidgets>
@@ -41,11 +43,13 @@ MainWindow::MainWindow(QWidget *parent)
   menuExtras->addAction(about);
   QAction *close = new QAction(tr("Schließen"), this);
   menuFile->addAction(close);
+  updateRecordingList();
   connect(speichern, SIGNAL(triggered()), this, SLOT(saveFile()));
   connect(settings, SIGNAL(triggered()), this, SLOT(settingsDialogButton()));
   connect(about, SIGNAL(triggered()), this, SLOT(about()));
   connect(close, SIGNAL(triggered()), this, SLOT(close()));
-
+  connect(ui->recordingList, &QListWidget::itemDoubleClicked, this,
+          &MainWindow::openRecording);
   QTimer *timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(continueUpdateClientList()));
   timer->start(1000);
@@ -252,6 +256,13 @@ void MainWindow::on_playButton_clicked() {
   }
 }
 
+void MainWindow::updateRecordingList() {
+  QStringList nameFilter("*.off");
+  QDir dir = QDir("/home/snx/build-octopus-Desktop-Debug/server");
+  QStringList offFiles = dir.entryList(nameFilter);
+  foreach (QString file, offFiles) { ui->recordingList->addItem(file); }
+}
+
 void MainWindow::on_openFileButton_clicked() {
   QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open movies"),
                                                         QDir::currentPath());
@@ -404,6 +415,13 @@ void MainWindow::on_addPlayerButton_clicked() {
           &MainWindow::videoPlayerOpenOptions);
   connect(videoPlayer->at(index), &VideoPlayer::playerDelete, this,
           &MainWindow::videoPlayerDelete);
+}
+
+void MainWindow::openRecording(QListWidgetItem *item) {
+  recording = new Recording() ;
+  QString fullPath = QDir::homePath() + "/build-octopus-Desktop-Debug/server/" + item->text();
+  qDebug() << "opened Recording: " << fullPath;
+  recording->loadRecording(fullPath);
 }
 
 quint8 MainWindow::getFreePlayerId() {

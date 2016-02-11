@@ -10,9 +10,12 @@
 
 // Videoplayer
 #include <QMediaPlayer>
+#include <QListWidget>
 #include <QMediaPlaylist>
 #include "playlistmodel.h"
 #include "videoplayer.h"
+
+#include "../server/src/recording.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +28,7 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
   Server *server;
+  Recording *recording;
   bool showPercentage = 0;
   QString versionOctopus = "0.313b";  // Versionnumber
 
@@ -53,6 +57,9 @@ class MainWindow : public QMainWindow {
    * current state.
    */
   void on_playButton_clicked();
+
+  void updateRecordingList();
+
 
   /**
    * @brief continueUpdateClientList updates the Client List in the GUI
@@ -83,6 +90,8 @@ class MainWindow : public QMainWindow {
    * initialMarginY, marginX, marginY, newWidth, new Height.
    */
   void on_addPlayerButton_clicked();
+
+  void openRecording(QListWidgetItem* item);
 
   /**
    * @brief videoPlayerOpenOptions Opens an option dialog for setting the

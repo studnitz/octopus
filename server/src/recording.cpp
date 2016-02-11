@@ -1,7 +1,7 @@
 #include "recording.h"
 #include <QFile>
 #include <QJsonDocument>
-Recording::Recording(QObject *parent) : QObject(parent) {}
+Recording::Recording() :datetime(QDateTime::currentDateTime()), grid(Grid()) {}
 
 Recording::Recording(QDateTime datetime, Grid grid)
   : datetime(datetime), grid(grid) {}

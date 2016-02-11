@@ -12,6 +12,9 @@ SOURCES += src/main.cpp         \
         src/videoplayer.cpp     \
     ../server/src/server.cpp  \
     ../server/src/serverthread.cpp \
+    ../server/src/recording.cpp \
+    ../server/src/grid.cpp \
+    ../server/src/videofile.cpp \
     src/settingsdialog.cpp
 
 HEADERS  += src/mainwindow.h    \
@@ -19,6 +22,9 @@ HEADERS  += src/mainwindow.h    \
         src/videoplayer.h       \
     ../server/src/server.h    \
     ../server/src/serverthread.h \
+    ../server/src/recording.h \
+    ../server/src/grid.h \
+    ../server/src/videofile.h \
     src/settingsdialog.h
 
 FORMS    += forms/mainwindow.ui \
