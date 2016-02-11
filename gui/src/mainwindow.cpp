@@ -300,22 +300,6 @@ void MainWindow::videoPlayerOpenOptions(quint8 index) {
   psDialog->exec();
 
   psDialog->deleteLater();
-  /*
-
-  // Create save button and connect functinality
-  QPushButton *saveButton = new QPushButton("Speichern", optDialog);
-  saveButton->move(400, 10);
-  connect(saveButton, &QPushButton::pressed, [this, index, &posXInput,
-                                              &posYInput, &widthInput,
-                                              &heightInput]() {
-    videoPlayer->at(index)->move(posXInput->value(), posYInput->value());
-    videoPlayer->at(index)->resize(widthInput->value(), heightInput->value());
-  });
-  optDialog->exec();
-
-  saveButton->disconnect();
-  optDialog->deleteLater();
-  */
 }
 
 void MainWindow::videoPlayerDelete(quint8 index) {
@@ -328,6 +312,13 @@ void MainWindow::videoPlayerDelete(quint8 index) {
   }
   player->removeAt(index);
   videoPlayer->removeAt(index);
+}
+
+void MainWindow::videoPlayerDeleteAlsoInGrid(quint8 index) {
+  QPair<int, int> pos = recording->grid.getVideoFilePositionById(videoPlayer->at(index)->videoFileId);
+  recording->grid.deleteSource(pos.first, pos.second);
+
+  videoPlayerDelete(index);
 }
 
 void MainWindow::on_addPlayerButton_clicked() {
@@ -436,7 +427,7 @@ void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
   connect(videoPlayer->at(playerIndex), &VideoPlayer::playerOpenOptions, this,
           &MainWindow::videoPlayerOpenOptions);
   connect(videoPlayer->at(playerIndex), &VideoPlayer::playerDelete, this,
-          &MainWindow::videoPlayerDelete);
+          &MainWindow::videoPlayerDeleteAlsoInGrid);
 }
 
 void MainWindow::on_pushButton_Percent_clicked() {

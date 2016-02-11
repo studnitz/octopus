@@ -109,6 +109,12 @@ class MainWindow : public QMainWindow {
   void videoPlayerDelete(quint8 index);
 
   /**
+   * @brief videoPlayerDelete Deletes a video player.
+   * @param index Index of the player to be deleted
+   */
+  void videoPlayerDeleteAlsoInGrid(quint8 index);
+
+  /**
    * @brief saveFile save a File
    */
   void saveFile();

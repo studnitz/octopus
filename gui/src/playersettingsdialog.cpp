@@ -51,7 +51,7 @@ void PlayerSettingsDialog::on_buttonBox_accepted() {
                                       ui->spinBox_4->value());
 
     // Delete all existing players
-    for (int i = 0; i < parent->videoPlayer->length(); ++i)
+    for (int i = parent->videoPlayer->length() - 1; i >= 0; i--)
       parent->videoPlayerDelete(i);
 
     // Print them again
