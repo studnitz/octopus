@@ -124,7 +124,8 @@ class MainWindow : public QMainWindow {
    */
   void closeWindow();
 
- private slots:
+  void saveRecording();
+private slots:
   /**
    * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
    */
@@ -134,7 +135,8 @@ class MainWindow : public QMainWindow {
    */
   void on_pushButton_clicked();
 
- private:
+
+private:
   Ui::MainWindow *ui;
   QList<QString> *clients;  // TODO: Kann weg?
 

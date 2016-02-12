@@ -313,6 +313,24 @@
              </widget>
             </item>
             <item>
+             <layout class="QHBoxLayout" name="recordingButtons">
+              <item>
+               <widget class="QPushButton" name="saveRecordingButton">
+                <property name="text">
+                 <string>Speichern</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="reloadButton">
+                <property name="text">
+                 <string>Neu laden</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
              <widget class="QListView" name="listView">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
