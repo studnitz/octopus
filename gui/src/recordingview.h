@@ -1,15 +1,31 @@
 #ifndef RECORDINGVIEW_H
 #define RECORDINGVIEW_H
 
-#include "mainwindow.h"
+#include <QObject>
+#include <QtGui>
+#include <QWidget>
+#include <QPushButton>
+class RecordingView : public QObject {
+  Q_OBJECT
+ public:
+  explicit RecordingView(QObject* parent = 0, QWidget* tab = 0);
+  QWidget* tab;
+  /**
+   * @brief record_button triggered when button is clicked
+   * @param recordButton pointer to button
+   */
+  void record_button(QPushButton* recordButton);
+  /**
+   * @brief recordStart starts to record
+   */
+  void recordStart();
+  /**
+   * @brief recordStop stops recording
+   */
+  void recordStop();
+ signals:
 
-
-class RecordingView
-{
-public:
-    MainWindow* mainWindow;
-    QWidget* tab;
-    RecordingView(MainWindow* mW, QWidget* t);
+ public slots:
 };
 
-#endif // RECORDINGVIEW_H
+#endif  // RECORDINGVIEW_H

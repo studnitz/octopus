@@ -17,6 +17,7 @@
 
 #include "../server/src/recording.h"
 #include "src/playersettingsdialog.h"
+#include "recordingview.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +30,7 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
   Server *server;
+  RecordingView* recordingView;
   bool showPercentage = 0;
   QString versionOctopus = "0.313b";  // Versionnumber
 
@@ -54,6 +56,12 @@ class MainWindow : public QMainWindow {
   void getinfo();
 
  public slots:
+  /**
+   * @brief log Helper function for writing info messages into the log section.
+   * @param msg QString that holds the message
+   */
+  void log(QString msg);
+
   /**
    * @brief on_recordButton_clicked GUI
    */
@@ -158,18 +166,10 @@ private slots:
    */
   QList<QMediaPlayer *> *player;
 
-
-  void recordStart();
-  void recordStop();
   void printClients();
 
   QColor getColorFromPercent(int percent);
 
-  /**
-   * @brief log Helper function for writing info messages into the log section.
-   * @param msg QString that holds the message
-   */
-  void log(QString msg);
 
   /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at

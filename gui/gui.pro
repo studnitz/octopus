@@ -25,13 +25,12 @@ HEADERS  += src/mainwindow.h    \
         src/videoplayer.h       \
     ../server/src/server.h    \
     ../server/src/serverthread.h \
-    ../server/src/recording.h   \
     ../server/src/grid.h        \
     ../server/src/videofile.h \
     src/playersettingsdialog.h \
     src/settingsdialog.h \
-    src/recordingview.h \
-    src/playbackview.h
+    src/playbackview.h \
+    src/recordingview.h
 
 FORMS    += forms/mainwindow.ui \
     forms/settingsdialog.ui 	\
