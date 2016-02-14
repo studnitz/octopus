@@ -28,6 +28,10 @@ void Server::incomingConnection(qintptr socketDescriptor) {
 
 void Server::getInfo() { this->broadcastCommand(0); }
 
+void Server::recordLocally() { this->broadcastCommand(2); }
+
+void Server::stopRecordings() { this->broadcastCommand(1); }
+
 void Server::readInfo() {
   QList<ServerThread*> clients = getClients();
   QListIterator<ServerThread*> it(clients);

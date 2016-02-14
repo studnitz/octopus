@@ -125,12 +125,14 @@ void MainWindow::closeWindow() { this->close(); }
 void MainWindow::recordStart() {
   /* magic */
 
+  server->recordLocally();
   log("Aufzeichnung wurde gestartet.");
 }
 
 void MainWindow::recordStop() {
   /* magic */
 
+  server->stopRecordings();
   log("Aufzeichnung wurde gestoppt.");
 }
 
