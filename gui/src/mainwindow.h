@@ -10,6 +10,7 @@
 
 // Videoplayer
 #include <QMediaPlayer>
+#include <QListWidget>
 #include <QMediaPlaylist>
 #include "playlistmodel.h"
 #include "videoplayer.h"
@@ -64,6 +65,9 @@ class MainWindow : public QMainWindow {
    */
   void on_playButton_clicked();
 
+  void updateRecordingList();
+
+
   /**
    * @brief continueUpdateClientList updates the Client List in the GUI
    */
@@ -93,6 +97,8 @@ class MainWindow : public QMainWindow {
    * initialMarginY, marginX, marginY, newWidth, new Height.
    */
   void on_addPlayerButton_clicked();
+
+  void openRecording(QListWidgetItem* item);
 
   /**
    * @brief videoPlayerOpenOptions Opens an option dialog for setting the
@@ -131,7 +137,8 @@ class MainWindow : public QMainWindow {
    */
   void closeWindow();
 
- private slots:
+  void saveRecording();
+private slots:
   /**
    * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
    */
@@ -141,7 +148,7 @@ class MainWindow : public QMainWindow {
    */
   void on_pushButton_clicked();
 
- protected:
+ private:
   Ui::MainWindow *ui;
 
   /**
@@ -151,18 +158,18 @@ class MainWindow : public QMainWindow {
    */
   QList<QMediaPlayer *> *player;
 
-  /**
-   * @brief log Helper function for writing info messages into the log section.
-   * @param msg QString that holds the message
-   */
-  void log(QString msg);
 
- private:
   void recordStart();
   void recordStop();
   void printClients();
 
   QColor getColorFromPercent(int percent);
+
+  /**
+   * @brief log Helper function for writing info messages into the log section.
+   * @param msg QString that holds the message
+   */
+  void log(QString msg);
 
   /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at
