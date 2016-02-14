@@ -16,7 +16,9 @@ SOURCES += src/main.cpp         \
     ../server/src/grid.cpp       \
     ../server/src/videofile.cpp \
     src/playersettingsdialog.cpp \
-    src/settingsdialog.cpp
+    src/settingsdialog.cpp \
+    src/recordingview.cpp \
+    src/playbackview.cpp
 
 HEADERS  += src/mainwindow.h    \
         src/playlistmodel.h     \
@@ -27,7 +29,9 @@ HEADERS  += src/mainwindow.h    \
     ../server/src/grid.h        \
     ../server/src/videofile.h \
     src/playersettingsdialog.h \
-    src/settingsdialog.h
+    src/settingsdialog.h \
+    src/recordingview.h \
+    src/playbackview.h
 
 FORMS    += forms/mainwindow.ui \
     forms/settingsdialog.ui 	\
