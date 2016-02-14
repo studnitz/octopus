@@ -337,36 +337,6 @@ void MainWindow::videoPlayerDeleteAlsoInGrid(quint8 index) {
 }
 
 void MainWindow::on_addPlayerButton_clicked() {
-  // ----- TEST DATA -----
-  VideoFile vidFile2(0);
-  VideoFile vidFile1(1337, false, "/home/tosz/big-buck-bunny_trailer.webm",
-                     "self");
-  VideoFile vidFile3(0);
-  VideoFile vidFile4(1338, false, "/home/tosz/big-buck-bunny_trailer.webm",
-                     "self");
-  VideoFile vidFile5(0);
-  VideoFile vidFile6(0);
-  VideoFile vidFile7(0);
-  VideoFile vidFile8(0);
-  VideoFile vidFile9(1339, false, "/home/tosz/big-buck-bunny_trailer.webm",
-                     "self");
-
-  Grid grid(3, 3);
-  grid.addSource(vidFile1, 0, 0);
-  grid.addSource(vidFile2, 0, 1);
-  grid.addSource(vidFile3, 0, 2);
-  grid.addSource(vidFile4, 1, 0);
-  grid.addSource(vidFile5, 1, 1);
-  grid.addSource(vidFile6, 1, 2);
-  grid.addSource(vidFile7, 2, 0);
-  grid.addSource(vidFile8, 2, 1);
-  grid.addSource(vidFile9, 2, 2);
-
-  QDateTime dateTime(QDate(2016, 1, 1), QTime(8, 30, 0));
-
-  recording = new Recording(dateTime, grid);
-  // -----------------------
-
   loadPlayersFromRecording();
 }
 
@@ -376,6 +346,7 @@ quint8 MainWindow::getFreePlayerId() {
 }
 
 void MainWindow::loadPlayersFromRecording() {
+  clearVideoPlayers();
   // Durchlaufen des Rasters im Recording und suche nach Sources
   for (int i = 0; i < recording->grid.grid.length(); ++i) {
     for (int j = 0; j < recording->grid.grid.at(0).length(); ++j) {
@@ -385,6 +356,12 @@ void MainWindow::loadPlayersFromRecording() {
       }
     }
   }
+}
+
+void MainWindow::clearVideoPlayers() {
+  for (int i = videoPlayer->length()-1; i >= 0 ; --i) {
+      videoPlayerDelete(i);
+    }
 }
 
 void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
@@ -436,6 +413,7 @@ void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
   videoPlayer->at(playerIndex)->show();
 
   // Connect Source
+  qDebug() << source.filepath;
   player->at(playerIndex)->setMedia(QUrl::fromLocalFile(source.filepath));
 
   // Connect Signals
@@ -451,14 +429,11 @@ void MainWindow::openRecording(QListWidgetItem *item) {
       QDir::homePath() + "/build-octopus-Desktop-Debug/server/" + item->text();
   qDebug() << "opened Recording: " << fullPath;
   recording->loadRecording(fullPath);
+  loadPlayersFromRecording();
 }
 
 void MainWindow::saveRecording() { recording->saveRecording(); }
 
-quint8 MainWindow::getFreePlayerId() {
-  if (videoPlayer->empty()) return 0;
-  return videoPlayer->last()->index + 1;
-}
 
 void MainWindow::on_pushButton_Percent_clicked() {
   showPercentage = !showPercentage;

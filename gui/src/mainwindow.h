@@ -186,6 +186,7 @@ private slots:
    * @param j
    */
   void connectSourceToNewVideo(const VideoFile &source, int i, int j);
+  void clearVideoPlayers();
 };
 
 #endif  // MAINWINDOW_H
