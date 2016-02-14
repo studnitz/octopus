@@ -8,13 +8,9 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += src/main.cpp \
-    src/client.cpp \
-    src/gst_recorder.cpp
+SOURCES += src/main.cpp
 
-HEADERS += \
-    src/client.h \
-    src/gst_recorder.h
+include(client.pri)
 
 CONFIG += link_pkgconfig
 PKGCONFIG += Qt5GStreamer-1.0 \

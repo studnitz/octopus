@@ -1,11 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-18T15:01:11
-#
-#-------------------------------------------------
-
 QT       += network testlib
-
 QT       -= gui
 
 TARGET = tst_communication
@@ -16,21 +9,10 @@ TEMPLATE = app
 
 
 SOURCES += tst_communication.cpp
-DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
-INCLUDEPATH += \
-    ../../client/src/ \
-    ../../server/src/
+include($$PWD/../../server/server.pri)
+include($$PWD/../../client/client.pri)
 
-SOURCES += \
-    ../../client/src/client.cpp \
-    ../../server/src/server.cpp \
-    ../../server/src/serverthread.cpp
-
-
-
-HEADERS += \
-    ../../client/src/client.h \
-    ../../server/src/server.h \
-    ../../server/src/serverthread.h
-
+CONFIG += link_pkgconfig
+PKGCONFIG += Qt5GStreamer-1.0 \
+    Qt5GLib-2.0

@@ -1,11 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-18T15:02:07
-#
-#-------------------------------------------------
-
 QT       += network testlib
-
 QT       -= gui
 
 TARGET = tst_clientbefehle
@@ -16,13 +9,9 @@ TEMPLATE = app
 
 
 SOURCES += tst_clientbefehle.cpp
-DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
-INCLUDEPATH += \
-    ../../client/src/
+include($$PWD/../../client/client.pri)
 
-SOURCES += \
-    ../../client/src/client.cpp
-
-HEADERS += \
-    ../../client/src/client.h
+CONFIG += link_pkgconfig
+PKGCONFIG += Qt5GStreamer-1.0 \
+    Qt5GLib-2.0
