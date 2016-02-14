@@ -18,6 +18,8 @@
 #include "../server/src/recording.h"
 #include "src/playersettingsdialog.h"
 
+#include "playbackview.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -31,6 +33,7 @@ class MainWindow : public QMainWindow {
   Server *server;
   bool showPercentage = 0;
   QString versionOctopus = "0.313b";  // Versionnumber
+  Ui::MainWindow *ui;
 
   /**
    * @brief settings to store settings
@@ -46,7 +49,20 @@ class MainWindow : public QMainWindow {
    */
   QList<VideoPlayer *> *videoPlayer;
 
+  /**
+   * @brief player List of players
+   * The players implement the functionality. They hold references to the files
+   * and it's also them who get calls for stopping or playing the sources.
+   */
+  QList<QMediaPlayer *> *player;
+
   void loadPlayersFromRecording();
+
+  /**
+   * @brief log Helper function for writing info messages into the log section.
+   * @param msg QString that holds the message
+   */
+  void log(QString msg);
 
   Recording *recording;
 
@@ -149,27 +165,11 @@ private slots:
   void on_pushButton_clicked();
 
  private:
-  Ui::MainWindow *ui;
-
-  /**
-   * @brief player List of players
-   * The players implement the functionality. They hold references to the files
-   * and it's also them who get calls for stopping or playing the sources.
-   */
-  QList<QMediaPlayer *> *player;
-
-
   void recordStart();
   void recordStop();
   void printClients();
 
   QColor getColorFromPercent(int percent);
-
-  /**
-   * @brief log Helper function for writing info messages into the log section.
-   * @param msg QString that holds the message
-   */
-  void log(QString msg);
 
   /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at
@@ -187,6 +187,8 @@ private slots:
    */
   void connectSourceToNewVideo(const VideoFile &source, int i, int j);
   void clearVideoPlayers();
+
+  PlaybackView* playbackView;
 };
 
 #endif  // MAINWINDOW_H
