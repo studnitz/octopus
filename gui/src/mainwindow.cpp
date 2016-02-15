@@ -63,6 +63,8 @@ MainWindow::MainWindow(QWidget *parent)
   playlist = new QMediaPlaylist();
   playlistModel = new PlaylistModel(this);
   ui->listView->setModel(playlistModel);
+
+  recordingView = new RecordingView(this, ui->tab);
 }
 
 MainWindow::~MainWindow() {
@@ -75,16 +77,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_recordButton_clicked() {
-  static bool startStopFlag = false;
-  if (startStopFlag == false) {
-    ui->recordButton->setText("Stop");
-    recordStart();
-    startStopFlag = true;
-  } else {
-    ui->recordButton->setText("Aufnehmen");
-    recordStop();
-    startStopFlag = false;
-  }
+    recordingView->record_button(ui->recordButton);
 }
 
 // TODO functionality
@@ -121,18 +114,6 @@ void MainWindow::about() {
 }
 
 void MainWindow::closeWindow() { this->close(); }
-
-void MainWindow::recordStart() {
-  /* magic */
-
-  log("Aufzeichnung wurde gestartet.");
-}
-
-void MainWindow::recordStop() {
-  /* magic */
-
-  log("Aufzeichnung wurde gestoppt.");
-}
 
 void MainWindow::printClients() {
   /* some magic to check for clients */
