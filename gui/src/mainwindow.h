@@ -18,6 +18,7 @@
 #include "../server/src/recording.h"
 #include "src/playersettingsdialog.h"
 #include "recordingview.h"
+#include "playbackview.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +34,7 @@ class MainWindow : public QMainWindow {
   RecordingView* recordingView;
   bool showPercentage = 0;
   QString versionOctopus = "0.313b";  // Versionnumber
+  Ui::MainWindow *ui;
 
   /**
    * @brief settings to store settings
@@ -48,20 +50,36 @@ class MainWindow : public QMainWindow {
    */
   QList<VideoPlayer *> *videoPlayer;
 
+  /**
+   * @brief player List of players
+   * The players implement the functionality. They hold references to the files
+   * and it's also them who get calls for stopping or playing the sources.
+   */
+  QList<QMediaPlayer *> *player;
+
   void loadPlayersFromRecording();
 
-  Recording *recording;
-
- signals:
-  void getinfo();
-
- public slots:
   /**
    * @brief log Helper function for writing info messages into the log section.
    * @param msg QString that holds the message
    */
   void log(QString msg);
 
+  Recording *recording;
+
+  /**
+   * @brief connectSourceToNewVideo Connects source to the player at position
+   * [i, j]
+   * @param source
+   * @param i
+   * @param j
+   */
+  void connectSourceToNewVideo(const VideoFile &source, int i, int j);
+
+ signals:
+  void getinfo();
+
+ public slots:
   /**
    * @brief on_recordButton_clicked GUI
    */
@@ -82,31 +100,11 @@ class MainWindow : public QMainWindow {
   void continueUpdateClientList();
 
   /**
-   * @brief on_openFileButton_clicked Opens a dialog to load recordings into the
-   * program to play them later.
-   */
-  void on_openFileButton_clicked();
-
-  /**
    * @brief on_stopButton_clicked Stops the playback of all players.
    */
   void on_stopButton_clicked();
 
-  /**
-   * @brief on_listView_doubleClicked Loads the recordings from a file, that was
-   * double-clicked on into the video players.
-   * @param index Gives information which file was double-clicked on
-   */
-  void on_listView_doubleClicked(const QModelIndex &index);
-
-  /**
-   * @brief on_addPlayerButton_clicked Adds a player to the UI
-   * You can choose various parameters for new player instances: initialMarginX,
-   * initialMarginY, marginX, marginY, newWidth, new Height.
-   */
-  void on_addPlayerButton_clicked();
-
-  void openRecording(QListWidgetItem* item);
+  void openRecording(QListWidgetItem *item);
 
   /**
    * @brief videoPlayerOpenOptions Opens an option dialog for setting the
@@ -157,19 +155,9 @@ private slots:
   void on_pushButton_clicked();
 
  private:
-  Ui::MainWindow *ui;
-
-  /**
-   * @brief player List of players
-   * The players implement the functionality. They hold references to the files
-   * and it's also them who get calls for stopping or playing the sources.
-   */
-  QList<QMediaPlayer *> *player;
-
   void printClients();
 
   QColor getColorFromPercent(int percent);
-
 
   /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at
@@ -178,15 +166,9 @@ private slots:
    */
   quint8 getFreePlayerId();
 
-  /**
-   * @brief connectSourceToNewVideo Connects source to the player at position
-   * [i, j]
-   * @param source
-   * @param i
-   * @param j
-   */
-  void connectSourceToNewVideo(const VideoFile &source, int i, int j);
   void clearVideoPlayers();
+
+  PlaybackView *playbackView;
 };
 
 #endif  // MAINWINDOW_H
