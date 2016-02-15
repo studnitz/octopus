@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
   ui->setupUi(this);
   this->setWindowTitle(
       QString("octopus: Vernetztes Videocapture Tool ").append(versionOctopus));
-
   
   // Initalizing the table
   ui->tableWidget->setColumnCount(4);

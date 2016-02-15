@@ -145,7 +145,7 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
 void PlaybackView::openRecording(QListWidgetItem *item)
 {
   MainWindow* parent = qobject_cast<MainWindow *>(this->parent());
-  delete parent->recording;
+  //delete parent->recording;
   parent->recording = new Recording();
   QString fullPath =
       QDir::homePath() + "/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui/" + item->text();
