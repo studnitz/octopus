@@ -3,8 +3,6 @@
 
 PlaybackView::PlaybackView(QObject *parent) : QObject(parent) {}
 
-void PlaybackView::openRecording(QListWidgetItem *item) {}
-
 void PlaybackView::playAllPlayers() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
   QList<QMediaPlayer *> *player = p->player;
@@ -15,7 +13,7 @@ void PlaybackView::playAllPlayers() {
         for (i = player->begin(); i != player->end(); ++i) {
           (*i)->pause();
         }
-        //ui->playButton->setText("Play");
+        // ui->playButton->setText("Play");
         p->log("Pausiere Wiedergabe der Aufnahme");
         break;
       default:
@@ -23,15 +21,14 @@ void PlaybackView::playAllPlayers() {
           (*i)->play();
         }
         if (player->at(0)->state() == QMediaPlayer::PlayingState) {
-          //ui->playButton->setText("Pause");
+          // ui->playButton->setText("Pause");
           p->log("Starte Wiedergabe der Aufnahme");
         }
         break;
     }
 }
 
-void PlaybackView::stopAllPlayers()
-{
+void PlaybackView::stopAllPlayers() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
   QList<QMediaPlayer *> *player = p->player;
 
@@ -42,18 +39,16 @@ void PlaybackView::stopAllPlayers()
   p->log("Stoppe Wiedergabe der Aufnahme");
 }
 
-void PlaybackView::updateRecordingList(QListWidget *list)
-{
+void PlaybackView::updateRecordingList(QListWidget *list) {
   list->clear();
   QStringList nameFilter("*.off");
-  QDir dir = QDir("/home/tosz/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui");
+  QDir dir =
+      QDir("/home/tosz/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui");
   QStringList offFiles = dir.entryList(nameFilter);
   foreach (QString file, offFiles) { list->addItem(file); }
-
 }
 
-void PlaybackView::videoPlayerDelete(quint8 index)
-{
+void PlaybackView::videoPlayerDelete(quint8 index) {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
   QList<QMediaPlayer *> *player = p->player;
   QList<VideoPlayer *> *videoPlayer = p->videoPlayer;
@@ -69,13 +64,113 @@ void PlaybackView::videoPlayerDelete(quint8 index)
   videoPlayer->removeAt(index);
 }
 
-void PlaybackView::videoPlayerDeleteAlsoInGrid(quint8 index, Grid *grid)
-{
+void PlaybackView::videoPlayerDeleteAlsoInGrid(quint8 index) {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
   QList<VideoPlayer *> *videoPlayer = p->videoPlayer;
+  Grid *grid = &p->recording->grid;
 
-  QPair<int, int> pos = grid->getVideoFilePositionById(videoPlayer->at(index)->videoFileId);
+  QPair<int, int> pos =
+      grid->getVideoFilePositionById(videoPlayer->at(index)->videoFileId);
   grid->deleteSource(pos.first, pos.second);
 
   videoPlayerDelete(index);
+}
+
+void PlaybackView::clearVideoPlayers(QList<VideoPlayer *> *videoPlayer) {
+  for (int i = videoPlayer->length() - 1; i >= 0; --i) {
+    videoPlayerDelete(i);
+  }
+}
+
+void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
+                                           QList<VideoPlayer *> *videoPlayer,
+                                           QFrame *canvas, int i, int j) {
+  // ---- Adjustable parameters
+  quint16 initialMarginX = 10;
+  quint16 initialMarginY = 10;
+  qint16 marginX = 1;
+  qint16 marginY = 1;
+  quint8 playerRatioX = 16, playerRatioY = 9;
+  // -------------------------------
+
+  quint16 playerWidth, playerHeight;
+  quint16 playerGridPosX = i;
+  quint16 playerGridPosY = j;
+  quint8 playerIndex = getFreePlayerId(videoPlayer);
+  MainWindow *parent = qobject_cast<MainWindow *>(this->parent());
+
+  double playerWidthDouble =
+      ((double)(canvas->width() - 2 * initialMarginX) /
+       parent->recording->grid.grid.length());
+  double playerHeightDouble =
+      ((double)(canvas->height() - 2 * initialMarginY) /
+       parent->recording->grid.grid.at(0).length());
+
+  // Determine if size should be height or width oriented depending
+  // on window-size, so players are in always visible area
+  if (qRound(playerWidthDouble / playerRatioX) <
+      qRound(playerHeightDouble / playerRatioY)) {
+    playerWidth = qRound(playerWidthDouble);
+    playerHeight = qRound((playerWidthDouble * playerRatioY) / playerRatioX);
+  } else {
+    playerHeight = qRound(playerHeightDouble);
+    playerWidth = qRound((playerHeightDouble * playerRatioX) / playerRatioY);
+  }
+
+  quint16 playerPosX =
+      playerWidth * playerGridPosX + initialMarginX + marginX * playerGridPosX;
+  quint16 playerPosY =
+      playerHeight * playerGridPosY + initialMarginY + marginY * playerGridPosY;
+
+  // Create Player
+  parent->player->append(new QMediaPlayer(this));
+  videoPlayer->append(new VideoPlayer(playerIndex, source.id, canvas));
+
+  // Apply new position
+  parent->player->at(playerIndex)->setVideoOutput(videoPlayer->at(playerIndex));
+  videoPlayer->at(playerIndex)->move(playerPosX, playerPosY);
+  videoPlayer->at(playerIndex)->resize(playerWidth, playerHeight);
+  videoPlayer->at(playerIndex)->show();
+
+  // Connect Source
+  parent->player->at(playerIndex)->setMedia(QUrl::fromLocalFile(source.filepath));
+
+  // Connect Signals
+  connect(videoPlayer->at(playerIndex), &VideoPlayer::playerOpenOptions, parent,
+          &MainWindow::videoPlayerOpenOptions);
+  connect(videoPlayer->at(playerIndex), &VideoPlayer::playerDelete, this,
+          &PlaybackView::videoPlayerDeleteAlsoInGrid);
+}
+
+void PlaybackView::openRecording(QListWidgetItem *item)
+{
+  MainWindow* parent = qobject_cast<MainWindow *>(this->parent());
+  delete parent->recording;
+  parent->recording = new Recording();
+  QString fullPath =
+      QDir::homePath() + "/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui/" + item->text();
+
+  qDebug() << "opened Recording: " << fullPath;
+  parent->recording->loadRecording(fullPath);
+  parent->loadPlayersFromRecording();
+}
+
+void PlaybackView::loadPlayersFromRecording(QList<VideoPlayer *> *videoPlayer, Recording *recording)
+{
+  MainWindow* parent = qobject_cast<MainWindow *>(this->parent());
+  clearVideoPlayers(videoPlayer);
+  // Durchlaufen des Rasters im Recording und suche nach Sources
+  for (int i = 0; i < recording->grid.grid.length(); ++i) {
+    for (int j = 0; j < recording->grid.grid.at(0).length(); ++j) {
+      // Wenn aktuelle VideoFile nicht leer ist
+      if (recording->grid.grid.at(i).at(j).id != 0) {
+        parent->connectSourceToNewVideo(recording->grid.grid.at(i).at(j), i, j);
+      }
+    }
+  }
+}
+
+quint8 PlaybackView::getFreePlayerId(const QList<VideoPlayer *> *videoPlayer) {
+  if (videoPlayer->empty()) return 0;
+  return videoPlayer->last()->index + 1;
 }

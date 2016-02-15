@@ -7,26 +7,31 @@
 #include <QMediaPlayer>
 #include <../server/src/recording.h>
 #include <../server/src/grid.h>
+#include <src/videoplayer.h>
 
-class PlaybackView : public QObject
-{
+class PlaybackView : public QObject {
   Q_OBJECT
-public:
+ public:
   explicit PlaybackView(QObject *parent = 0);
 
-  void openRecording(QListWidgetItem *item);
   void playAllPlayers();
   void stopAllPlayers();
-  void updateRecordingList(QListWidget* list);
+  void updateRecordingList(QListWidget *list);
   void videoPlayerDelete(quint8 index);
-  void videoPlayerDeleteAlsoInGrid(quint8 index, Grid* grid);
+  void clearVideoPlayers(QList<VideoPlayer *> *videoPlayer);
+  void connectSourceToNewVideo(const VideoFile &source,
+                               QList<VideoPlayer *> *videoPlayer,
+                               QFrame *canvas, int i, int j);
+  void openRecording(QListWidgetItem *item);
+  void loadPlayersFromRecording(QList<VideoPlayer *> *videoPlayer, Recording *recording);
+  quint8 getFreePlayerId(const QList<VideoPlayer *> *videoPlayer);
 
-private:
-  Recording* recording;
+ private:
 
-signals:
+ signals:
 
-public slots:
+ public slots:
+  void videoPlayerDeleteAlsoInGrid(quint8 index);
 };
 
-#endif // PLAYBACKVIEW_H
+#endif  // PLAYBACKVIEW_H

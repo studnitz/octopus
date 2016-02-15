@@ -66,6 +66,15 @@ class MainWindow : public QMainWindow {
 
   Recording *recording;
 
+  /**
+   * @brief connectSourceToNewVideo Connects source to the player at position
+   * [i, j]
+   * @param source
+   * @param i
+   * @param j
+   */
+  void connectSourceToNewVideo(const VideoFile &source, int i, int j);
+
  signals:
   void getinfo();
 
@@ -83,38 +92,17 @@ class MainWindow : public QMainWindow {
 
   void updateRecordingList();
 
-
   /**
    * @brief continueUpdateClientList updates the Client List in the GUI
    */
   void continueUpdateClientList();
 
   /**
-   * @brief on_openFileButton_clicked Opens a dialog to load recordings into the
-   * program to play them later.
-   */
-  void on_openFileButton_clicked();
-
-  /**
    * @brief on_stopButton_clicked Stops the playback of all players.
    */
   void on_stopButton_clicked();
 
-  /**
-   * @brief on_listView_doubleClicked Loads the recordings from a file, that was
-   * double-clicked on into the video players.
-   * @param index Gives information which file was double-clicked on
-   */
-  void on_listView_doubleClicked(const QModelIndex &index);
-
-  /**
-   * @brief on_addPlayerButton_clicked Adds a player to the UI
-   * You can choose various parameters for new player instances: initialMarginX,
-   * initialMarginY, marginX, marginY, newWidth, new Height.
-   */
-  void on_addPlayerButton_clicked();
-
-  void openRecording(QListWidgetItem* item);
+  void openRecording(QListWidgetItem *item);
 
   /**
    * @brief videoPlayerOpenOptions Opens an option dialog for setting the
@@ -154,7 +142,7 @@ class MainWindow : public QMainWindow {
   void closeWindow();
 
   void saveRecording();
-private slots:
+ private slots:
   /**
    * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
    */
@@ -178,17 +166,9 @@ private slots:
    */
   quint8 getFreePlayerId();
 
-  /**
-   * @brief connectSourceToNewVideo Connects source to the player at position
-   * [i, j]
-   * @param source
-   * @param i
-   * @param j
-   */
-  void connectSourceToNewVideo(const VideoFile &source, int i, int j);
   void clearVideoPlayers();
 
-  PlaybackView* playbackView;
+  PlaybackView *playbackView;
 };
 
 #endif  // MAINWINDOW_H

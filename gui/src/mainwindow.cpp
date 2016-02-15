@@ -21,9 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
   this->setWindowTitle(
       QString("octopus: Vernetztes Videocapture Tool ").append(versionOctopus));
 
-  //---new---
   playbackView = new PlaybackView(this);
-  //-------
 
   // Initalizing the table
   ui->tableWidget->setColumnCount(4);
@@ -65,9 +63,6 @@ MainWindow::MainWindow(QWidget *parent)
   /* --- PLAY-TAB: videoplayer set-up --- */
   player = new QList<QMediaPlayer *>();
   videoPlayer = new QList<VideoPlayer *>();
-  playlist = new QMediaPlaylist();
-  playlistModel = new PlaylistModel(this);
-  ui->listView->setModel(playlistModel);
 }
 
 MainWindow::~MainWindow() {
@@ -248,31 +243,6 @@ void MainWindow::updateRecordingList() {
   playbackView->updateRecordingList(ui->recordingList);
 }
 
-void MainWindow::on_openFileButton_clicked() {
-  QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open movies"),
-                                                        QDir::currentPath());
-  if (!fileNames.empty()) {
-    QList<QMediaPlayer *>::iterator j;
-    // Load first recording into players automatically
-    for (j = player->begin(); j != player->end(); ++j) {
-      (*j)->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
-    }
-
-    // Fill playlist with files
-    QStringList::iterator i;
-    for (i = fileNames.begin(); i != fileNames.end(); ++i) {
-      playlist->addMedia(QUrl::fromLocalFile(*i));
-      log(QString("Lade ").append(*i).append("..."));
-    }
-    playlist->setCurrentIndex(playlist->mediaCount());
-
-    // Link playlist, playlistModel and listView
-    playlistModel->setPlaylist(playlist);
-    ui->listView->setCurrentIndex(
-        playlistModel->index(playlist->currentIndex(), 0));
-  }
-}
-
 void MainWindow::log(QString msg) {
   ui->debugTextEdit->setText(
       msg.append("\n").append(ui->debugTextEdit->toPlainText()));
@@ -280,13 +250,6 @@ void MainWindow::log(QString msg) {
 
 void MainWindow::on_stopButton_clicked() {
   playbackView->stopAllPlayers();
-}
-
-void MainWindow::on_listView_doubleClicked(const QModelIndex &index) {
-  QList<QMediaPlayer *>::iterator i;
-  for (i = player->begin(); i != player->end(); ++i) {
-    (*i)->setMedia(playlist->media(index.row()));
-  }
 }
 
 void MainWindow::videoPlayerOpenOptions(quint8 index) {
@@ -301,105 +264,29 @@ void MainWindow::videoPlayerDelete(quint8 index) {
 }
 
 void MainWindow::videoPlayerDeleteAlsoInGrid(quint8 index) {
-  Grid* gridpointer = &recording->grid;
-  playbackView->videoPlayerDeleteAlsoInGrid(index, gridpointer);
-}
-
-void MainWindow::on_addPlayerButton_clicked() {
-  loadPlayersFromRecording();
+  playbackView->videoPlayerDeleteAlsoInGrid(index);
 }
 
 quint8 MainWindow::getFreePlayerId() {
-  if (videoPlayer->empty()) return 0;
-  return videoPlayer->last()->index + 1;
+  return playbackView->getFreePlayerId(videoPlayer);
 }
 
 void MainWindow::loadPlayersFromRecording() {
-  clearVideoPlayers();
-  // Durchlaufen des Rasters im Recording und suche nach Sources
-  for (int i = 0; i < recording->grid.grid.length(); ++i) {
-    for (int j = 0; j < recording->grid.grid.at(0).length(); ++j) {
-      // Wenn aktuelle VideoFile nicht leer ist
-      if (recording->grid.grid.at(i).at(j).id != 0) {
-        connectSourceToNewVideo(recording->grid.grid.at(i).at(j), i, j);
-      }
-    }
-  }
+  playbackView->loadPlayersFromRecording(videoPlayer, recording);
 }
 
 void MainWindow::clearVideoPlayers() {
-  for (int i = videoPlayer->length()-1; i >= 0 ; --i) {
-      videoPlayerDelete(i);
-    }
+  playbackView->clearVideoPlayers(videoPlayer);
 }
 
 void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
                                          int j) {
-  // ---- Adjustable parameters
-  quint16 initialMarginX = 10;
-  quint16 initialMarginY = 10;
-  qint16 marginX = 1;
-  qint16 marginY = 1;
-  quint8 playerRatioX = 16, playerRatioY = 9;
-  // -------------------------------
+  playbackView->connectSourceToNewVideo(source, videoPlayer, ui->frame_6, i, j);
 
-  quint16 playerWidth, playerHeight;
-  quint16 playerGridPosX = i;
-  quint16 playerGridPosY = j;
-  quint8 playerIndex = getFreePlayerId();
-
-  double playerWidthDouble =
-      ((double)(ui->frame_6->width() - 2 * initialMarginX) /
-       recording->grid.grid.length());
-  double playerHeightDouble =
-      ((double)(ui->frame_6->height() - 2 * initialMarginY) /
-       recording->grid.grid.at(0).length());
-
-  // Determine if size should be height or width oriented depending
-  // on window-size, so players are in always visible area
-  if (qRound(playerWidthDouble / playerRatioX) <
-      qRound(playerHeightDouble / playerRatioY)) {
-    playerWidth = qRound(playerWidthDouble);
-    playerHeight = qRound((playerWidthDouble * playerRatioY) / playerRatioX);
-  } else {
-    playerHeight = qRound(playerHeightDouble);
-    playerWidth = qRound((playerHeightDouble * playerRatioX) / playerRatioY);
-  }
-
-  quint16 playerPosX =
-      playerWidth * playerGridPosX + initialMarginX + marginX * playerGridPosX;
-  quint16 playerPosY =
-      playerHeight * playerGridPosY + initialMarginY + marginY * playerGridPosY;
-
-  // Create Player
-  player->append(new QMediaPlayer(this));
-  videoPlayer->append(new VideoPlayer(playerIndex, source.id, ui->frame_6));
-
-  // Apply new position
-  player->at(playerIndex)->setVideoOutput(videoPlayer->at(playerIndex));
-  videoPlayer->at(playerIndex)->move(playerPosX, playerPosY);
-  videoPlayer->at(playerIndex)->resize(playerWidth, playerHeight);
-  videoPlayer->at(playerIndex)->show();
-
-  // Connect Source
-  qDebug() << source.filepath;
-  player->at(playerIndex)->setMedia(QUrl::fromLocalFile(source.filepath));
-
-  // Connect Signals
-  connect(videoPlayer->at(playerIndex), &VideoPlayer::playerOpenOptions, this,
-          &MainWindow::videoPlayerOpenOptions);
-  connect(videoPlayer->at(playerIndex), &VideoPlayer::playerDelete, this,
-          &MainWindow::videoPlayerDeleteAlsoInGrid);
 }
 
 void MainWindow::openRecording(QListWidgetItem *item) {
-  recording = new Recording();
-  QString fullPath =
-      QDir::homePath() + "/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui/" + item->text();
-
-  qDebug() << "opened Recording: " << fullPath;
-  recording->loadRecording(fullPath);
-  loadPlayersFromRecording();
+  playbackView->openRecording(item);
 }
 
 void MainWindow::saveRecording() { recording->saveRecording(); }
