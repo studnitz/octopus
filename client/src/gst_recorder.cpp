@@ -1,22 +1,32 @@
 #include "gst_recorder.h"
 
-GstRecorder::GstRecorder(QObject *parent) : QObject(parent) { QGst::init(); }
+GstRecorder::GstRecorder(QObject *parent) : QObject(parent) {
+  QGst::init();
+  width = 640;
+  height = 480;
+  fps = 30;
+}
 
 GstRecorder::~GstRecorder() {}
 
-QGst::BinPtr GstRecorder::createVideoSrcBin() {
+QGst::BinPtr GstRecorder::createVideoSrcBin(QString device) {
   QGst::BinPtr videoBin;
+  QString caps = " ! video/x-raw,format=I420,width=" + QString::number(width) +
+                 ",height=" + QString::number(height) + " ! "; //,framerate=" +
+                 //QString::number(fps) + "/1 ! ";
 
   try {
     QGst::ElementFactoryPtr encoder = QGst::ElementFactory::find("omxh264enc");
     if (!encoder) {
       // if we don't have omx (when we're not on a RPI), use x264enc instead
-      videoBin = QGst::Bin::fromDescription(
-          "v4l2src device=/dev/video1 ! x264enc tune=zerolatency "
-          "byte-stream=true ");  //! h264parse ! matroskamux");
+      QString pipelineStr = "v4l2src device=" + device + caps +
+                            +"x264enc tune=zerolatency " + "byte-stream=true";
+      qDebug() << pipelineStr;
+      videoBin = QGst::Bin::fromDescription(pipelineStr);  //! h264parse ! matroskamux");
       qDebug() << "Using x264enc on device /dev/video1";
     } else {
-      videoBin = QGst::Bin::fromDescription("v4l2src ! omxh264enc ");
+      videoBin = QGst::Bin::fromDescription("v4l2src device=" + device + caps +
+                                            "omxh264enc ");
       qDebug() << "Using omxh264enc";
     }
 
@@ -42,8 +52,8 @@ QGst::BinPtr GstRecorder::createVideoMuxBin() {
   }
 }
 
-void GstRecorder::recordLocally() {
-  QGst::BinPtr videoSrcBin = createVideoSrcBin();
+void GstRecorder::recordLocally(QString device) {
+  QGst::BinPtr videoSrcBin = createVideoSrcBin(device);
   QGst::BinPtr videoMuxBin = createVideoMuxBin();
   QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
 
@@ -73,8 +83,8 @@ void GstRecorder::recordLocally() {
   m_pipeline->setState(QGst::StatePlaying);
 }
 
-void GstRecorder::createRtpSink(quint16 port, QString address) {
-  QGst::BinPtr videoSrcBin = createVideoSrcBin();
+void GstRecorder::createRtpSink(quint16 port, QString address, QString device) {
+  QGst::BinPtr videoSrcBin = createVideoSrcBin(device);
   QGst::ElementPtr rtpbin = QGst::ElementFactory::make("rtpbin");
   QGst::ElementPtr h264pay = QGst::ElementFactory::make("rtph264pay");
 

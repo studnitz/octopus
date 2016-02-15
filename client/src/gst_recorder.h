@@ -21,6 +21,10 @@ public:
    GstRecorder(QObject *parent = 0);
   ~GstRecorder();
 
+   quint16 height;
+   quint16 width;
+   quint8 fps;
+
   /**
    * @brief recordLocally records locally to disk using x264enc
    * Starts recording locally to the current directory of the client using h264
@@ -29,7 +33,7 @@ public:
    * The output file is named after the current date and time.
    * Format: yy_MM_dd_hh_mm_ss.mkv
    */
-  void recordLocally();
+  void recordLocally(QString device = "/dev/video0");
   /**
    * @brief stop stops a ongoing recording or socket
    */
@@ -42,14 +46,14 @@ public:
    * and "port + 2"
    * @param host The host on which the sinks are created. Defaults to 127.0.0.1
    */
-  void createRtpSink(quint16 port = 1337, QString address = "127.0.0.1");
+  void createRtpSink(quint16 port = 1337, QString address = "127.0.0.1", QString device = "/dev/video0");
 
  private:
   /**
    * @brief createVideoSrcBin is used to create a video source (usually v4l2)
    * @return a pointer to the created video source
    */
-  QGst::BinPtr createVideoSrcBin();
+  QGst::BinPtr createVideoSrcBin(QString device);
 
   /**
    * @brief onBusMessage Event handler for bus messages
