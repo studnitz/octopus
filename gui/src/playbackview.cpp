@@ -53,6 +53,7 @@ void PlaybackView::videoPlayerDelete(quint8 index) {
   QList<QMediaPlayer *> *player = p->player;
   QList<VideoPlayer *> *videoPlayer = p->videoPlayer;
 
+  player->at(index)->stop();
   videoPlayer->at(index)->disconnect();
   delete videoPlayer->at(index);
   delete player->at(index);
@@ -145,7 +146,7 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
 void PlaybackView::openRecording(QListWidgetItem *item)
 {
   MainWindow* parent = qobject_cast<MainWindow *>(this->parent());
-  //delete parent->recording;
+  if (!parent->player->empty()) delete parent->recording;
   parent->recording = new Recording();
   QString fullPath =
       QDir::homePath() + "/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui/" + item->text();
