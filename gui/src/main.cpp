@@ -13,8 +13,6 @@ int main(int argc, char* argv[]) {
 
   MainWindow w;
   QObject::connect(&w, SIGNAL(getinfo()), &server, SLOT(getInfo()));
-  // QObject::connect(&server, SIGNAL(gotInfo()), &w,
-  // SLOT(continueUpdateClientList()));
   w.server = &server;
   w.show();
 

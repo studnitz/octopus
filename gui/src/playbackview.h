@@ -23,11 +23,11 @@ class PlaybackView : public QObject {
                                QList<VideoPlayer *> *videoPlayer,
                                QFrame *canvas, int i, int j);
   void openRecording(QListWidgetItem *item);
-  void loadPlayersFromRecording(QList<VideoPlayer *> *videoPlayer, Recording *recording);
+  void loadPlayersFromRecording(QList<VideoPlayer *> *videoPlayer,
+                                Recording *recording);
   quint8 getFreePlayerId(const QList<VideoPlayer *> *videoPlayer);
 
  private:
-
  signals:
 
  public slots:

@@ -1,18 +1,17 @@
 #include "recording.h"
 #include <QFile>
 #include <QJsonDocument>
-Recording::Recording() :datetime(QDateTime::currentDateTime()), grid(Grid()) {}
+Recording::Recording() : datetime(QDateTime::currentDateTime()), grid(Grid()) {}
 
 Recording::Recording(QDateTime datetime, Grid grid)
-  : datetime(datetime), grid(grid) {}
+    : datetime(datetime), grid(grid) {}
 
 void Recording::read(const QJsonObject &json) {
   datetime = QDateTime::fromString(json["datetime"].toString());
   grid.read(json["grid"].toObject());
 }
 
-void Recording::write(QJsonObject &json) const
-{
+void Recording::write(QJsonObject &json) const {
   json["datetime"] = datetime.toString();
   QJsonObject gridObject;
   grid.write(gridObject);
@@ -25,16 +24,16 @@ bool Recording::saveRecording() const {
   QFile saveFile(recordingTime.append(".off"));
 
   if (!saveFile.open(QIODevice::WriteOnly)) {
-      qWarning("Couldn't open save file.");
-      return false;
-    }
+    qWarning("Couldn't open save file.");
+    return false;
+  }
 
   QJsonObject recordingObject;
   write(recordingObject);
   QJsonDocument saveDoc(recordingObject);
   saveFile.write(saveDoc.toJson());
 
- // qDebug() << "saved recording!";
+  // qDebug() << "saved recording!";
 
   return true;
 }
@@ -43,9 +42,9 @@ bool Recording::loadRecording(QString path) {
   QFile loadFile(path);
 
   if (!loadFile.open(QIODevice::ReadOnly)) {
-      qWarning("Couldn't open recording file.");
-      return false;
-    }
+    qWarning("Couldn't open recording file.");
+    return false;
+  }
   QByteArray recordingData = loadFile.readAll();
 
   QJsonDocument loadDoc(QJsonDocument::fromJson(recordingData));

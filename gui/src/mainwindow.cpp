@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
   ui->setupUi(this);
   this->setWindowTitle(
       QString("octopus: Vernetztes Videocapture Tool ").append(versionOctopus));
-  
+
   // Initalizing the table
   ui->tableWidget->setColumnCount(4);
   ui->tableWidget->setRowCount(1);
@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
   /* --- PLAY-TAB: videoplayer set-up --- */
   player = new QList<QMediaPlayer *>();
   videoPlayer = new QList<VideoPlayer *>();
-  
+
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
 }
@@ -76,7 +76,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_recordButton_clicked() {
-    recordingView->record_button(ui->recordButton);
+  recordingView->record_button(ui->recordButton);
 }
 
 // TODO functionality
@@ -113,12 +113,6 @@ void MainWindow::about() {
 }
 
 void MainWindow::closeWindow() { this->close(); }
-
-void MainWindow::printClients() {
-  /* some magic to check for clients */
-  qDebug() << "start 1";
-  emit this->getinfo();
-}
 
 QColor MainWindow::getColorFromPercent(int percent) {
   int red = 0;
@@ -215,9 +209,7 @@ void MainWindow::continueUpdateClientList() {
   }
 }
 
-void MainWindow::on_playButton_clicked() {
-  playbackView->playAllPlayers();
-}
+void MainWindow::on_playButton_clicked() { playbackView->playAllPlayers(); }
 
 void MainWindow::updateRecordingList() {
   playbackView->updateRecordingList(ui->recordingList);
@@ -228,9 +220,7 @@ void MainWindow::log(QString msg) {
       msg.append("\n").append(ui->debugTextEdit->toPlainText()));
 }
 
-void MainWindow::on_stopButton_clicked() {
-  playbackView->stopAllPlayers();
-}
+void MainWindow::on_stopButton_clicked() { playbackView->stopAllPlayers(); }
 
 void MainWindow::videoPlayerOpenOptions(quint8 index) {
   PlayerSettingsDialog *psDialog = new PlayerSettingsDialog(index, this);
@@ -260,7 +250,7 @@ void MainWindow::clearVideoPlayers() {
 }
 
 void MainWindow::connectSourceToNewVideo(const VideoFile &source, int i,
-                                        int j) {
+                                         int j) {
   playbackView->connectSourceToNewVideo(source, videoPlayer, ui->frame_6, i, j);
 }
 
@@ -269,7 +259,6 @@ void MainWindow::openRecording(QListWidgetItem *item) {
 }
 
 void MainWindow::saveRecording() { recording->saveRecording(); }
-
 
 void MainWindow::on_pushButton_Percent_clicked() {
   showPercentage = !showPercentage;

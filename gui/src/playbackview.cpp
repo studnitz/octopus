@@ -100,12 +100,10 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
   quint8 playerIndex = getFreePlayerId(videoPlayer);
   MainWindow *parent = qobject_cast<MainWindow *>(this->parent());
 
-  double playerWidthDouble =
-      ((double)(canvas->width() - 2 * initialMarginX) /
-       parent->recording->grid.grid.length());
-  double playerHeightDouble =
-      ((double)(canvas->height() - 2 * initialMarginY) /
-       parent->recording->grid.grid.at(0).length());
+  double playerWidthDouble = ((double)(canvas->width() - 2 * initialMarginX) /
+                              parent->recording->grid.grid.length());
+  double playerHeightDouble = ((double)(canvas->height() - 2 * initialMarginY) /
+                               parent->recording->grid.grid.at(0).length());
 
   // Determine if size should be height or width oriented depending
   // on window-size, so players are in always visible area
@@ -134,7 +132,8 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
   videoPlayer->at(playerIndex)->show();
 
   // Connect Source
-  parent->player->at(playerIndex)->setMedia(QUrl::fromLocalFile(source.filepath));
+  parent->player->at(playerIndex)
+      ->setMedia(QUrl::fromLocalFile(source.filepath));
 
   // Connect Signals
   connect(videoPlayer->at(playerIndex), &VideoPlayer::playerOpenOptions, parent,
@@ -143,22 +142,22 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
           &PlaybackView::videoPlayerDeleteAlsoInGrid);
 }
 
-void PlaybackView::openRecording(QListWidgetItem *item)
-{
-  MainWindow* parent = qobject_cast<MainWindow *>(this->parent());
+void PlaybackView::openRecording(QListWidgetItem *item) {
+  MainWindow *parent = qobject_cast<MainWindow *>(this->parent());
   if (!parent->player->empty()) delete parent->recording;
   parent->recording = new Recording();
   QString fullPath =
-      QDir::homePath() + "/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui/" + item->text();
+      QDir::homePath() +
+      "/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui/" + item->text();
 
   qDebug() << "opened Recording: " << fullPath;
   parent->recording->loadRecording(fullPath);
   parent->loadPlayersFromRecording();
 }
 
-void PlaybackView::loadPlayersFromRecording(QList<VideoPlayer *> *videoPlayer, Recording *recording)
-{
-  MainWindow* parent = qobject_cast<MainWindow *>(this->parent());
+void PlaybackView::loadPlayersFromRecording(QList<VideoPlayer *> *videoPlayer,
+                                            Recording *recording) {
+  MainWindow *parent = qobject_cast<MainWindow *>(this->parent());
   clearVideoPlayers(videoPlayer);
   // Durchlaufen des Rasters im Recording und suche nach Sources
   for (int i = 0; i < recording->grid.grid.length(); ++i) {

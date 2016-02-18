@@ -31,9 +31,30 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
   Server *server;
-  RecordingView* recordingView;
+
+  /**
+   * @brief recordingView subclass for recording capability
+   */
+  RecordingView *recordingView;
+
+  /**
+   * @brief playbackView subclass for playback capability
+   */
+  PlaybackView *playbackView;
+
+  /**
+   * @brief showPercentage flag for showing percentage in recordingView
+   */
   bool showPercentage = 0;
+
+  /**
+   * @brief versionOctopus current version# of the octopus-program
+   */
   QString versionOctopus = "0.313b";  // Versionnumber
+
+  /**
+   * @brief ui pointer to the complete UI
+   */
   Ui::MainWindow *ui;
 
   /**
@@ -57,6 +78,10 @@ class MainWindow : public QMainWindow {
    */
   QList<QMediaPlayer *> *player;
 
+  /**
+   * @brief loadPlayersFromRecording creates video-output for video-files.
+   * Amount of players created depends on recording (.off-file)
+   */
   void loadPlayersFromRecording();
 
   /**
@@ -65,18 +90,25 @@ class MainWindow : public QMainWindow {
    */
   void log(QString msg);
 
+  /**
+   * @brief recording points to a Recording-class which is beeing created from
+   * an .off-file
+   */
   Recording *recording;
 
   /**
    * @brief connectSourceToNewVideo Connects source to the player at position
    * [i, j]
-   * @param source
-   * @param i
-   * @param j
+   * @param source Videofile to be connected to player
+   * @param i x-coordinate in grid
+   * @param j y-coordinate in grid
    */
   void connectSourceToNewVideo(const VideoFile &source, int i, int j);
 
  signals:
+  /**
+   * @brief getinfo emitted regularly. Triggers the update of the client list.
+   */
   void getinfo();
 
  public slots:
@@ -91,8 +123,11 @@ class MainWindow : public QMainWindow {
    */
   void on_playButton_clicked();
 
+  /**
+   * @brief updateRecordingList updates the list of recordings with .off-files
+   * contained in the directory of the executable
+   */
   void updateRecordingList();
-
 
   /**
    * @brief continueUpdateClientList updates the Client List in the GUI
@@ -104,6 +139,11 @@ class MainWindow : public QMainWindow {
    */
   void on_stopButton_clicked();
 
+  /**
+   * @brief openRecording loads a recording. Also calls
+   * loadPlayersFromRecording().
+   * @param item
+   */
   void openRecording(QListWidgetItem *item);
 
   /**
@@ -144,7 +184,7 @@ class MainWindow : public QMainWindow {
   void closeWindow();
 
   void saveRecording();
-private slots:
+ private slots:
   /**
    * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
    */
@@ -155,8 +195,12 @@ private slots:
   void on_pushButton_clicked();
 
  private:
-  void printClients();
-
+  /**
+   * @brief getColorFromPercent creates a Color ranging from green over yellow
+   * to red, depending on percent. 100% is deep red, while 0% is green.
+   * @param percent percentage
+   * @return QColor ranging from green over yellow to red
+   */
   QColor getColorFromPercent(int percent);
 
   /**
@@ -166,9 +210,11 @@ private slots:
    */
   quint8 getFreePlayerId();
 
+  /**
+   * @brief clearVideoPlayers deletes all videoplayers on the video-output layer
+   * only. Does not change the grid-structure.
+   */
   void clearVideoPlayers();
-
-  PlaybackView *playbackView;
 };
 
 #endif  // MAINWINDOW_H
