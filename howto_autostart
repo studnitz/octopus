@@ -1,0 +1,9 @@
+# In /etc/ liegt die Datei rc.local
+# In diese kann reingeschrieben werden, was nach der Anmeldung ausgeführt werden soll
+# Folglich muss nur folgendes gemacht werden
+
+sudo nano /etc/rc.local
+
+# und nun die von uns kompilierte ELF-Datei ausführen lassen
+
+/home/pi/octopus
