@@ -3,5 +3,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     client \
     server \
-    gui \
-    tests
+    gui #\
+    #tests

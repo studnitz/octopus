@@ -1,5 +1,5 @@
 #include <QString>
-#include <QtTest>
+include <QtTest>
 #include <QCoreApplication>
 
 #include "src/client.h"

@@ -5,6 +5,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET =    octopus-gui
 TEMPLATE =  app
 
+SOURCES += src/main.cpp
+
 
 include(gui.pri)
 
