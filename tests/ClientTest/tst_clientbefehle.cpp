@@ -2,7 +2,7 @@
 #include <QtTest>
 #include <QCoreApplication>
 
-#include "client.h"
+#include "src/client.h"
 
 class ClientBefehle : public QObject {
   Q_OBJECT

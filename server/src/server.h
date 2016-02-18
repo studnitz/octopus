@@ -40,6 +40,7 @@ class Server : public QTcpServer {
   void gotInfo();
 
  public slots:
+  void recordLocally();
   /**
    * @brief getInfo sends Command to all Clients to send new Information
    * is started when ready is emitted by Serverthread
@@ -51,7 +52,8 @@ class Server : public QTcpServer {
    */
   void readInfo();
 
- protected:
+  void stopRecordings();
+protected:
   /**
    * @brief incomingConnection starts a new ServerThread where client connection
    * is handeld

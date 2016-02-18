@@ -8,6 +8,8 @@
 #include <QNetworkInterface>
 #include <QStorageInfo>
 
+#include "gst_recorder.h"
+
 class Client : public QObject {
   Q_OBJECT
  public:
@@ -80,6 +82,8 @@ class Client : public QObject {
   void getCommand();
 
  private:
+
+  GstRecorder recorder;
   /**
    * @brief timesync
    * DUMMY

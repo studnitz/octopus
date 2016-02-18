@@ -2,9 +2,9 @@
 #include <QtTest>
 #include <QCoreApplication>
 
-#include "client.h"
-#include "server.h"
-#include "serverthread.h"
+#include "../../client/src/client.h"
+#include "../../server/src/server.h"
+#include "../../server/src/serverthread.h"
 
 class Communication : public QObject {
   Q_OBJECT

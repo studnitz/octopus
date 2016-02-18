@@ -1,9 +1,3 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-18T15:02:41
-#
-#-------------------------------------------------
-
 QT       += network testlib
 
 QT       -= gui
@@ -16,4 +10,5 @@ TEMPLATE = app
 
 
 SOURCES += tst_serverbefehle.cpp
-DEFINES += SRCDIR=\\\"$$PWD/\\\"
+
+include($$PWD/../../server/server.pri)

@@ -1,7 +1,5 @@
 #include "client.h"
-
 #include <QStorageInfo>
-
 
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
@@ -76,8 +74,12 @@ void Client::getCommand() {
       sendInfo();
       break;
     case 1:
+      recorder.stop();
+      qDebug() << "Recording stopped";
       break;
     case 2:
+      recorder.recordLocally();
+      qDebug() << "started recording locally";
       break;
     default:
       message.append(" command unknown \n");

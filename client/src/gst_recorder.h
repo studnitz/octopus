@@ -12,12 +12,14 @@
 #include <QGst/Event>
 #include <QGst/Message>
 #include <QGst/Bus>
+#include <QHostAddress>
 #include <QDir>
 
 class GstRecorder : public QObject {
   Q_OBJECT
- public:
-  GstRecorder(QObject *parent = 0);
+public:
+   GstRecorder(QObject *parent = 0);
+  ~GstRecorder();
 
   /**
    * @brief recordLocally records locally to disk using x264enc
