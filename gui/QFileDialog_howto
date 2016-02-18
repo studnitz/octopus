@@ -1,0 +1,22 @@
+  QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open movies"),
+                                                        QDir::currentPath());
+  if (!fileNames.empty()) {
+    QList<QMediaPlayer *>::iterator j;
+    // Load first recording into players automatically
+    for (j = player->begin(); j != player->end(); ++j) {
+      (*j)->setMedia(QUrl::fromLocalFile(fileNames.at(0)));
+    }
+
+    // Fill playlist with files
+    QStringList::iterator i;
+    for (i = fileNames.begin(); i != fileNames.end(); ++i) {
+      playlist->addMedia(QUrl::fromLocalFile(*i));
+      log(QString("Lade ").append(*i).append("..."));
+    }
+    playlist->setCurrentIndex(playlist->mediaCount());
+
+    // Link playlist, playlistModel and listView
+    playlistModel->setPlaylist(playlist);
+    ui->listView->setCurrentIndex(
+        playlistModel->index(playlist->currentIndex(), 0));
+  }

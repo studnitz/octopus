@@ -17,6 +17,8 @@
 
 #include "../server/src/recording.h"
 #include "src/playersettingsdialog.h"
+#include "recordingview.h"
+#include "playbackview.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,8 +31,31 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
   Server *server;
+
+  /**
+   * @brief recordingView subclass for recording capability
+   */
+  RecordingView *recordingView;
+
+  /**
+   * @brief playbackView subclass for playback capability
+   */
+  PlaybackView *playbackView;
+
+  /**
+   * @brief showPercentage flag for showing percentage in recordingView
+   */
   bool showPercentage = 0;
+
+  /**
+   * @brief versionOctopus current version# of the octopus-program
+   */
   QString versionOctopus = "0.313b";  // Versionnumber
+
+  /**
+   * @brief ui pointer to the complete UI
+   */
+  Ui::MainWindow *ui;
 
   /**
    * @brief settings to store settings
@@ -46,11 +71,44 @@ class MainWindow : public QMainWindow {
    */
   QList<VideoPlayer *> *videoPlayer;
 
+  /**
+   * @brief player List of players
+   * The players implement the functionality. They hold references to the files
+   * and it's also them who get calls for stopping or playing the sources.
+   */
+  QList<QMediaPlayer *> *player;
+
+  /**
+   * @brief loadPlayersFromRecording creates video-output for video-files.
+   * Amount of players created depends on recording (.off-file)
+   */
   void loadPlayersFromRecording();
 
+  /**
+   * @brief log Helper function for writing info messages into the log section.
+   * @param msg QString that holds the message
+   */
+  void log(QString msg);
+
+  /**
+   * @brief recording points to a Recording-class which is beeing created from
+   * an .off-file
+   */
   Recording *recording;
 
+  /**
+   * @brief connectSourceToNewVideo Connects source to the player at position
+   * [i, j]
+   * @param source Videofile to be connected to player
+   * @param i x-coordinate in grid
+   * @param j y-coordinate in grid
+   */
+  void connectSourceToNewVideo(const VideoFile &source, int i, int j);
+
  signals:
+  /**
+   * @brief getinfo emitted regularly. Triggers the update of the client list.
+   */
   void getinfo();
 
  public slots:
@@ -65,8 +123,11 @@ class MainWindow : public QMainWindow {
    */
   void on_playButton_clicked();
 
+  /**
+   * @brief updateRecordingList updates the list of recordings with .off-files
+   * contained in the directory of the executable
+   */
   void updateRecordingList();
-
 
   /**
    * @brief continueUpdateClientList updates the Client List in the GUI
@@ -74,31 +135,16 @@ class MainWindow : public QMainWindow {
   void continueUpdateClientList();
 
   /**
-   * @brief on_openFileButton_clicked Opens a dialog to load recordings into the
-   * program to play them later.
-   */
-  void on_openFileButton_clicked();
-
-  /**
    * @brief on_stopButton_clicked Stops the playback of all players.
    */
   void on_stopButton_clicked();
 
   /**
-   * @brief on_listView_doubleClicked Loads the recordings from a file, that was
-   * double-clicked on into the video players.
-   * @param index Gives information which file was double-clicked on
+   * @brief openRecording loads a recording. Also calls
+   * loadPlayersFromRecording().
+   * @param item
    */
-  void on_listView_doubleClicked(const QModelIndex &index);
-
-  /**
-   * @brief on_addPlayerButton_clicked Adds a player to the UI
-   * You can choose various parameters for new player instances: initialMarginX,
-   * initialMarginY, marginX, marginY, newWidth, new Height.
-   */
-  void on_addPlayerButton_clicked();
-
-  void openRecording(QListWidgetItem* item);
+  void openRecording(QListWidgetItem *item);
 
   /**
    * @brief videoPlayerOpenOptions Opens an option dialog for setting the
@@ -138,7 +184,7 @@ class MainWindow : public QMainWindow {
   void closeWindow();
 
   void saveRecording();
-private slots:
+ private slots:
   /**
    * @brief on_pushButton_Percent_clicked GUI toggle Percent in LEDs
    */
@@ -149,27 +195,13 @@ private slots:
   void on_pushButton_clicked();
 
  private:
-  Ui::MainWindow *ui;
-
   /**
-   * @brief player List of players
-   * The players implement the functionality. They hold references to the files
-   * and it's also them who get calls for stopping or playing the sources.
+   * @brief getColorFromPercent creates a Color ranging from green over yellow
+   * to red, depending on percent. 100% is deep red, while 0% is green.
+   * @param percent percentage
+   * @return QColor ranging from green over yellow to red
    */
-  QList<QMediaPlayer *> *player;
-
-
-  void recordStart();
-  void recordStop();
-  void printClients();
-
   QColor getColorFromPercent(int percent);
-
-  /**
-   * @brief log Helper function for writing info messages into the log section.
-   * @param msg QString that holds the message
-   */
-  void log(QString msg);
 
   /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at
@@ -179,13 +211,9 @@ private slots:
   quint8 getFreePlayerId();
 
   /**
-   * @brief connectSourceToNewVideo Connects source to the player at position
-   * [i, j]
-   * @param source
-   * @param i
-   * @param j
+   * @brief clearVideoPlayers deletes all videoplayers on the video-output layer
+   * only. Does not change the grid-structure.
    */
-  void connectSourceToNewVideo(const VideoFile &source, int i, int j);
   void clearVideoPlayers();
 };
 

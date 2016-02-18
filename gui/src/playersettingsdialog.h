@@ -4,24 +4,23 @@
 #include <QDialog>
 
 namespace Ui {
-  class PlayerSettingsDialog;
+class PlayerSettingsDialog;
 }
 
-class PlayerSettingsDialog : public QDialog
-{
+class PlayerSettingsDialog : public QDialog {
   Q_OBJECT
 
-public:
+ public:
   explicit PlayerSettingsDialog(quint8 playerIndex, QWidget *parent = 0);
   ~PlayerSettingsDialog();
 
-private slots:
+ private slots:
   void on_buttonBox_accepted();
 
-private:
+ private:
   Ui::PlayerSettingsDialog *ui;
   quint8 playerIndex;
   bool changesDone;
 };
 
-#endif // PLAYERSETTINGSDIALOG_H
+#endif  // PLAYERSETTINGSDIALOG_H

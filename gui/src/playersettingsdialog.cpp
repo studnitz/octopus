@@ -36,7 +36,8 @@ void PlayerSettingsDialog::on_buttonBox_accepted() {
   QPair<int, int> pos = parent->recording->grid.getVideoFilePositionById(
       parent->videoPlayer->at(playerIndex)->videoFileId);
 
-  if (pos.first != ui->spinBox_2->value() || pos.second != ui->spinBox_4->value())
+  if (pos.first != ui->spinBox_2->value() ||
+      pos.second != ui->spinBox_4->value())
     changesDone = true;
 
   if (changesDone) {
@@ -44,9 +45,12 @@ void PlayerSettingsDialog::on_buttonBox_accepted() {
     VideoFile vid = parent->recording->grid.getVideoFileById(
         parent->videoPlayer->at(playerIndex)->videoFileId);
     parent->recording->grid.deleteSource(pos.first, pos.second);
-    if (parent->recording->grid.grid[ui->spinBox_2->value()][ui->spinBox_4->value()].id != 0) {
-        parent->recording->grid.deleteSource(ui->spinBox_2->value(), ui->spinBox_4->value());
-      }
+    if (parent->recording->grid
+            .grid[ui->spinBox_2->value()][ui->spinBox_4->value()]
+            .id != 0) {
+      parent->recording->grid.deleteSource(ui->spinBox_2->value(),
+                                           ui->spinBox_4->value());
+    }
     parent->recording->grid.addSource(vid, ui->spinBox_2->value(),
                                       ui->spinBox_4->value());
 
