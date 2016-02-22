@@ -11,18 +11,18 @@ void ServerInterface::start(quint16 port) {
 }
 
 void ServerInterface::incomingConnection(qintptr handle) {
-  socket = new QTcpSocket();
+  socket = new QTcpSocket(this);
   if (!socket->setSocketDescriptor(handle))
     qDebug() << "Fatal error with socket in ServerInterface";
 
-  connect(socket, &QTcpSocket::readyRead, this, &ServerInterface::readData);
+  connect(socket, &QTcpSocket::readyRead, this, &ServerInterface::receiveData);
 }
 
-void ServerInterface::readData() {
+void ServerInterface::receiveData() {
   QByteArray ba = socket->readLine();
   qDebug() << ba;
 }
 
 void ServerInterface::readJson(const QJsonObject &json) {}
 
-QJsonObject ServerInterface::writeJson() {}
+void ServerInterface::writeJson() {}
