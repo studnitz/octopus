@@ -20,6 +20,8 @@
 #include "recordingview.h"
 #include "playbackview.h"
 
+#include "src/guiinterface.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -215,6 +217,11 @@ class MainWindow : public QMainWindow {
    * only. Does not change the grid-structure.
    */
   void clearVideoPlayers();
+
+  /**
+   * @brief guiInterface Interface to communicate with ServerPI
+   */
+  GUIInterface *guiInterface;
 };
 
 #endif  // MAINWINDOW_H

@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
+  guiInterface = new GUIInterface(this);
 }
 
 MainWindow::~MainWindow() {
