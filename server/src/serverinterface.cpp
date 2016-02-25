@@ -10,6 +10,8 @@ void ServerInterface::start(quint16 port) {
   }
 }
 
+void ServerInterface::setServer(Server *server) { this->server = server; }
+
 void ServerInterface::incomingConnection(qintptr handle) {
   socket = new QTcpSocket(this);
   if (!socket->setSocketDescriptor(handle))
@@ -18,19 +20,42 @@ void ServerInterface::incomingConnection(qintptr handle) {
   connect(socket, &QTcpSocket::readyRead, this, &ServerInterface::receiveData);
 }
 
-void ServerInterface::receiveData() {
-  QByteArray ba;
-  ba = socket->readAll();
-  QJsonObject json = readJson(ba);
-  qDebug() << json["cmd"].toString();
+void ServerInterface::sendData(QString &str) {
+  if (socket->state() == QTcpSocket::ConnectedState) {
+    QByteArray msg;
+    QJsonObject json = QJsonObject();
+
+    json["cmd"] = "clientInfo";
+    json["data"] = str;
+    msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
+
+    socket->write(msg);
+  }
 }
 
-QJsonObject ServerInterface::readJson(const QByteArray &ba) {
-  QJsonDocument json(QJsonDocument::fromJson(ba));
-  if (json.isObject())
-    return json.object();
-  else
-    qDebug() << "is no object";
+void ServerInterface::receiveData() {
+  QByteArray ba;
+  QJsonObject json;
+  while (!socket->atEnd()) {
+    // Read Json object from socket
+    ba = socket->readLine();
+    json = QJsonDocument::fromJson(ba).object();
+
+    executeCommand(json);
+  }
+}
+
+void ServerInterface::executeCommand(const QJsonObject &json) {
+  if (!json.isEmpty()) {
+    if (json["cmd"].toString().compare("getInfo")) {
+      // do getInfo
+      qDebug() << "cmd:  " << json["cmd"].toString();
+      qDebug() << "data: " << json["data"].toString();
+    } else {
+      qDebug() << "cmd:  " << json["cmd"].toString();
+      qDebug() << "data: " << json["data"].toString();
+    }
+  }
 }
 
 void ServerInterface::writeJson() {}

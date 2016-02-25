@@ -21,7 +21,7 @@ void GUIInterface::writeJson() {}
 void GUIInterface::sendData(QString &str) {
   if (socket->state() == QTcpSocket::ConnectedState) {
     QByteArray msg;
-    msg = newCommand(str).toJson();
+    msg = newCommand(str).toJson(QJsonDocument::Compact).append("\n");
     socket->write(msg);
   }
 }

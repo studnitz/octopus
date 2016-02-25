@@ -11,6 +11,7 @@ int main(int argc, char* argv[]) {
   server.startServer();
 
   serverInterface = new ServerInterface(0);
+  serverInterface->setServer(&server);
   serverInterface->start();
 
   return a.exec();
