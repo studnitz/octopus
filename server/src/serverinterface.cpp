@@ -19,7 +19,8 @@ void ServerInterface::incomingConnection(qintptr handle) {
 }
 
 void ServerInterface::receiveData() {
-  QByteArray ba = socket->readLine();
+  QByteArray ba;
+  ba = socket->readAll();
   qDebug() << ba;
 }
 
