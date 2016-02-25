@@ -15,7 +15,7 @@ class GUIInterface : public QObject {
                         QObject *parent = 0);
   void tryConnect(QHostAddress destAddr, quint16 port);
   void sendData(QString str, QString &data);
-  QList<ClientGui*>* clients;
+  QList<ClientGui *> *clients;
   QTcpSocket *socket;
   QJsonDocument newCommand(QString &cmd, QString &data);
  signals:
@@ -23,7 +23,8 @@ class GUIInterface : public QObject {
  public slots:
 
   void receiveData();
-private:
+
+ private:
   void readData(QJsonObject json);
 };
 

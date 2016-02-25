@@ -53,7 +53,8 @@ class Server : public QTcpServer {
   void readInfo();
 
   void stopRecordings();
-protected:
+
+ protected:
   /**
    * @brief incomingConnection starts a new ServerThread where client connection
    * is handeld

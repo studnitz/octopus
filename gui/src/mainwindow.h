@@ -28,9 +28,9 @@ class MainWindow : public QMainWindow {
  public:
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
-    /**
-   * @brief recordingView subclass for recording capability
-   */
+  /**
+ * @brief recordingView subclass for recording capability
+ */
   RecordingView *recordingView;
 
   /**

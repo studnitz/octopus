@@ -58,13 +58,13 @@ MainWindow::MainWindow(QWidget *parent)
   QHostAddress addr = QHostAddress("127.0.0.1");
   quint16 port = 1235;
   guiInterface = new GUIInterface(addr, port, this);
-  connect(timer, &QTimer::timeout, [this, addr, port]() { guiInterface->tryConnect(addr, port); });
+  connect(timer, &QTimer::timeout,
+          [this, addr, port]() { guiInterface->tryConnect(addr, port); });
 
   // --- TESTDATA ---
   QString data = "testdata";
   QString cmd = "cmd";
-  for (int i = 0; i < 2; i++)
-    guiInterface->sendData(cmd, data);
+  for (int i = 0; i < 2; i++) guiInterface->sendData(cmd, data);
 }
 
 MainWindow::~MainWindow() {
@@ -149,7 +149,7 @@ void MainWindow::continueUpdateClientList() {
   // Update each Row/Client. Iterator can't be used here because index is needed
   for (int i = 0; i < guiInterface->clients->length(); i++) {
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
-    ClientGui* client = guiInterface->clients->at(i);
+    ClientGui *client = guiInterface->clients->at(i);
     QHostInfo HI = QHostInfo::fromName(
         client->ip);  // Host-Info/-Name. Not really working as it should
     ui->tableWidget->setItem(
