@@ -3,6 +3,7 @@
 
 GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
     : QObject(parent) {
+  clients = new QList<ClientGui*>();
   socket = new QTcpSocket(this);
 
   socket->connectToHost(destAddr, port);
@@ -12,24 +13,38 @@ GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
   } else {
     qDebug() << "GUI Interface could not connect to Server Interface";
   }
+  connect(socket, &QTcpSocket::readyRead, this, &GUIInterface::receiveData);
 }
 
 void GUIInterface::readJson(const QJsonObject &json) {}
 
 void GUIInterface::writeJson() {}
 
-void GUIInterface::sendData(QString &str) {
+void GUIInterface::sendData(QString str, QString &data) {
   if (socket->state() == QTcpSocket::ConnectedState) {
     QByteArray msg;
-    msg = newCommand(str).toJson(QJsonDocument::Compact).append("\n");
+    msg = newCommand(str, data).toJson(QJsonDocument::Compact).append("\n");
     socket->write(msg);
   }
 }
 
-QJsonDocument GUIInterface::newCommand(QString cmd) {
+void GUIInterface::receiveData(){
+    QByteArray data;
+    QJsonObject json;
+    while(!socket->atEnd()){
+        data = socket->readLine();
+        json = QJsonDocument::fromJson(data).object();
+        readData(json);
+    }
+}
+
+void GUIInterface::readData(QJsonObject json){
+ qDebug() << json["data"].toString();
+}
+
+QJsonDocument GUIInterface::newCommand(QString &cmd, QString &data) {
   QJsonObject json = QJsonObject();
   json["cmd"] = cmd;
-  json["blablu"] = 0.7;
-  std::cout << QString(QJsonDocument(json).toJson()).toStdString();
+  json["data"] = data;
   return QJsonDocument(json);
 }

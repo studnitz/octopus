@@ -14,17 +14,19 @@ class GUIInterface : public QObject {
  public:
   explicit GUIInterface(QHostAddress destAddr, quint16 port,
                         QObject *parent = 0);
-  void sendData(QString &str);
-  QList<ClientGui> Clients;
+  void sendData(QString str, QString &data);
+  QList<ClientGui*>* clients;
   void readJson(const QJsonObject &json);
   void writeJson();
   QTcpSocket *socket;
-  QJsonDocument newCommand(QString cmd);
+  QJsonDocument newCommand(QString &cmd, QString &data);
  signals:
 
  public slots:
 
- private:
+  void receiveData();
+private:
+  void readData(QJsonObject json);
 };
 
 #endif  // GUIINTERFACE_H

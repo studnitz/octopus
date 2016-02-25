@@ -32,9 +32,7 @@ class MainWindow : public QMainWindow {
  public:
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
-  Server *server;
-
-  /**
+    /**
    * @brief recordingView subclass for recording capability
    */
   RecordingView *recordingView;
@@ -52,7 +50,7 @@ class MainWindow : public QMainWindow {
   /**
    * @brief versionOctopus current version# of the octopus-program
    */
-  QString versionOctopus = "0.313b";  // Versionnumber
+  QString versionOctopus = "0.314a";  // Versionnumber
 
   /**
    * @brief ui pointer to the complete UI

@@ -4,16 +4,16 @@
 #include "../server/src/recording.h"
 #include <QApplication>
 
-Server server;
+//Server server;
 
 int main(int argc, char* argv[]) {
   QApplication a(argc, argv);
 
-  server.startServer();
+  //server.startServer();
 
   MainWindow w;
-  QObject::connect(&w, SIGNAL(getinfo()), &server, SLOT(getInfo()));
-  w.server = &server;
+  //QObject::connect(&w, SIGNAL(getinfo()), &server, SLOT(getInfo()));
+  //w.server = &server;
   w.show();
 
   return a.exec();

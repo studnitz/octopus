@@ -65,8 +65,11 @@ MainWindow::MainWindow(QWidget *parent)
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
   guiInterface = new GUIInterface(QHostAddress("127.0.0.1"), 1235, this);
+
+  QString data = "testdata";
+  QString cmd = "cmd";
   for (int i = 0; i < 2; i++)
-    guiInterface->sendData(QString::number(i).append(" Haha ich bin lustig"));
+    guiInterface->sendData(cmd, data);
 }
 
 MainWindow::~MainWindow() {
@@ -133,7 +136,8 @@ QColor MainWindow::getColorFromPercent(int percent) {
 
 void MainWindow::continueUpdateClientList() {
   // emit signal to get new Infos
-  emit this->getinfo();
+  QString data = QString("looool");
+  guiInterface->sendData("getInfo", data);
 
   // Initialize RowCount with 0
   ui->tableWidget->setRowCount(0);
@@ -149,20 +153,18 @@ void MainWindow::continueUpdateClientList() {
   ui->tableWidget->horizontalHeader()->show();
 
   // Update each Row/Client. Iterator cant be used here because index is needed
-  for (int i = 0; i < server->getClients().size(); i++) {
+  for (int i = 0; i < guiInterface->clients->length(); i++) {
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
-
+    ClientGui* client = guiInterface->clients->at(i);
     QHostInfo HI = QHostInfo::fromName(
-        server->getClients()
-            .at(i)
-            ->ClientIP);  // Host-Info/-Name. Not really working as it should
+        client->ip);  // Host-Info/-Name. Not really working as it should
     ui->tableWidget->setItem(
         i, 0, new QTableWidgetItem(
                   QString::number(i).append(" ").append(HI.hostName())));
     // get ClientInfos
-    int DiskUsage = server->getClients().at(i)->ClientInfo[2];
-    int MemUsage = server->getClients().at(i)->ClientInfo[0];
-    int CPUUsage = server->getClients().at(i)->ClientInfo[1];
+    int DiskUsage = client->clientInfo[2];
+    int MemUsage = client->clientInfo[0];
+    int CPUUsage = client->clientInfo[1];
 
     // Update 'LED' of DiskUsage
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));

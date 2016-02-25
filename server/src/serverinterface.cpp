@@ -56,6 +56,8 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       qDebug() << "data: " << json["data"].toString();
     }
   }
+  QString data = QString("TEST TEST TEST TEST");
+  sendData(data);
 }
 
 void ServerInterface::writeJson() {}
