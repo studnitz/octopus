@@ -21,7 +21,7 @@ void GUIInterface::writeJson() {}
 void GUIInterface::sendData(QString &str) {
   if (socket->state() == QTcpSocket::ConnectedState) {
     QByteArray msg;
-    msg.push_back(str.toLatin1());
+    msg = newCommand(str).toJson();
     socket->write(msg);
   }
 }
@@ -29,6 +29,7 @@ void GUIInterface::sendData(QString &str) {
 QJsonDocument GUIInterface::newCommand(QString cmd) {
   QJsonObject json = QJsonObject();
   json["cmd"] = cmd;
+  json["blablu"] = 0.7;
   std::cout << QString(QJsonDocument(json).toJson()).toStdString();
   return QJsonDocument(json);
 }
