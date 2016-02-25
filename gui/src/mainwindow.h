@@ -3,24 +3,20 @@
 
 #include <QMainWindow>
 #include "../server/src/server.h"
-#include "../server/src/serverthread.h"
-#include <QHostInfo>
+#include "../server/src/recording.h"
+
 #include <QSettings>
 #include "settingsdialog.h"
+#include "playersettingsdialog.h"
 
 // Videoplayer
 #include <QMediaPlayer>
 #include <QListWidget>
-#include <QMediaPlaylist>
-#include "playlistmodel.h"
-#include "videoplayer.h"
 
-#include "../server/src/recording.h"
-#include "src/playersettingsdialog.h"
+#include "videoplayer.h"
 #include "recordingview.h"
 #include "playbackview.h"
-
-#include "src/guiinterface.h"
+#include "guiinterface.h"
 
 namespace Ui {
 class MainWindow;
@@ -51,11 +47,6 @@ class MainWindow : public QMainWindow {
    * @brief versionOctopus current version# of the octopus-program
    */
   QString versionOctopus = "0.314a";  // Versionnumber
-
-  /**
-   * @brief ui pointer to the complete UI
-   */
-  Ui::MainWindow *ui;
 
   /**
    * @brief settings to store settings
@@ -106,10 +97,6 @@ class MainWindow : public QMainWindow {
   void connectSourceToNewVideo(const VideoFile &source, int i, int j);
 
  signals:
-  /**
-   * @brief getinfo emitted regularly. Triggers the update of the client list.
-   */
-  void getinfo();
 
  public slots:
   /**
@@ -202,6 +189,11 @@ class MainWindow : public QMainWindow {
    * @return QColor ranging from green over yellow to red
    */
   QColor getColorFromPercent(int percent);
+
+  /**
+   * @brief ui pointer to the complete UI
+   */
+  Ui::MainWindow *ui;
 
   /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at

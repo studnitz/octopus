@@ -1,19 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QStandardItemModel>
-#include <QList>
 #include <QHostInfo>
 #include <QDir>
-
-// Videoplayer
-#include <QtWidgets>
+#include <QtWidgets/QLabel>
 #include <QDialog>
-#include <QMediaPlaylist>
-#include "playlistmodel.h"
-
-PlaylistModel *playlistModel;
-QMediaPlaylist *playlist;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -55,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->reloadButton, &QPushButton::clicked, this,
           &MainWindow::updateRecordingList);
   QTimer *timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(continueUpdateClientList()));
+  connect(timer, &QTimer::timeout, this, &MainWindow::continueUpdateClientList);
   timer->start(1000);
 
   /* --- PLAY-TAB: videoplayer set-up --- */
@@ -64,8 +55,12 @@ MainWindow::MainWindow(QWidget *parent)
 
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
-  guiInterface = new GUIInterface(QHostAddress("127.0.0.1"), 1235, this);
+  QHostAddress addr = QHostAddress("127.0.0.1");
+  quint16 port = 1235;
+  guiInterface = new GUIInterface(addr, port, this);
+  connect(timer, &QTimer::timeout, [this, addr, port]() { guiInterface->tryConnect(addr, port); });
 
+  // --- TESTDATA ---
   QString data = "testdata";
   QString cmd = "cmd";
   for (int i = 0; i < 2; i++)
@@ -135,7 +130,6 @@ QColor MainWindow::getColorFromPercent(int percent) {
 }
 
 void MainWindow::continueUpdateClientList() {
-  // emit signal to get new Infos
   QString data = QString("looool");
   guiInterface->sendData("getInfo", data);
 
@@ -152,7 +146,7 @@ void MainWindow::continueUpdateClientList() {
   ui->tableWidget->horizontalHeaderItem(3)->setToolTip("CPU");
   ui->tableWidget->horizontalHeader()->show();
 
-  // Update each Row/Client. Iterator cant be used here because index is needed
+  // Update each Row/Client. Iterator can't be used here because index is needed
   for (int i = 0; i < guiInterface->clients->length(); i++) {
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
     ClientGui* client = guiInterface->clients->at(i);

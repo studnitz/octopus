@@ -1,7 +1,6 @@
 #ifndef GUIINTERFACE_H
 #define GUIINTERFACE_H
 
-#include <QObject>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QTcpSocket>
@@ -14,10 +13,9 @@ class GUIInterface : public QObject {
  public:
   explicit GUIInterface(QHostAddress destAddr, quint16 port,
                         QObject *parent = 0);
+  void tryConnect(QHostAddress destAddr, quint16 port);
   void sendData(QString str, QString &data);
   QList<ClientGui*>* clients;
-  void readJson(const QJsonObject &json);
-  void writeJson();
   QTcpSocket *socket;
   QJsonDocument newCommand(QString &cmd, QString &data);
  signals:

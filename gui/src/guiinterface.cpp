@@ -3,22 +3,23 @@
 
 GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
     : QObject(parent) {
-  clients = new QList<ClientGui*>();
+  clients = new QList<ClientGui *>();
   socket = new QTcpSocket(this);
 
-  socket->connectToHost(destAddr, port);
-
-  if (socket->waitForConnected()) {
-    qDebug() << "GUI Interface connected";
-  } else {
-    qDebug() << "GUI Interface could not connect to Server Interface";
-  }
-  connect(socket, &QTcpSocket::readyRead, this, &GUIInterface::receiveData);
+  tryConnect(destAddr, port);
 }
 
-void GUIInterface::readJson(const QJsonObject &json) {}
-
-void GUIInterface::writeJson() {}
+void GUIInterface::tryConnect(QHostAddress destAddr, quint16 port) {
+  if (socket->state() != QTcpSocket::ConnectedState) {
+    socket->connectToHost(destAddr, port);
+    if (socket->waitForConnected()) {
+      qDebug() << "GUI Interface connected";
+      connect(socket, &QTcpSocket::readyRead, this, &GUIInterface::receiveData);
+    } else {
+      qDebug() << "GUI Interface could not connect to Server Interface";
+    }
+  }
+}
 
 void GUIInterface::sendData(QString str, QString &data) {
   if (socket->state() == QTcpSocket::ConnectedState) {
@@ -28,18 +29,18 @@ void GUIInterface::sendData(QString str, QString &data) {
   }
 }
 
-void GUIInterface::receiveData(){
-    QByteArray data;
-    QJsonObject json;
-    while(!socket->atEnd()){
-        data = socket->readLine();
-        json = QJsonDocument::fromJson(data).object();
-        readData(json);
-    }
+void GUIInterface::receiveData() {
+  QByteArray data;
+  QJsonObject json;
+  while (!socket->atEnd()) {
+    data = socket->readLine();
+    json = QJsonDocument::fromJson(data).object();
+    readData(json);
+  }
 }
 
-void GUIInterface::readData(QJsonObject json){
- qDebug() << json["data"].toString();
+void GUIInterface::readData(QJsonObject json) {
+  qDebug() << json["data"].toString();
 }
 
 QJsonDocument GUIInterface::newCommand(QString &cmd, QString &data) {
