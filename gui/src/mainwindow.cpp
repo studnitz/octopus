@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
   guiInterface = new GUIInterface(QHostAddress("127.0.0.1"), 1235, this);
   for (int i = 0; i < 1000; i++)
     guiInterface->sendData(QString::number(i).append("Haha ich bin lustig"));
+  guiInterface->newCommand("ARBEITE!!");
 }
 
 MainWindow::~MainWindow() {

@@ -16,15 +16,15 @@ class GUIInterface : public QObject {
                         QObject *parent = 0);
   void sendData(QString &str);
   QList<ClientGui> Clients;
+  void readJson(const QJsonObject &json);
+  void writeJson();
+  QTcpSocket *socket;
+  QJsonDocument newCommand(QString cmd);
  signals:
 
  public slots:
 
  private:
-  void readJson(const QJsonObject &json);
-  void writeJson();
-  QTcpSocket *socket;
-  QJsonObject newCommand(QString &cmd);
 };
 
 #endif  // GUIINTERFACE_H

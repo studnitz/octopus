@@ -1,4 +1,5 @@
 #include "guiinterface.h"
+#include <iostream>
 
 GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
     : QObject(parent) {
@@ -25,8 +26,9 @@ void GUIInterface::sendData(QString &str) {
   }
 }
 
-QJsonObject GUIInterface::newCommand(QString &cmd) {
+QJsonDocument GUIInterface::newCommand(QString cmd) {
   QJsonObject json = QJsonObject();
   json["cmd"] = cmd;
-  return json;
+  std::cout << QString(QJsonDocument(json).toJson()).toStdString();
+  return QJsonDocument(json);
 }

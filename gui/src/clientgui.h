@@ -2,6 +2,7 @@
 #define CLIENTGUI_H
 
 #include <QObject>
+#include <QVector>
 /**
  * @brief The ClientGui class
  * Class for representation and storage of clientinfo for the GUI.
@@ -10,7 +11,7 @@
 class ClientGui
 {
 public:
-    ClientGui();
+    ClientGui(QString ip, QVector<float> info);
     QString ip;
     QVector<float> clientInfo;
 };
