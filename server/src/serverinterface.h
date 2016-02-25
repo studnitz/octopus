@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 class ServerInterface : public QTcpServer {
  public:
@@ -16,7 +17,7 @@ class ServerInterface : public QTcpServer {
 
  private:
   void incomingConnection(qintptr handle);
-  void readJson(const QJsonObject &json);
+  QJsonObject readJson(const QByteArray &ba);
   void writeJson();
   QTcpSocket *socket;
 };

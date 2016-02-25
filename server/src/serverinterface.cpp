@@ -21,9 +21,16 @@ void ServerInterface::incomingConnection(qintptr handle) {
 void ServerInterface::receiveData() {
   QByteArray ba;
   ba = socket->readAll();
-  qDebug() << ba;
+  QJsonObject json = readJson(ba);
+  qDebug() << json["cmd"].toString();
 }
 
-void ServerInterface::readJson(const QJsonObject &json) {}
+QJsonObject ServerInterface::readJson(const QByteArray &ba) {
+  QJsonDocument json(QJsonDocument::fromJson(ba));
+  if (json.isObject())
+    return json.object();
+  else
+    qDebug() << "is no object";
+}
 
 void ServerInterface::writeJson() {}
