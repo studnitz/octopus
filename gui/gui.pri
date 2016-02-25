@@ -7,7 +7,8 @@ SOURCES += $$PWD/src/mainwindow.cpp         \
         $$PWD/src/settingsdialog.cpp        \
         $$PWD/src/playbackview.cpp          \
         $$PWD/src/recordingview.cpp \
-    $$PWD/src/guiinterface.cpp
+    $$PWD/src/guiinterface.cpp \
+    $$PWD/src/clientgui.cpp
 
 HEADERS  += $$PWD/src/mainwindow.h          \
         $$PWD/src/playlistmodel.h           \
@@ -16,7 +17,8 @@ HEADERS  += $$PWD/src/mainwindow.h          \
         $$PWD/src/settingsdialog.h          \
         $$PWD/src/playbackview.h            \
         $$PWD/src/recordingview.h \
-    $$PWD/src/guiinterface.h
+    $$PWD/src/guiinterface.h \
+    $$PWD/src/clientgui.h
 
 FORMS    += $$PWD/forms/mainwindow.ui \
     $$PWD/forms/settingsdialog.ui 	\

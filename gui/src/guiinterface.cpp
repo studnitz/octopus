@@ -24,3 +24,9 @@ void GUIInterface::sendData(QString &str) {
     socket->write(msg);
   }
 }
+
+QJsonObject GUIInterface::newCommand(QString &cmd) {
+  QJsonObject json = QJsonObject();
+  json["cmd"] = cmd;
+  return json;
+}

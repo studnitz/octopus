@@ -6,6 +6,8 @@
 #include <QJsonDocument>
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <QJsonObject>
+#include "clientgui.h"
 
 class GUIInterface : public QObject {
   Q_OBJECT
@@ -13,6 +15,7 @@ class GUIInterface : public QObject {
   explicit GUIInterface(QHostAddress destAddr, quint16 port,
                         QObject *parent = 0);
   void sendData(QString &str);
+  QList<ClientGui> Clients;
  signals:
 
  public slots:
@@ -21,6 +24,7 @@ class GUIInterface : public QObject {
   void readJson(const QJsonObject &json);
   void writeJson();
   QTcpSocket *socket;
+  QJsonObject newCommand(QString &cmd);
 };
 
 #endif  // GUIINTERFACE_H
