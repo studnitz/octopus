@@ -7,6 +7,9 @@
 #include <QHostAddress>
 #include <QNetworkInterface>
 #include <QStorageInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "gst_recorder.h"
 
@@ -116,6 +119,7 @@ class Client : public QObject {
    * @return "yes"
    */
   std::string isConnected();
+  void executeCommand(QJsonObject json);
 };
 
 #endif  // TCPCLIENT_H

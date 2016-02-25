@@ -26,11 +26,25 @@ void Server::incomingConnection(qintptr socketDescriptor) {
   qDebug() << "New Client connected";
 }
 
-void Server::getInfo() { this->broadcastCommand(0); }
+void Server::getInfo() {
+  QJsonObject json;
+  json["cmd"] = "getInfo";
+  broadcastCommand(json);
+}
 
-void Server::recordLocally() { this->broadcastCommand(2); }
+void Server::recordLocally() {
+  // TODO(eventuell): Als Parameter (in data) Kamera/Client der aufnehmen soll
+  // mitschicken
+  QJsonObject json;
+  json["cmd"] = "recordLocally";
+  broadcastCommand(json);
+}
 
-void Server::stopRecordings() { this->broadcastCommand(1); }
+void Server::stopCameras() {
+  QJsonObject json;
+  json["cmd"] = "stopCameras";
+  broadcastCommand(json);
+}
 
 void Server::readInfo() {
   QList<ServerThread*> clients = getClients();

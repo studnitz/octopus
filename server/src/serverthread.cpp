@@ -47,9 +47,10 @@ void ServerThread::getData() {
   }
 }
 
-void ServerThread::sendCommand(int value) {
+void ServerThread::sendCommand(QJsonObject json) {
   QByteArray message;
-  message.setNum(value);
+  QJsonDocument jsonDoc(json);
+  message = jsonDoc.toJson(QJsonDocument::Compact).append("\n");;
   socket->write(message);
 }
 

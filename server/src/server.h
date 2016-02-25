@@ -52,7 +52,7 @@ class Server : public QTcpServer {
    */
   void readInfo();
 
-  void stopRecordings();
+  void stopCameras();
 
  protected:
   /**
