@@ -14,12 +14,13 @@ class ServerInterface : public QTcpServer {
   void start(quint16 port = 1235);
   void setServer(Server *server);
 
- private slots:
+  QJsonObject getJsonInfo();
+private slots:
   void receiveData();
 
  private:
   void incomingConnection(qintptr handle);
-  void sendData(QString &str);
+  void sendData(QString cmd, QJsonObject &str);
   void executeCommand(const QJsonObject &json);
   void writeJson();
   QTcpSocket *socket;

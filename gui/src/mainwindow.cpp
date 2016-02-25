@@ -156,9 +156,9 @@ void MainWindow::continueUpdateClientList() {
         i, 0, new QTableWidgetItem(
                   QString::number(i).append(" ").append(HI.hostName())));
     // get ClientInfos
-    int DiskUsage = client->clientInfo[2];
-    int MemUsage = client->clientInfo[0];
-    int CPUUsage = client->clientInfo[1];
+    int DiskUsage = client->clientInfo.at(2);
+    int MemUsage = client->clientInfo.at(0);
+    int CPUUsage = client->clientInfo.at(1);
 
     // Update 'LED' of DiskUsage
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));

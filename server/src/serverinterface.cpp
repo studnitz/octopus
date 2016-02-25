@@ -20,15 +20,15 @@ void ServerInterface::incomingConnection(qintptr handle) {
   connect(socket, &QTcpSocket::readyRead, this, &ServerInterface::receiveData);
 }
 
-void ServerInterface::sendData(QString &str) {
+void ServerInterface::sendData(QString cmd, QJsonObject &str) {
   if (socket->state() == QTcpSocket::ConnectedState) {
     QByteArray msg;
     QJsonObject json = QJsonObject();
 
-    json["cmd"] = "clientInfo";
+    json["cmd"] = "getInfo";
     json["data"] = str;
     msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
-
+    qDebug() << msg;
     socket->write(msg);
   }
 }
@@ -45,19 +45,47 @@ void ServerInterface::receiveData() {
   }
 }
 
+QJsonObject ServerInterface::getJsonInfo() {
+  QJsonObject jO;
+  QList<ServerThread *> clients = server->getClients();
+  QListIterator<ServerThread *> it(clients);
+  QJsonArray clientArray;
+  while (it.hasNext()) {
+    ServerThread *serverThread = it.next();
+    QVectorIterator<float> cIt(serverThread->ClientInfo);
+    QJsonArray jsonArray;
+    int i = 0;
+    while (cIt.hasNext()) {
+      jsonArray.insert(i, cIt.next());
+      i++;
+    }
+    jO["Info"] = jsonArray;
+    jO["IP"] = serverThread->ClientIP;
+    clientArray.append(jO);
+  }
+  QJsonObject json;
+  json["clients"] = clientArray;
+  return json;
+}
+
 void ServerInterface::executeCommand(const QJsonObject &json) {
   if (!json.isEmpty()) {
-    if (json["cmd"].toString().compare("getInfo")) {
+    if (json["cmd"].toString().compare("getInfo")==0) {
       // do getInfo
+      QJsonObject data = getJsonInfo();
+      server->broadcastCommand(0);
+      sendData(json["cmd"].toString(), data);
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();
+      return;
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();
     }
   }
-  QString data = QString("TEST TEST TEST TEST");
-  sendData(data);
+  QJsonObject data;
+  data["data"] = "lololol";
+  sendData("TEST", data);
 }
 
 void ServerInterface::writeJson() {}

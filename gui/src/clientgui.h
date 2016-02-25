@@ -11,9 +11,9 @@
 class ClientGui
 {
 public:
-    ClientGui(QString ip, QVector<float> info);
+    ClientGui(QString ip, QList<float> info);
     QString ip;
-    QVector<float> clientInfo;
+    QList<float> clientInfo;
 };
 
 #endif // CLIENTGUI_H
