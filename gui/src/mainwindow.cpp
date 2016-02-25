@@ -65,8 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
   guiInterface = new GUIInterface(QHostAddress("127.0.0.1"), 1235, this);
-  for (int i = 0; i < 1000; i++)
-    guiInterface->sendData(QString::number(i).append("Haha ich bin lustig"));
+  for (int i = 0; i < 3; i++)
+    guiInterface->sendData(QString::number(i).append(" Haha ich bin lustig\n"));
 }
 
 MainWindow::~MainWindow() {
