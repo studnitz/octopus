@@ -64,7 +64,10 @@ class Client : public QObject {
    * @return total disk space in KB
    */
   int getTotalDisk();
- signals:
+  QString getHostname();
+  QJsonObject getJsonInfo();
+  void sendData(QString cmd, QJsonObject &str);
+signals:
 
  public slots:
   /**

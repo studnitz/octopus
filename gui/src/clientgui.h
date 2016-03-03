@@ -11,8 +11,12 @@
 class ClientGui
 {
 public:
-    ClientGui(QString ip, QList<float> info);
+    ClientGui(QString ip, QString name, float cpu, float mem, float disk);
     QString ip;
+    QString name;
+    float cpu;
+    float mem;
+    float disk;
     QList<float> clientInfo;
 };
 

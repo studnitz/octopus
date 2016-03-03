@@ -29,28 +29,30 @@ void ServerThread::run() {
 }
 
 void ServerThread::getData() {
-  QMutableVectorIterator<float> it(ClientInfo);
-  QString data =
-      QString(socket->readLine().replace("\n", "").replace("\"", ""));
-  int messageCode = data.toInt();
-  switch (messageCode) {
-    case 0:
-      while (it.hasNext() && socket->canReadLine()) {
-        data = QString(socket->readLine().replace("\n", "").replace("\"", ""));
-        it.next();
-        it.setValue(data.toFloat());
-      }
-      emit newInfo();
-      break;
-    default:
-      break;
+  QByteArray data;
+  QJsonObject json;
+  while (!socket->atEnd()) {
+    data = socket->readLine();
+    json = QJsonDocument::fromJson(data).object();
+    readData(json);
+    // qDebug() << data;
   }
 }
 
+void ServerThread::readData(QJsonObject json) {
+  qDebug() << " new data";
+  QJsonObject o = json["data"].toObject();
+  ClientIP = o["IP"].toString();
+  clientName = o["Name"].toString();
+  clientCpuUsage = o["CPU"].toDouble();
+  clientMemUsage = o["Memory"].toDouble();
+  clientDiskUsage = o["Disk"].toDouble();
+}
 void ServerThread::sendCommand(QJsonObject json) {
   QByteArray message;
   QJsonDocument jsonDoc(json);
-  message = jsonDoc.toJson(QJsonDocument::Compact).append("\n");;
+  message = jsonDoc.toJson(QJsonDocument::Compact).append("\n");
+  ;
   socket->write(message);
 }
 

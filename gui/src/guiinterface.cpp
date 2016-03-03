@@ -10,15 +10,10 @@ GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
 }
 
 void GUIInterface::tryConnect(QHostAddress destAddr, quint16 port) {
-  if (socket->state() != QTcpSocket::ConnectedState) {
-    socket->connectToHost(destAddr, port);
-    if (socket->waitForConnected()) {
-      qDebug() << "GUI Interface connected";
-      connect(socket, &QTcpSocket::readyRead, this, &GUIInterface::receiveData);
-    } else {
-      qDebug() << "GUI Interface could not connect to Server Interface";
+    if (socket->state() != QTcpSocket::ConnectedState) {
+      socket->connectToHost(destAddr, port);
+
     }
-  }
 }
 
 void GUIInterface::sendData(QString str, QString &data) {
@@ -49,12 +44,11 @@ void GUIInterface::readData(QJsonObject json) {
       QJsonObject o = arr.takeAt(0).toObject();
       QString IP = o["IP"].toString();
       if (IP.compare("")) {
-        QList<float> Info = QList<float>();
-        QJsonArray array = o["Info"].toArray();
-        for (int i = 0; i < 6; i++) {
-          Info.append(array.at(i).toDouble());
-        }
-        ClientGui *Client = new ClientGui(IP, Info);
+        float cpu = o["CPU"].toDouble();
+        float mem = o["Memory"].toDouble();
+        float disk = o["Disk"].toDouble();
+        QString name = o["Name"].toString();
+        ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk);
         clients->append(Client);
       }
     }

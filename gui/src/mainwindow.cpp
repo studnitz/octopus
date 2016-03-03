@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QtWidgets/QLabel>
 #include <QDialog>
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -55,16 +56,33 @@ MainWindow::MainWindow(QWidget *parent)
 
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
-  QHostAddress addr = QHostAddress("127.0.0.1");
-  quint16 port = 1235;
-  guiInterface = new GUIInterface(addr, port, this);
-  connect(timer, &QTimer::timeout,
-          [this, addr, port]() { guiInterface->tryConnect(addr, port); });
+  QString serverIP = this->settings->value("octopus/ServerIP").toString();
+  tryConnection(serverIP);
 
   // --- TESTDATA ---
   QString data = "testdata";
   QString cmd = "cmd";
   for (int i = 0; i < 2; i++) guiInterface->sendData(cmd, data);
+}
+
+void MainWindow::tryConnection(QString serverIP) {
+  QHostAddress addr = QHostAddress(serverIP);
+  quint16 port = 1235;
+  guiInterface = new GUIInterface(addr, port, this);
+
+  guiInterface->tryConnect(addr, port);
+  if (guiInterface->socket->waitForConnected(2000)) {
+    qDebug() << "GUI Interface connected";
+    connect(guiInterface->socket, &QTcpSocket::readyRead, guiInterface, &GUIInterface::receiveData);
+  } else {
+    qDebug() << "GUI Interface could not connect to Server Interface";
+
+    bool ok;
+    QString text = QInputDialog::getText(
+        this, tr("Connection Error"), tr("IP des Servers:"), QLineEdit::Normal,
+        "127.0.0.1", &ok);
+    if (ok && !text.isEmpty()) tryConnection(text);
+  }
 }
 
 MainWindow::~MainWindow() {
@@ -150,15 +168,13 @@ void MainWindow::continueUpdateClientList() {
   for (int i = 0; i < guiInterface->clients->length(); i++) {
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
     ClientGui *client = guiInterface->clients->at(i);
-    QHostInfo HI = QHostInfo::fromName(
-        client->ip);  // Host-Info/-Name. Not really working as it should
     ui->tableWidget->setItem(
-        i, 0, new QTableWidgetItem(
-                  QString::number(i).append(" ").append(HI.hostName())));
+        i, 0,
+        new QTableWidgetItem(QString::number(i).append(" " + client->name)));
     // get ClientInfos
-    int DiskUsage = client->clientInfo.at(2);
-    int MemUsage = client->clientInfo.at(0);
-    int CPUUsage = client->clientInfo.at(1);
+    int DiskUsage = client->disk;
+    int MemUsage = client->mem;
+    int CPUUsage = client->cpu;
 
     // Update 'LED' of DiskUsage
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));

@@ -68,13 +68,36 @@ void Client::start(QString ip, quint16 port) {
 void Client::getCommand() {
   QByteArray ba;
   QJsonObject json;
-  while (!socket->atEnd()) {
+  while (!socket.atEnd()) {
     // Read Json object from socket
-    ba = socket->readLine();
+    ba = socket.readLine();
     json = QJsonDocument::fromJson(ba).object();
 
     executeCommand(json);
   }
+}
+
+void Client::sendData(QString cmd, QJsonObject &str) {
+  if (socket.state() == QTcpSocket::ConnectedState) {
+    QByteArray msg;
+    QJsonObject json = QJsonObject();
+
+    json["cmd"] = cmd;
+    json["data"] = str;
+    msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
+    qDebug() << msg;
+    socket.write(msg);
+  }
+}
+
+QJsonObject Client::getJsonInfo() {
+  QJsonObject json;
+  json["IP"] = socket.peerAddress().toString();
+  json["Name"] = getHostname();
+  json["CPU"] = getCpuUsage();
+  json["Memory"] = getMemoryUsage();
+  json["Disk"] = getDiskUsage();
+  return json;
 }
 
 void Client::executeCommand(QJsonObject json) {
@@ -82,13 +105,12 @@ void Client::executeCommand(QJsonObject json) {
     if (json["cmd"].toString().compare("getInfo") == 0) {
       // do getInfo
       QJsonObject data = getJsonInfo();
-      server->broadcastCommand(0);
       sendData(json["cmd"].toString(), data);
       return;
-    } else if (json["cmd"].toString().compare("recordLocally")==0) {
-      //todo record
-    }else if (json["cmd"].toString().compare("stopCameras")==0){
-      //todo stop
+    } else if (json["cmd"].toString().compare("recordLocally") == 0) {
+      // todo record
+    } else if (json["cmd"].toString().compare("stopCameras") == 0) {
+      // todo stop
     }
   }
   QJsonObject data;
@@ -128,6 +150,17 @@ void Client::syncTime() {
   // HARDCODED
   timesync = true;
   return;
+}
+
+QString Client::getHostname() {
+  QFile file("/etc/hostname");
+  if(!file.open(QIODevice::ReadOnly)) {
+      qDebug() << file.errorString();
+  }
+  QTextStream in(&file);
+  QString line = in.readLine();
+  file.close();
+  return line;
 }
 
 void Client::findCamera() {

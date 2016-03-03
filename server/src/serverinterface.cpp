@@ -52,15 +52,11 @@ QJsonObject ServerInterface::getJsonInfo() {
   QJsonArray clientArray;
   while (it.hasNext()) {
     ServerThread *serverThread = it.next();
-    QVectorIterator<float> cIt(serverThread->ClientInfo);
-    QJsonArray jsonArray;
-    int i = 0;
-    while (cIt.hasNext()) {
-      jsonArray.insert(i, cIt.next());
-      i++;
-    }
-    jO["Info"] = jsonArray;
     jO["IP"] = serverThread->ClientIP;
+    jO["Name"] = serverThread->clientName;
+    jO["CPU"] = serverThread->clientCpuUsage;
+    jO["Memory"] = serverThread->clientMemUsage;
+    jO["Disk"] = serverThread->clientDiskUsage;
     clientArray.append(jO);
   }
   QJsonObject json;
@@ -73,7 +69,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
     if (json["cmd"].toString().compare("getInfo")==0) {
       // do getInfo
       QJsonObject data = getJsonInfo();
-      server->broadcastCommand(0);
+      server->broadcastCommand(json);
       sendData(json["cmd"].toString(), data);
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();
