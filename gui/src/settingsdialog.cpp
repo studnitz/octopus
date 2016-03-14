@@ -31,15 +31,12 @@ SettingsDialog::SettingsDialog(QWidget *parent)
   ui->recordQuality->addItem(tr("1080p"));
   ui->recordQuality->setCurrentIndex(settingQuality);
 
-  ui->recordStorage->addItem(tr("SD-Karte der Clients"));
-  ui->recordStorage->addItem(tr("SD-Karte des Servers"));
-  ui->recordStorage->addItem(tr("Clients, dann auf Server holen"));
-  ui->recordStorage->addItem(tr("Clients, dann auf Festplatte holen"));
-  ui->recordStorage->addItem(tr("Pfad auf diesem Rechner auswählen..."));
+  ui->recordStorage->addItem(tr("Nur auf dem Server"));
+  ui->recordStorage->addItem(tr("Server, dann auf GUI holen (Pfad auswählen...)"));
   // If custom path was already chosen once, than add that option as well
   if (settings->value("octopus/LocationData").isValid()) {
     settingLocationData = settings->value("octopus/LocationData").toString();
-    ui->recordStorage->addItem(settingLocationData);
+    ui->recordStorage->addItem(QString("Server, dann holen nach " + settingLocationData));
   }
   ui->recordStorage->setCurrentIndex(settingLocation);
 
@@ -75,7 +72,7 @@ void SettingsDialog::on_buttonBox_rejected() { this->close(); }
 
 void SettingsDialog::on_recordStorage_activated(int index) {
   // Set custom filepath for recordings saving
-  if (index == 4) {
+  if (index == 1) {
     QFileDialog filedialog(this);
     filedialog.setFileMode(QFileDialog::Directory);
     filedialog.setOption(QFileDialog::ShowDirsOnly, true);
@@ -85,7 +82,7 @@ void SettingsDialog::on_recordStorage_activated(int index) {
       dir = filedialog.selectedFiles().first();
       settings->setValue("octopus/LocationData", dir);
       ui->recordStorage->removeItem(ui->recordStorage->count() - 1);
-      ui->recordStorage->addItem(dir);
+      ui->recordStorage->addItem(QString("Server, dann holen nach " + dir));
       ui->recordStorage->setCurrentIndex(ui->recordStorage->count() - 1);
     }
   }
