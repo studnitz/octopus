@@ -97,7 +97,7 @@ class MainWindow : public QMainWindow {
   void connectSourceToNewVideo(const VideoFile &source, int i, int j);
 
   void tryConnection(QString serverIP);
-signals:
+ signals:
 
  public slots:
   /**

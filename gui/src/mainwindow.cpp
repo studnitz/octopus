@@ -73,15 +73,19 @@ void MainWindow::tryConnection(QString serverIP) {
   guiInterface->tryConnect(addr, port);
   if (guiInterface->socket->waitForConnected(2000)) {
     qDebug() << "GUI Interface connected";
-    connect(guiInterface->socket, &QTcpSocket::readyRead, guiInterface, &GUIInterface::receiveData);
+    connect(guiInterface->socket, &QTcpSocket::readyRead, guiInterface,
+            &GUIInterface::receiveData);
   } else {
     qDebug() << "GUI Interface could not connect to Server Interface";
 
     bool ok;
-    QString text = QInputDialog::getText(
-        this, tr("Connection Error"), tr("IP des Servers:"), QLineEdit::Normal,
-        "127.0.0.1", &ok);
-    if (ok && !text.isEmpty()) tryConnection(text);
+    QString text = QInputDialog::getText(this, tr("Connection Error"),
+                                         tr("IP des Servers:"),
+                                         QLineEdit::Normal, "127.0.0.1", &ok);
+    if (ok && !text.isEmpty()) {
+      tryConnection(text);
+      this->settings->setValue("octopus/ServerIP", text);
+    }
   }
 }
 

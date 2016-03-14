@@ -67,7 +67,7 @@ class Client : public QObject {
   QString getHostname();
   QJsonObject getJsonInfo();
   void sendData(QString cmd, QJsonObject &str);
-signals:
+ signals:
 
  public slots:
   /**
@@ -88,7 +88,6 @@ signals:
   void getCommand();
 
  private:
-
   GstRecorder recorder;
   /**
    * @brief timesync

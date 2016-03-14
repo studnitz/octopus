@@ -39,7 +39,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
   ui->settingsOther->addItem("andere");
   ui->settingsOther->addItem("Optionen");
 
-  if (Ip.compare("")==0) {
+  if (Ip.compare("") == 0) {
     ui->lineEditIP->setText("192.168.1.1");
   } else {
     ui->lineEditIP->setText(Ip);

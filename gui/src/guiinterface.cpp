@@ -10,10 +10,9 @@ GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
 }
 
 void GUIInterface::tryConnect(QHostAddress destAddr, quint16 port) {
-    if (socket->state() != QTcpSocket::ConnectedState) {
-      socket->connectToHost(destAddr, port);
-
-    }
+  if (socket->state() != QTcpSocket::ConnectedState) {
+    socket->connectToHost(destAddr, port);
+  }
 }
 
 void GUIInterface::sendData(QString str, QString &data) {

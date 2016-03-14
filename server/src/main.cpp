@@ -4,7 +4,7 @@
 #include <iostream>
 #include "src/serverinterface.h"
 Server server;
-ServerInterface *serverInterface;
+ServerInterface* serverInterface;
 
 int main(int argc, char* argv[]) {
   QCoreApplication a(argc, argv);

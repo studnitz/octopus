@@ -59,7 +59,7 @@ class ServerThread : public QThread {
   qintptr socketDescriptor;
 
   void readData(QJsonObject json);
-signals:
+ signals:
   /**
    * @brief error
    * @param socketerror

@@ -154,8 +154,8 @@ void Client::syncTime() {
 
 QString Client::getHostname() {
   QFile file("/etc/hostname");
-  if(!file.open(QIODevice::ReadOnly)) {
-      qDebug() << file.errorString();
+  if (!file.open(QIODevice::ReadOnly)) {
+    qDebug() << file.errorString();
   }
   QTextStream in(&file);
   QString line = in.readLine();

@@ -15,7 +15,7 @@ class ServerInterface : public QTcpServer {
   void setServer(Server *server);
 
   QJsonObject getJsonInfo();
-private slots:
+ private slots:
   void receiveData();
 
  private:
