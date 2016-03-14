@@ -108,14 +108,11 @@ void Client::executeCommand(QJsonObject json) {
       sendData(json["cmd"].toString(), data);
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
-      // todo record
+      recorder.recordLocally();
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-      // todo stop
+      recorder.stop();
     }
   }
-  QJsonObject data;
-  data["data"] = "lololol";
-  sendData("TEST", data);
 }
 
 std::string Client::isConnected() { return "yes"; }

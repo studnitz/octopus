@@ -12,9 +12,9 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
     if (!encoder) {
       // if we don't have omx (when we're not on a RPI), use x264enc instead
       videoBin = QGst::Bin::fromDescription(
-          "v4l2src device=/dev/video1 ! x264enc tune=zerolatency "
+          "v4l2src device=/dev/video0 ! x264enc tune=zerolatency "
           "byte-stream=true ");  //! h264parse ! matroskamux");
-      qDebug() << "Using x264enc on device /dev/video1";
+      qDebug() << "Using x264enc on device /dev/video0";
     } else {
       videoBin = QGst::Bin::fromDescription("v4l2src ! omxh264enc ");
       qDebug() << "Using omxh264enc";
