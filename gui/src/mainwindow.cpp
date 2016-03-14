@@ -1,19 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QStandardItemModel>
-#include <QList>
 #include <QHostInfo>
 #include <QDir>
-
-// Videoplayer
-#include <QtWidgets>
+#include <QtWidgets/QLabel>
 #include <QDialog>
-#include <QMediaPlaylist>
-#include "playlistmodel.h"
-
-PlaylistModel *playlistModel;
-QMediaPlaylist *playlist;
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -55,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->reloadButton, &QPushButton::clicked, this,
           &MainWindow::updateRecordingList);
   QTimer *timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(continueUpdateClientList()));
+  connect(timer, &QTimer::timeout, this, &MainWindow::continueUpdateClientList);
   timer->start(1000);
 
   /* --- PLAY-TAB: videoplayer set-up --- */
@@ -64,6 +56,37 @@ MainWindow::MainWindow(QWidget *parent)
 
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
+  QString serverIP = this->settings->value("octopus/ServerIP").toString();
+  tryConnection(serverIP);
+
+  // --- TESTDATA ---
+  QString data = "testdata";
+  QString cmd = "cmd";
+  for (int i = 0; i < 2; i++) guiInterface->sendData(cmd, data);
+}
+
+void MainWindow::tryConnection(QString serverIP) {
+  QHostAddress addr = QHostAddress(serverIP);
+  quint16 port = 1235;
+  guiInterface = new GUIInterface(addr, port, this);
+
+  guiInterface->tryConnect(addr, port);
+  if (guiInterface->socket->waitForConnected(2000)) {
+    qDebug() << "GUI Interface connected";
+    connect(guiInterface->socket, &QTcpSocket::readyRead, guiInterface,
+            &GUIInterface::receiveData);
+  } else {
+    qDebug() << "GUI Interface could not connect to Server Interface";
+
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Connection Error"),
+                                         tr("IP des Servers:"),
+                                         QLineEdit::Normal, "127.0.0.1", &ok);
+    if (ok && !text.isEmpty()) {
+      tryConnection(text);
+      this->settings->setValue("octopus/ServerIP", text);
+    }
+  }
 }
 
 MainWindow::~MainWindow() {
@@ -129,8 +152,8 @@ QColor MainWindow::getColorFromPercent(int percent) {
 }
 
 void MainWindow::continueUpdateClientList() {
-  // emit signal to get new Infos
-  emit this->getinfo();
+  QString data = QString("looool");
+  guiInterface->sendData("getInfo", data);
 
   // Initialize RowCount with 0
   ui->tableWidget->setRowCount(0);
@@ -145,21 +168,17 @@ void MainWindow::continueUpdateClientList() {
   ui->tableWidget->horizontalHeaderItem(3)->setToolTip("CPU");
   ui->tableWidget->horizontalHeader()->show();
 
-  // Update each Row/Client. Iterator cant be used here because index is needed
-  for (int i = 0; i < server->getClients().size(); i++) {
+  // Update each Row/Client. Iterator can't be used here because index is needed
+  for (int i = 0; i < guiInterface->clients->length(); i++) {
     ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
-
-    QHostInfo HI = QHostInfo::fromName(
-        server->getClients()
-            .at(i)
-            ->ClientIP);  // Host-Info/-Name. Not really working as it should
+    ClientGui *client = guiInterface->clients->at(i);
     ui->tableWidget->setItem(
-        i, 0, new QTableWidgetItem(
-                  QString::number(i).append(" ").append(HI.hostName())));
+        i, 0,
+        new QTableWidgetItem(QString::number(i).append(" " + client->name)));
     // get ClientInfos
-    int DiskUsage = server->getClients().at(i)->ClientInfo[2];
-    int MemUsage = server->getClients().at(i)->ClientInfo[0];
-    int CPUUsage = server->getClients().at(i)->ClientInfo[1];
+    int DiskUsage = client->disk;
+    int MemUsage = client->mem;
+    int CPUUsage = client->cpu;
 
     // Update 'LED' of DiskUsage
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));

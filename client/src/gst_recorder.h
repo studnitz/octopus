@@ -17,8 +17,8 @@
 
 class GstRecorder : public QObject {
   Q_OBJECT
-public:
-   GstRecorder(QObject *parent = 0);
+ public:
+  GstRecorder(QObject *parent = 0);
   ~GstRecorder();
 
   /**

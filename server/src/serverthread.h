@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 #include <QVector>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 class ServerThread : public QThread {
   Q_OBJECT
@@ -42,6 +44,10 @@ class ServerThread : public QThread {
    *
    */
   QVector<float> ClientInfo;
+  QString clientName;
+  float clientCpuUsage;
+  float clientMemUsage;
+  float clientDiskUsage;
   /**
    * @brief socket
    * socket connected to client
@@ -52,6 +58,7 @@ class ServerThread : public QThread {
    */
   qintptr socketDescriptor;
 
+  void readData(QJsonObject json);
  signals:
   /**
    * @brief error
@@ -78,7 +85,7 @@ class ServerThread : public QThread {
    * sending command to client
    *
    */
-  void sendCommand(int value);
+  void sendCommand(QJsonObject value);
   /**
    * @brief disconnected
    * kills thread if connection is closed

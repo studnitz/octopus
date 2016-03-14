@@ -3,22 +3,20 @@
 
 #include <QMainWindow>
 #include "../server/src/server.h"
-#include "../server/src/serverthread.h"
-#include <QHostInfo>
+#include "../server/src/recording.h"
+
 #include <QSettings>
 #include "settingsdialog.h"
+#include "playersettingsdialog.h"
 
 // Videoplayer
 #include <QMediaPlayer>
 #include <QListWidget>
-#include <QMediaPlaylist>
-#include "playlistmodel.h"
-#include "videoplayer.h"
 
-#include "../server/src/recording.h"
-#include "src/playersettingsdialog.h"
+#include "videoplayer.h"
 #include "recordingview.h"
 #include "playbackview.h"
+#include "guiinterface.h"
 
 namespace Ui {
 class MainWindow;
@@ -30,11 +28,9 @@ class MainWindow : public QMainWindow {
  public:
   explicit MainWindow(QWidget *parent = 0);
   ~MainWindow();
-  Server *server;
-
   /**
-   * @brief recordingView subclass for recording capability
-   */
+ * @brief recordingView subclass for recording capability
+ */
   RecordingView *recordingView;
 
   /**
@@ -50,12 +46,7 @@ class MainWindow : public QMainWindow {
   /**
    * @brief versionOctopus current version# of the octopus-program
    */
-  QString versionOctopus = "0.313b";  // Versionnumber
-
-  /**
-   * @brief ui pointer to the complete UI
-   */
-  Ui::MainWindow *ui;
+  QString versionOctopus = "0.314a";  // Versionnumber
 
   /**
    * @brief settings to store settings
@@ -105,11 +96,8 @@ class MainWindow : public QMainWindow {
    */
   void connectSourceToNewVideo(const VideoFile &source, int i, int j);
 
+  void tryConnection(QString serverIP);
  signals:
-  /**
-   * @brief getinfo emitted regularly. Triggers the update of the client list.
-   */
-  void getinfo();
 
  public slots:
   /**
@@ -204,6 +192,11 @@ class MainWindow : public QMainWindow {
   QColor getColorFromPercent(int percent);
 
   /**
+   * @brief ui pointer to the complete UI
+   */
+  Ui::MainWindow *ui;
+
+  /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at
    * the moment.
    * @return The free ID
@@ -215,6 +208,11 @@ class MainWindow : public QMainWindow {
    * only. Does not change the grid-structure.
    */
   void clearVideoPlayers();
+
+  /**
+   * @brief guiInterface Interface to communicate with ServerPI
+   */
+  GUIInterface *guiInterface;
 };
 
 #endif  // MAINWINDOW_H

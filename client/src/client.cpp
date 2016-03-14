@@ -66,26 +66,56 @@ void Client::start(QString ip, quint16 port) {
 }
 
 void Client::getCommand() {
-  QByteArray message;
-  message = socket.readAll();
-  int command = message.toInt();
-  switch (command) {
-    case 0:
-      sendInfo();
-      break;
-    case 1:
-      recorder.stop();
-      qDebug() << "Recording stopped";
-      break;
-    case 2:
-      recorder.recordLocally();
-      qDebug() << "started recording locally";
-      break;
-    default:
-      message.append(" command unknown \n");
-      socket.write(message);
-      break;
+  QByteArray ba;
+  QJsonObject json;
+  while (!socket.atEnd()) {
+    // Read Json object from socket
+    ba = socket.readLine();
+    json = QJsonDocument::fromJson(ba).object();
+
+    executeCommand(json);
   }
+}
+
+void Client::sendData(QString cmd, QJsonObject &str) {
+  if (socket.state() == QTcpSocket::ConnectedState) {
+    QByteArray msg;
+    QJsonObject json = QJsonObject();
+
+    json["cmd"] = cmd;
+    json["data"] = str;
+    msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
+    qDebug() << msg;
+    socket.write(msg);
+  }
+}
+
+QJsonObject Client::getJsonInfo() {
+  QJsonObject json;
+  json["IP"] = socket.peerAddress().toString();
+  json["Name"] = getHostname();
+  json["CPU"] = getCpuUsage();
+  json["Memory"] = getMemoryUsage();
+  json["Disk"] = getDiskUsage();
+  return json;
+}
+
+void Client::executeCommand(QJsonObject json) {
+  if (!json.isEmpty()) {
+    if (json["cmd"].toString().compare("getInfo") == 0) {
+      // do getInfo
+      QJsonObject data = getJsonInfo();
+      sendData(json["cmd"].toString(), data);
+      return;
+    } else if (json["cmd"].toString().compare("recordLocally") == 0) {
+      // todo record
+    } else if (json["cmd"].toString().compare("stopCameras") == 0) {
+      // todo stop
+    }
+  }
+  QJsonObject data;
+  data["data"] = "lololol";
+  sendData("TEST", data);
 }
 
 std::string Client::isConnected() { return "yes"; }
@@ -120,6 +150,17 @@ void Client::syncTime() {
   // HARDCODED
   timesync = true;
   return;
+}
+
+QString Client::getHostname() {
+  QFile file("/etc/hostname");
+  if (!file.open(QIODevice::ReadOnly)) {
+    qDebug() << file.errorString();
+  }
+  QTextStream in(&file);
+  QString line = in.readLine();
+  file.close();
+  return line;
 }
 
 void Client::findCamera() {

@@ -10,6 +10,7 @@ SettingsDialog::SettingsDialog(QWidget *parent)
   int settingGridWidth = settings->value("octopus/GridWidth").toInt();
   int settingGridHeigth = settings->value("octopus/GridHeigth").toInt();
   int settingLocation = settings->value("octopus/Location").toInt();
+  QString Ip = settings->value("octopus/ServerIP").toString();
 
   ui->updateIntervall->addItem(tr("0.5 Sekunden"));
   ui->updateIntervall->addItem(tr("1 Sekunde"));
@@ -38,6 +39,11 @@ SettingsDialog::SettingsDialog(QWidget *parent)
   ui->settingsOther->addItem("andere");
   ui->settingsOther->addItem("Optionen");
 
+  if (Ip.compare("") == 0) {
+    ui->lineEditIP->setText("192.168.1.1");
+  } else {
+    ui->lineEditIP->setText(Ip);
+  }
   ui->gridWidth->setMaximum(9999);
   ui->gridWidth->setValue(settingGridWidth);
   ui->gridHeigth->setMaximum(9999);
@@ -52,6 +58,7 @@ void SettingsDialog::on_buttonBox_accepted() {
   settings->setValue("octopus/Location", ui->recordStorage->currentIndex());
   settings->setValue("octopus/GridWidth", ui->gridWidth->value());
   settings->setValue("octopus/GridHeigth", ui->gridHeigth->value());
+  settings->setValue("octopus/ServerIP", ui->lineEditIP->text());
   this->close();
 }
 

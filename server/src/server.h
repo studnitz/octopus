@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpServer>
+#include <QJsonObject>
 
 #include "serverthread.h"
 
@@ -33,7 +34,7 @@ class Server : public QTcpServer {
    * @brief broadcastCommand sends command to all connected Clients
    * @param command command value
    */
-  void broadcastCommand(int command);
+  void broadcastCommand(QJsonObject json);
   /**
    * @brief gotInfo
    */
@@ -52,8 +53,9 @@ class Server : public QTcpServer {
    */
   void readInfo();
 
-  void stopRecordings();
-protected:
+  void stopCameras();
+
+ protected:
   /**
    * @brief incomingConnection starts a new ServerThread where client connection
    * is handeld

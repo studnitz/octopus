@@ -41,7 +41,6 @@ class Recording : public QObject {
    * @return true if the file was loaded successfully, otherwise false.
    */
   bool loadRecording(QString path);
-
 };
 
 #endif  // RECORDING_H

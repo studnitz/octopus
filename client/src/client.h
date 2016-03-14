@@ -7,6 +7,9 @@
 #include <QHostAddress>
 #include <QNetworkInterface>
 #include <QStorageInfo>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "gst_recorder.h"
 
@@ -61,6 +64,9 @@ class Client : public QObject {
    * @return total disk space in KB
    */
   int getTotalDisk();
+  QString getHostname();
+  QJsonObject getJsonInfo();
+  void sendData(QString cmd, QJsonObject &str);
  signals:
 
  public slots:
@@ -82,7 +88,6 @@ class Client : public QObject {
   void getCommand();
 
  private:
-
   GstRecorder recorder;
   /**
    * @brief timesync
@@ -116,6 +121,7 @@ class Client : public QObject {
    * @return "yes"
    */
   std::string isConnected();
+  void executeCommand(QJsonObject json);
 };
 
 #endif  // TCPCLIENT_H
