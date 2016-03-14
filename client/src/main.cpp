@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
 
   Client client;
 //  while (client.getState() == QAbstractSocket::UnconnectedState) {
-   client.start();
+   client.start("192.168.1.1");
  // }
   return a.exec();
 }
