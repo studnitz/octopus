@@ -26,7 +26,9 @@ class SettingsDialog : public QDialog {
 
   void on_buttonBox_rejected();
 
- private:
+  void on_recordStorage_activated(int index);
+
+private:
   Ui::SettingsDialog *ui;
 };
 
