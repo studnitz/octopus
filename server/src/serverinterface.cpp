@@ -74,6 +74,12 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();
       return;
+    } else if (json["cmd"].toString().compare("recordLocally") == 0) {
+      server->recordLocally();
+      qDebug() << "cmd:  " << json["cmd"].toString();
+    } else if (json["cmd"].toString().compare("stopCameras") == 0) {
+      server->stopCameras();
+      qDebug() << "cmd:  " << json["cmd"].toString();
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();

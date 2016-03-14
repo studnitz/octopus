@@ -97,6 +97,11 @@ class MainWindow : public QMainWindow {
   void connectSourceToNewVideo(const VideoFile &source, int i, int j);
 
   void tryConnection(QString serverIP);
+
+  /**
+   * @brief guiInterface Interface to communicate with ServerPI
+   */
+  GUIInterface *guiInterface;
  signals:
 
  public slots:
@@ -208,11 +213,6 @@ class MainWindow : public QMainWindow {
    * only. Does not change the grid-structure.
    */
   void clearVideoPlayers();
-
-  /**
-   * @brief guiInterface Interface to communicate with ServerPI
-   */
-  GUIInterface *guiInterface;
 };
 
 #endif  // MAINWINDOW_H

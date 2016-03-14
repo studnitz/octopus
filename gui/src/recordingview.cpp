@@ -19,13 +19,15 @@ void RecordingView::record_button(QPushButton *recordButton) {
 }
 
 void RecordingView::recordStart() {
-  /* magic */
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
+  QString data("");
+  p->guiInterface->sendData("recordLocally", data);
   p->log("Aufnahme starten");
 }
 
 void RecordingView::recordStop() {
-  /* magic */
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
+  QString data("");
+  p->guiInterface->sendData("stopCameras", data);
   p->log("Aufnahme stoppen");
 }
