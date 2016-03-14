@@ -36,10 +36,11 @@ SettingsDialog::SettingsDialog(QWidget *parent)
   ui->recordStorage->addItem(tr("Clients, dann auf Server holen"));
   ui->recordStorage->addItem(tr("Clients, dann auf Festplatte holen"));
   ui->recordStorage->addItem(tr("Pfad auf diesem Rechner auswählen..."));
+  // If custom path was already chosen once, than add that option as well
   if (settings->value("octopus/LocationData").isValid()) {
-      settingLocationData = settings->value("octopus/LocationData").toString();
-      ui->recordStorage->addItem(settingLocationData);
-    }
+    settingLocationData = settings->value("octopus/LocationData").toString();
+    ui->recordStorage->addItem(settingLocationData);
+  }
   ui->recordStorage->setCurrentIndex(settingLocation);
 
   ui->settingsOther->addItem("Platzhalter");
@@ -73,6 +74,7 @@ void SettingsDialog::on_buttonBox_accepted() {
 void SettingsDialog::on_buttonBox_rejected() { this->close(); }
 
 void SettingsDialog::on_recordStorage_activated(int index) {
+  // Set custom filepath for recordings saving
   if (index == 4) {
     QFileDialog filedialog(this);
     filedialog.setFileMode(QFileDialog::Directory);
