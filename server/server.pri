@@ -6,7 +6,8 @@ SOURCES += \
     $$PWD/src/grid.cpp \
     $$PWD/src/recording.cpp \
     $$PWD/src/videofile.cpp \
-    $$PWD/src/serverinterface.cpp
+    $$PWD/src/serverinterface.cpp \
+    $$PWD/src/ftpdownloader.cpp
 
 HEADERS += \
     $$PWD/src/server.h \
@@ -14,4 +15,5 @@ HEADERS += \
     $$PWD/src/grid.h \
     $$PWD/src/recording.h \
     $$PWD/src/videofile.h \
-    $$PWD/src/serverinterface.h
+    $$PWD/src/serverinterface.h \
+    $$PWD/src/ftpdownloader.h
