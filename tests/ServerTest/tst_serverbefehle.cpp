@@ -4,6 +4,9 @@
 #include "../server/src/server.h"
 #include "../server/src/serverinterface.h"
 #include "../server/src/recording.h"
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 class ServerBefehle : public QObject {
   Q_OBJECT
@@ -74,6 +77,16 @@ void ServerBefehle::testCase2() {
 
   QVERIFY(&rec->grid.grid.at(0).at(1) == &rec->grid.getVideoFileById(1337));
   QVERIFY(&rec->grid.grid[1][0] == &rec->grid.getVideoFileById(1338));
+
+  QJsonObject json = QJsonObject();
+
+  rec->write(json);
+  Recording rec2;
+  rec2.read(json);
+
+  for (int i = 0; i < rec->grid.grid.size(); i++)
+    for (int j = 0; j < rec->grid.grid[i].size(); j++)
+      QVERIFY(rec->grid.grid[i][j].id == rec->grid.grid[i][j].id);
 
   delete rec;
   delete grid;
