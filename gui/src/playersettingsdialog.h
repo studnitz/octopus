@@ -7,6 +7,10 @@ namespace Ui {
 class PlayerSettingsDialog;
 }
 
+/**
+ * @brief PlayerSettingsDialog class
+ * Class for the settings of the videoplayers.
+ */
 class PlayerSettingsDialog : public QDialog {
   Q_OBJECT
 

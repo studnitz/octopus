@@ -5,6 +5,11 @@
 #include <QtGui>
 #include <QWidget>
 #include <QPushButton>
+
+/**
+ * @brief RecordingView class
+ * Class for the recording tab.
+ */
 class RecordingView : public QObject {
   Q_OBJECT
  public:

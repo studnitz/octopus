@@ -8,6 +8,11 @@
 #include <QJsonObject>
 #include "clientgui.h"
 
+/**
+ * @brief GUIInterface class
+ * Class for the Communication between server and GUI.
+ * Is used by the MainWindow class.
+ */
 class GUIInterface : public QObject {
   Q_OBJECT
  public:

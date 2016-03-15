@@ -66,7 +66,6 @@ void Client::sendData(QString cmd, QJsonObject &str) {
     json["cmd"] = cmd;
     json["data"] = str;
     msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
-    qDebug() << msg;
     socket.write(msg);
   }
 }
