@@ -17,6 +17,7 @@ class Client : public QObject {
   Q_OBJECT
  public:
   explicit Client(QObject *parent = 0);
+  bool isRecording = false;
   ~Client();
   /**
  * @brief start starts Client
@@ -76,11 +77,7 @@ class Client : public QObject {
    */
   QTcpSocket::SocketState getState() const;
  private slots:
-  /**
-    * @brief sendInfo
-    * sends Informations to Server
-    */
-  void sendInfo();
+
   /**
    * @brief getCommand
    * started when ReadyRead is emitted to get new Command

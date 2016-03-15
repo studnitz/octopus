@@ -25,7 +25,7 @@ void ServerInterface::sendData(QString cmd, QJsonObject &str) {
     QByteArray msg;
     QJsonObject json = QJsonObject();
 
-    json["cmd"] = "getInfo";
+    json["cmd"] = cmd;
     json["data"] = str;
     msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
     qDebug() << msg;

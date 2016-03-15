@@ -26,7 +26,6 @@ void GUIInterface::sendData(QString str, QString &data) {
 void GUIInterface::receiveData() {
   QByteArray data;
   QJsonObject json;
-  clients->clear();
   while (!socket->atEnd()) {
     data = socket->readLine();
     json = QJsonDocument::fromJson(data).object();
@@ -36,8 +35,11 @@ void GUIInterface::receiveData() {
 }
 
 void GUIInterface::readData(QJsonObject json) {
+  if(json["cmd"] != "getInfo")
+      return;
   if (json["data"].toObject()["clients"].isArray()) {
     qDebug() << " new data";
+    clients->clear();
     QJsonArray arr = json["data"].toObject()["clients"].toArray();
     while (!arr.empty()) {
       QJsonObject o = arr.takeAt(0).toObject();
