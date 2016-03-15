@@ -31,6 +31,10 @@ class GstRecorder : public QObject {
    */
   void recordLocally();
   /**
+   * @brief stopRecording
+   */
+  void stopRecording();
+  /**
    * @brief stop stops a ongoing recording or socket
    */
   void stop();

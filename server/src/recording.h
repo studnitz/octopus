@@ -13,7 +13,7 @@ class Recording : public QObject {
    * @param datetime The current date and time of the start of the recording
    * @param grid The grid of VideoFile objects.
    */
-  Recording(QDateTime datetime, Grid grid);
+  Recording(QDateTime datetime, Grid& grid);
   QDateTime datetime;
   Grid grid;
 

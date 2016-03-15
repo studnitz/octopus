@@ -20,7 +20,7 @@ class Grid {
    * @param x The x-coordinate of the VideoFile in the grid.
    * @param y The y-coordinate of the VideoFile in the grid
    */
-  void addSource(VideoFile file, quint8 x, quint8 y);
+  void addSource(VideoFile& file, quint8 x, quint8 y);
   /**
    * @brief deleteSource deletes the videosource in the grid on the given
    * position
@@ -46,7 +46,7 @@ class Grid {
   void write(QJsonObject &json) const;
 
   QPair<int, int> getVideoFilePositionById(quint32 id);
-  VideoFile getVideoFileById(quint32 id);
+  VideoFile& getVideoFileById(quint32 id);
   QList<QList<VideoFile> > grid;
   quint8 width;
   quint8 height;

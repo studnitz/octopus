@@ -30,7 +30,7 @@ class VideoFile {
    * @param orientation Used orientation for the grid layout.
    * @param deltaMs offset in playback to the base Recording.
    */
-  VideoFile(quint32 id, bool isRemote, QString filepath, QString hostname,
+  VideoFile(quint32 id, bool isRemote, QString& filepath, QString& hostname,
             VideoFile::Orientation orientation = Up, qint64 deltaMs = 0);
 
   /**

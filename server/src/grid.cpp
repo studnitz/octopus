@@ -13,7 +13,7 @@ Grid::Grid(quint8 width, quint8 height) : width(width), height(height) {
   }
 }
 
-void Grid::addSource(VideoFile file, quint8 x, quint8 y) { grid[x][y] = file; }
+void Grid::addSource(VideoFile& file, quint8 x, quint8 y) { grid[x][y] = file; }
 
 void Grid::deleteSource(quint8 x, quint8 y) { grid[x][y] = VideoFile(); }
 
@@ -56,10 +56,11 @@ QPair<int, int> Grid::getVideoFilePositionById(quint32 id) {
   return QPair<int, int>(-1, -1);
 }
 
-VideoFile Grid::getVideoFileById(quint32 id) {
+VideoFile& Grid::getVideoFileById(quint32 id) {
   for (int i = 0; i < width; ++i)
     for (int j = 0; j < height; ++j)
       if (grid[i][j].id == id) return grid[i][j];
 
-  return VideoFile(0);
+  VideoFile vid1 = VideoFile(0);
+  return vid1;
 }

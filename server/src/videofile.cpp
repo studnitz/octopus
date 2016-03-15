@@ -5,8 +5,8 @@
 
 VideoFile::VideoFile(quint32 id) : id(id) {}
 
-VideoFile::VideoFile(quint32 id, bool isRemote, QString filepath,
-                     QString hostname, Orientation orientation, qint64 deltaMs)
+VideoFile::VideoFile(quint32 id, bool isRemote, QString& filepath,
+                     QString& hostname, Orientation orientation, qint64 deltaMs)
     : id(id),
       isRemote(isRemote),
       filepath(filepath),
