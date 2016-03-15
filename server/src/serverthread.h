@@ -8,6 +8,10 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+
 class ServerThread : public QThread {
   Q_OBJECT
 

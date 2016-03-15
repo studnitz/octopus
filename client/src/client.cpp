@@ -17,25 +17,6 @@ Client::~Client() {
   socket.close();
 }
 
-void Client::sendInfo() {
-  QByteArray message;
-  message.setNum(0).append("\n");
-  socket.write(message);
-  message.setNum((float)getMemoryUsage()).append("\n");
-  socket.write(message);
-  message.setNum((float)getCpuUsage()).append("\n");
-  socket.write(message);
-  message.setNum((float)getDiskUsage()).append("\n");
-  socket.write(message);
-  message.setNum((float)getFreeMemory()).append("\n");
-  socket.write(message);
-  message.setNum((float)getAllMemory()).append("\n");
-  socket.write(message);
-  message.setNum((float)getFreeDisk()).append("\n");
-  socket.write(message);
-  message.setNum((float)getTotalDisk()).append("\n");
-  socket.write(message);
-}
 
 void Client::start(QString ip, quint16 port) {
   findCamera();
@@ -109,8 +90,11 @@ void Client::executeCommand(QJsonObject json) {
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
       recorder.recordLocally();
+      isRecording = true;
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-      recorder.stop();
+      if(isRecording){
+          isRecording = false;
+          recorder.stop();}
     }
   }
 }
