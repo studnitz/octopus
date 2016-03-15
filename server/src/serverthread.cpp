@@ -53,7 +53,6 @@ void ServerThread::getData() {
 }
 
 void ServerThread::readData(QJsonObject json) {
-  qDebug() << " new data";
   QJsonObject o = json["data"].toObject();
   ClientIP = o["IP"].toString();
   clientName = o["Name"].toString();

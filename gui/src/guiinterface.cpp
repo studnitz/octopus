@@ -38,7 +38,6 @@ void GUIInterface::readData(QJsonObject json) {
   if(json["cmd"] != "getInfo")
       return;
   if (json["data"].toObject()["clients"].isArray()) {
-    qDebug() << " new data";
     clients->clear();
     QJsonArray arr = json["data"].toObject()["clients"].toArray();
     while (!arr.empty()) {

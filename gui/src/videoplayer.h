@@ -3,6 +3,10 @@
 
 #include <QVideoWidget>
 
+/**
+ * @brief VideoPlayer class
+ * Class used to play videos.
+ */
 class VideoPlayer : public QVideoWidget {
   Q_OBJECT
 
