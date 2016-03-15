@@ -13,7 +13,7 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
       // if we don't have omx (when we're not on a RPI), use x264enc instead
       videoBin = QGst::Bin::fromDescription(
           "v4l2src device=/dev/video0 ! x264enc tune=zerolatency "
-          "byte-stream=true ");  //! h264parse ! matroskamux");
+          "byte-stream=true ");
       qDebug() << "Using x264enc on device /dev/video0";
     } else {
       videoBin = QGst::Bin::fromDescription("v4l2src ! omxh264enc ");
@@ -32,8 +32,8 @@ QGst::BinPtr GstRecorder::createVideoMuxBin() {
   QGst::BinPtr videoMux;
 
   try {
-    videoMux = QGst::Bin::fromDescription("h264parse ! matroskamux");
-    qDebug() << "Created videoMuxer with h264parse ! matrsokamux";
+    videoMux = QGst::Bin::fromDescription("h264parse ! mp4mux");
+    qDebug() << "Created videoMuxer with h264parse ! mp4mux";
 
     return videoMux;
   } catch (const QGlib::Error &error) {
