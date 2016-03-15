@@ -94,7 +94,7 @@ void Client::executeCommand(QJsonObject json) {
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
       if(isRecording){
           isRecording = false;
-          recorder.stop();}
+          recorder.stopRecording();}
     }
   }
 }
