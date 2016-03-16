@@ -34,6 +34,14 @@ class MainWindow : public QMainWindow {
   RecordingView *recordingView;
 
   /**
+   * @brief guiInterface Interface to communicate with ServerPI
+   */
+  GUIInterface *guiInterface;
+  /**
+   * @brief ui pointer to the complete UI
+   */
+  Ui::MainWindow *ui;
+  /**
    * @brief playbackView subclass for playback capability
    */
   PlaybackView *playbackView;
@@ -191,10 +199,6 @@ class MainWindow : public QMainWindow {
    */
   QColor getColorFromPercent(int percent);
 
-  /**
-   * @brief ui pointer to the complete UI
-   */
-  Ui::MainWindow *ui;
 
   /**
    * @brief getFreePlayerId Finds an ID that is not used by another player at
@@ -209,10 +213,6 @@ class MainWindow : public QMainWindow {
    */
   void clearVideoPlayers();
 
-  /**
-   * @brief guiInterface Interface to communicate with ServerPI
-   */
-  GUIInterface *guiInterface;
 };
 
 #endif  // MAINWINDOW_H

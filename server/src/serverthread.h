@@ -48,6 +48,7 @@ class ServerThread : public QThread {
   float clientCpuUsage;
   float clientMemUsage;
   float clientDiskUsage;
+  QStringList clientDevices;
   /**
    * @brief socket
    * socket connected to client

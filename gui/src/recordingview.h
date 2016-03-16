@@ -5,6 +5,8 @@
 #include <QtGui>
 #include <QWidget>
 #include <QPushButton>
+#include <QListWidget>
+
 class RecordingView : public QObject {
   Q_OBJECT
  public:
@@ -23,9 +25,15 @@ class RecordingView : public QObject {
    * @brief recordStop stops recording
    */
   void recordStop();
- signals:
+  void updateGrid();
+  void updateVideoDevices();
+signals:
 
  public slots:
+
+
+private:
+  QListWidget *videoDeviceList;
 };
 
 #endif  // RECORDINGVIEW_H

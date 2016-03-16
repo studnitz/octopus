@@ -1,4 +1,5 @@
 #include "serverthread.h"
+#include <QJsonArray>
 
 ServerThread::ServerThread(qintptr ID, QObject *parent) : QThread(parent) {
   this->socketDescriptor = ID;
@@ -35,7 +36,7 @@ void ServerThread::getData() {
     data = socket->readLine();
     json = QJsonDocument::fromJson(data).object();
     readData(json);
-    // qDebug() << data;
+    qDebug() << data;
   }
 }
 
@@ -47,6 +48,11 @@ void ServerThread::readData(QJsonObject json) {
   clientCpuUsage = o["CPU"].toDouble();
   clientMemUsage = o["Memory"].toDouble();
   clientDiskUsage = o["Disk"].toDouble();
+  QJsonArray clientDevicesArray = o["Devices"].toArray();
+  clientDevices = QStringList();
+  foreach (const QJsonValue &value, clientDevicesArray) {
+      clientDevices.push_back(value.toString());
+  }
 }
 void ServerThread::sendCommand(QJsonObject json) {
   QByteArray message;

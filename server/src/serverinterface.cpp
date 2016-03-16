@@ -57,6 +57,7 @@ QJsonObject ServerInterface::getJsonInfo() {
     jO["CPU"] = serverThread->clientCpuUsage;
     jO["Memory"] = serverThread->clientMemUsage;
     jO["Disk"] = serverThread->clientDiskUsage;
+    jO["Devices"] = QJsonArray::fromStringList(serverThread->clientDevices);
     clientArray.append(jO);
   }
   QJsonObject json;

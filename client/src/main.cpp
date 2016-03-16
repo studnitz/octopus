@@ -6,6 +6,7 @@ int main(int argc, char *argv[]) {
 
   Client client;
 //  while (client.getState() == QAbstractSocket::UnconnectedState) {
+   qDebug() << client.listAllDevices();
    client.start();
  // }
   return a.exec();

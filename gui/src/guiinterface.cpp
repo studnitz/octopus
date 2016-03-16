@@ -47,7 +47,12 @@ void GUIInterface::readData(QJsonObject json) {
         float mem = o["Memory"].toDouble();
         float disk = o["Disk"].toDouble();
         QString name = o["Name"].toString();
-        ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk);
+        QJsonArray deviceArray = o["Devices"].toArray();
+        QStringList devices = QStringList();
+        for (int i = 0; i < deviceArray.size(); ++i) {
+          devices.append(deviceArray[i].toString());
+        }
+        ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk, devices);
         clients->append(Client);
       }
     }
