@@ -15,7 +15,6 @@ Client::~Client() {
   socket.close();
 }
 
-
 void Client::start(QString ip, quint16 port) {
   QHostAddress serverIp = QHostAddress(ip);
 
@@ -73,9 +72,10 @@ void Client::executeCommand(QJsonObject json) {
       recorder.recordLocally();
       isRecording = true;
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-      if(isRecording){
-          isRecording = false;
-          recorder.stopRecording();}
+      if (isRecording) {
+        isRecording = false;
+        recorder.stopRecording();
+      }
     }
   }
 }
