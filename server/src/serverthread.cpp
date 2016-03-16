@@ -17,8 +17,7 @@ void ServerThread::run() {
   connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
   connect(socket, SIGNAL(readyRead()), this, SLOT(getData()));
   ClientIP = socket->peerAddress().toString();
-  // Actually 7 Informations are saved
-  ClientInfo.fill(0, 7);
+
 
   int enableKeepAlive = 1;
   int fd = socket->socketDescriptor();

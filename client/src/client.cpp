@@ -8,8 +8,6 @@ Client::Client(QObject *parent) : QObject(parent) {
     qDebug() << "Client started";
   }
   connect(&socket, SIGNAL(readyRead()), this, SLOT(getCommand()));
-
-  // hostfound() signal connect?
 }
 
 Client::~Client() {
@@ -19,23 +17,7 @@ Client::~Client() {
 
 
 void Client::start(QString ip, quint16 port) {
-  findCamera();
-  QHostAddress serverIp;
-  if (ip == "127.0.0.1") {
-    qDebug() << "Searching Server";
-    serverIp = findServer();
-  } else {
-    qDebug() << "Connecting to" << ip;
-    serverIp = QHostAddress(ip);
-  }
-
-  syncTime();
-
-  if (timesync) {
-    //  qDebug() << "Time synced";
-  } else {
-    // qDebug() << "Time Server not avaivble";
-  }
+  QHostAddress serverIp = QHostAddress(ip);
 
   socket.connectToHost(serverIp, port);
 
@@ -102,36 +84,6 @@ std::string Client::isConnected() { return "yes"; }
 
 QTcpSocket::SocketState Client::getState() const { return socket.state(); }
 
-QHostAddress Client::findServer() {
-  QHostAddress serverIP;
-  QNetworkInterface iface;
-  QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
-  QListIterator<QNetworkInterface> it(interfaces);
-  while (it.hasNext()) {
-    iface = it.next();
-    if (iface.humanReadableName() == "eth0") {
-      QList<QNetworkAddressEntry> entries = iface.addressEntries();
-      if (!entries.isEmpty()) {
-        QNetworkAddressEntry entry = entries.first();
-        serverIP = entry.broadcast();
-        return serverIP;
-      } else {
-        qDebug() << "No LAN Cable connected";
-        break;
-      }
-    }
-  }
-  qDebug() << "Connecting to localhost";
-  serverIP = QHostAddress("127.0.0.1");
-  return serverIP;
-}
-
-void Client::syncTime() {
-  // HARDCODED
-  timesync = true;
-  return;
-}
-
 QString Client::getHostname() {
   QFile file("/etc/hostname");
   if (!file.open(QIODevice::ReadOnly)) {
@@ -142,11 +94,6 @@ QString Client::getHostname() {
   file.close();
   return line;
 }
-
-void Client::findCamera() {
-  // qDebug() << "Camera found";
-  return;
-};
 
 double Client::getCpuUsage() {
   double percent;

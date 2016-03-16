@@ -4,4 +4,3 @@ SUBDIRS += \
     ClientTest \
     ServerTest \
     ClientServerTest \
-    #GuiTest

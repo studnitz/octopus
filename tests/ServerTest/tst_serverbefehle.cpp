@@ -15,10 +15,21 @@ class ServerBefehle : public QObject {
   ServerBefehle();
 
  private Q_SLOTS:
+  /**
+   * @brief
+   * Initialize the server
+   */
   void initTestCase();
+
   void cleanupTestCase();
+
+  /**
+   * @brief
+   * Test proper creation of VideFiles, their insertion to the grid, the grids
+   * insertion into a recording, as well as the proper conversion of a recording
+   * to JSON and back to a recording again.
+   */
   void testCase1();
-  void testCase2();
 
  private:
   Server *server;
@@ -49,13 +60,7 @@ void ServerBefehle::cleanupTestCase() {
   QVERIFY(serverInterface == NULL);
 }
 
-void ServerBefehle::testCase1() { QVERIFY2(true, "Failure"); }
-
-/**
- * @brief ServerBefehle::testCase2
- * Test proper creation of recordings and their JSON-conversion
- */
-void ServerBefehle::testCase2() {
+void ServerBefehle::testCase1() {
   QDate date(2016, 03, 31);
   QTime time(10, 30, 00);
   Grid *grid = new Grid(2, 2);

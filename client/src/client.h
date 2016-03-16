@@ -28,11 +28,6 @@ class Client : public QObject {
   void start(QString serverIp = "127.0.0.1", quint16 port = 1234);
 
   /**
-   * @brief findServer finds local Server
-   * @return ServerIP default localhost or DHCP at eth0
-   */
-  QHostAddress findServer();
-  /**
    * @brief Client::getCpuUsage
    * @return current CPU-Usage in percent
    */
@@ -86,32 +81,12 @@ class Client : public QObject {
 
  private:
   GstRecorder recorder;
-  /**
-   * @brief timesync
-   * DUMMY
-   */
-  bool timesync;
-  /**
-   * @brief numCamera
-   * DUMMY
-   */
-  short numCamera;
+
   /**
    * @brief socket
    * Client Socket
    */
   QTcpSocket socket;
-
-  /**
-   * @brief findCamera
-   * DUMMY
-   */
-  void findCamera();
-  /**
-   * @brief syncTime
-   * DUMMY
-   */
-  void syncTime();
 
   /**
    * @brief isConnected is used to test the connection

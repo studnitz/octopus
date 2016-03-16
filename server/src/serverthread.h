@@ -35,19 +35,7 @@ class ServerThread : public QThread {
    * Stores ClientIP
    */
   QString ClientIP;
-  /**
-   * @brief ClientInfo
-   * stores Client Informations
-   * 0 CPU Usage
-   * 1 Mem Usage
-   * 2 Disk Usage
-   * 3 Free Mem
-   * 4 all mem
-   * 5 free disk
-   * 6 total disk
-   *
-   */
-  QVector<float> ClientInfo;
+
   QString clientName;
   float clientCpuUsage;
   float clientMemUsage;
