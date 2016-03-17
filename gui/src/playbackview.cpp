@@ -131,10 +131,11 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
   videoPlayer->at(playerIndex)->move(playerPosX, playerPosY);
   videoPlayer->at(playerIndex)->resize(playerWidth, playerHeight);
   videoPlayer->at(playerIndex)->show();
-
+  QDir dir = QDir::current();
+  dir.cd("recordings");
   // Connect Source
   parent->player->at(playerIndex)
-      ->setMedia(QUrl::fromLocalFile(source.filepath));
+      ->setMedia(QUrl::fromLocalFile(dir.absoluteFilePath( source.filepath)));
 
   // Connect Signals
   connect(videoPlayer->at(playerIndex), &VideoPlayer::playerOpenOptions, parent,

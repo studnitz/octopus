@@ -19,6 +19,5 @@ int main(int argc, char* argv[]) {
   serverInterface->setServer(&server);
   serverInterface->start();
 
-  delete serverInterface;
   return a.exec();
 }

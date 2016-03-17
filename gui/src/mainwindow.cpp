@@ -296,3 +296,9 @@ void MainWindow::on_pushButton_clicked() {
   }
   ui->debugTextEdit->adjustSize();
 }
+
+void MainWindow::on_recordStopButton_clicked()
+{
+    QString data("");
+    guiInterface->sendData("stopCameras", data);
+}
