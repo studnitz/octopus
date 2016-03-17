@@ -13,7 +13,7 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
       // if we don't have omx (when we're not on a RPI), use x264enc instead
       videoBin = QGst::Bin::fromDescription(
           "v4l2src device=/dev/video1 ! x264enc tune=zerolatency "
-          "byte-stream=true ");  //! h264parse ! matroskamux");
+          "byte-stream=true ");
       qDebug() << "Using x264enc on device /dev/video1";
     } else {
       videoBin = QGst::Bin::fromDescription("v4l2src ! omxh264enc ");
@@ -32,8 +32,8 @@ QGst::BinPtr GstRecorder::createVideoMuxBin() {
   QGst::BinPtr videoMux;
 
   try {
-    videoMux = QGst::Bin::fromDescription("h264parse ! matroskamux");
-    qDebug() << "Created videoMuxer with h264parse ! matrsokamux";
+    videoMux = QGst::Bin::fromDescription("h264parse ! mp4mux");
+    qDebug() << "Created videoMuxer with h264parse ! mp4mux";
 
     return videoMux;
   } catch (const QGlib::Error &error) {
@@ -51,7 +51,7 @@ void GstRecorder::recordLocally() {
       QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm_ss");
 
   QString filename =
-      QDir::currentPath() + QDir::separator() + currentTime + ".mkv";
+      QDir::currentPath() + QDir::separator() + currentTime + ".mp4";
   qDebug() << "writing to:" << filename;
   sink->setProperty("location", filename);
 
@@ -122,6 +122,11 @@ void GstRecorder::createRtpSink(quint16 port, QString address) {
 
   m_pipeline->setState(QGst::StatePlaying);
 }
+
+void GstRecorder::stopRecording(){
+    m_pipeline->sendEvent(QGst::EosEvent::create());
+}
+
 
 void GstRecorder::stop() {
   m_pipeline->setState(QGst::StateNull);

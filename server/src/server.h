@@ -47,11 +47,6 @@ class Server : public QTcpServer {
    * is started when ready is emitted by Serverthread
    */
   void getInfo();
-  /**
-   * @brief readInfo do something with new Information
-   * started when new Info is emitted by Serverthread
-   */
-  void readInfo();
 
   void stopCameras();
 

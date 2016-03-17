@@ -16,10 +16,9 @@ void ServerThread::run() {
   }
 
   connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+  connect(socket, SIGNAL(error()), this, SLOT(disconnected()));
   connect(socket, SIGNAL(readyRead()), this, SLOT(getData()));
   ClientIP = socket->peerAddress().toString();
-  // Actually 7 Informations are saved
-  ClientInfo.fill(0, 7);
 
   // We'll have multiple clients, we want to know which is which
   qDebug() << socketDescriptor << "IP:" << ClientIP << " Client connected";
@@ -41,7 +40,6 @@ void ServerThread::getData() {
 }
 
 void ServerThread::readData(QJsonObject json) {
-  qDebug() << " new data";
   QJsonObject o = json["data"].toObject();
   ClientIP = o["IP"].toString();
   clientName = o["Name"].toString();

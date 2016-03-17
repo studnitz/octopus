@@ -1,5 +1,5 @@
 #include <QString>
-include <QtTest>
+#include <QtTest>
 #include <QCoreApplication>
 
 #include "src/client.h"
@@ -14,10 +14,37 @@ class ClientBefehle : public QObject {
   void initTestCase();
   void cleanupTestCase();
 
+  /**
+   * @brief
+   * Check if the value of the disk usage is correct (recalculate the value
+   * and compare it to the given value)
+   */
   void DiskUsageCorrectness();
+
+  /**
+   * @brief
+   * Check that the disk usage never goes out of the range (0% <= range <= 100%)
+   */
   void DiskUsageBorders();
+
+  /**
+   * @brief
+   * Check if the value of the memory usage is correct (recalculate the value
+   * and compare it to the given value)
+   */
   void MemUsageCorrectness();
+
+  /**
+   * @brief
+   * Check that the memory usage never goes out of the range (0% <= range <=
+   * 100%)
+   */
   void MemUsageBorders();
+
+  /**
+   * @brief
+   * Check that the CPU usage never goes out of the range (0% <= range <= 100%)
+   */
   void CPUUsageBorders();
 };
 

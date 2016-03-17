@@ -16,81 +16,109 @@ class Communication : public QObject {
   void initTestCase();
   void cleanupTestCase();
 
-  void OneClientConnected();
-  void TwoClientConnected();
-  void ServerGetInfo();
-  void FindServer();
+  /**
+   * @brief
+   * Checks if server can accept one client at a time.
+   */
+  void oneClientConnected();
+
+  /**
+   * @brief
+   * Checks if server can handle multiple (2) connections at a time.
+   */
+  void twoClientConnected();
+
+  /**
+   * @brief
+   * Checks if the server gets any information about its connected clients.
+   */
+  void serverGetInfo();
+
+ private:
+  Server *server;
+  Client *client1, *client2;
 };
 
 Communication::Communication() {}
 
 void Communication::initTestCase() {}
 
-void Communication::cleanupTestCase() {}
-
-/*
- * 1 Client connect and stay connected
- */
-void Communication::OneClientConnected() {
-  Server server;
-  server.startServer();
-
-  Client client1;
-  client1.start();
-  while (server.getNumClients() == 0) {
-    QTest::qWait(200);
-  }
-  QVERIFY(QAbstractSocket::ConnectedState == client1.getState());
-  QVERIFY(server.getNumClients() == 1);
-}
-/*
- * 2 Clients connect and stay connected
- *
- *
- */
-void Communication::TwoClientConnected() {
-  Server server;
-  server.startServer();
-  Client client1;
-  client1.start();
-  while (server.getNumClients() == 0) {
-    QTest::qWait(200);
-  }
-  QVERIFY(QAbstractSocket::ConnectedState == client1.getState());
-  QVERIFY(server.getNumClients() == 1);
-  Client client2;
-  client2.start();
-  while (server.getNumClients() == 1) {
-    QTest::qWait(200);
-  }
-  QVERIFY(QAbstractSocket::ConnectedState == client2.getState());
-  QVERIFY(QAbstractSocket::ConnectedState == client1.getState());
-  QVERIFY(server.getNumClients() == 2);
+void Communication::cleanupTestCase() {
+  delete client1;
+  delete client2;
+  delete server;
 }
 
-void Communication::ServerGetInfo() {
-  Server server;
-  Client client1, client2;
-  server.startServer();
-  client1.start();
-  client2.start();
-  while (server.getNumClients() != 2) {
+void Communication::oneClientConnected() {
+  server = new Server();
+  server->startServer();
+
+  client1 = new Client();
+  client1->start();
+
+  int numClients = 0;
+  while (numClients == 0) {
+    numClients = server->getNumClients();
     QTest::qWait(200);
   }
-  QList<ServerThread*> clients = server.getClients();
-  while (clients.first()->ClientInfo[0] == 0) {
-    QTest::qWait(200);
-  }
-  while (clients.at(1)->ClientInfo[0] == 0) {
-    QTest::qWait(200);
-  }
-  QVERIFY(clients.at(0)->ClientInfo[0] != 0);
-  QVERIFY(clients.at(1)->ClientInfo[0] != 0);
+
+  QVERIFY(QAbstractSocket::ConnectedState == client1->getState());
+  QVERIFY(server->getNumClients() == 1);
+  delete client1;
+  delete server;
 }
 
-void Communication::FindServer() {
-  Client client;
-  QVERIFY(client.findServer() == QHostAddress("127.0.0.1"));
+void Communication::twoClientConnected() {
+  server = new Server();
+  server->startServer();
+
+  client1 = new Client();
+  client1->start();
+
+  while (server->getNumClients() == 0) {
+    QTest::qWait(200);
+  }
+
+  QVERIFY(QAbstractSocket::ConnectedState == client1->getState());
+  QVERIFY(server->getNumClients() == 1);
+
+  client2 = new Client();
+  client2->start();
+  while (server->getNumClients() == 1) {
+    QTest::qWait(200);
+  }
+
+  QVERIFY(QAbstractSocket::ConnectedState == client2->getState());
+  QVERIFY(QAbstractSocket::ConnectedState == client1->getState());
+  QVERIFY(server->getNumClients() == 2);
+  delete client1;
+  delete client2;
+  delete server;
+}
+
+void Communication::serverGetInfo() {
+  server = new Server();
+  server->startServer();
+
+  client1 = new Client();
+  client1->start();
+  client2 = new Client();
+  client2->start();
+
+  while (server->getNumClients() != 2) {
+    QTest::qWait(200);
+  }
+
+  QList<ServerThread *> *clients =
+      new QList<ServerThread *>(server->getClients());
+
+  while (clients->length() != 2) {
+    QTest::qWait(200);
+  }
+
+  QVERIFY(clients->length() == 2);
+  QVERIFY(clients->at(0)->clientName != NULL);
+  QVERIFY(clients->at(1)->clientName != NULL);
 }
 
 QTEST_MAIN(Communication)

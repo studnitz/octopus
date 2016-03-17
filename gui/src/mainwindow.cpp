@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::updateRecordingList);
   QTimer *timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &MainWindow::continueUpdateClientList);
-  timer->start(1000);
+  timer->start(50);
 
   /* --- PLAY-TAB: videoplayer set-up --- */
   player = new QList<QMediaPlayer *>();

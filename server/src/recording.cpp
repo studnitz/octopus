@@ -3,7 +3,7 @@
 #include <QJsonDocument>
 Recording::Recording() : datetime(QDateTime::currentDateTime()), grid(Grid()) {}
 
-Recording::Recording(QDateTime datetime, Grid grid)
+Recording::Recording(QDateTime datetime, Grid& grid)
     : datetime(datetime), grid(grid) {}
 
 void Recording::read(const QJsonObject &json) {

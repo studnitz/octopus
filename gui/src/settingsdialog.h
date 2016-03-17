@@ -8,6 +8,10 @@ namespace Ui {
 class SettingsDialog;
 }
 
+/**
+ * @brief SettingsDialog class
+ * Class for the SettingsDialog and storing and retrieving settings.
+ */
 class SettingsDialog : public QDialog {
   Q_OBJECT
 
@@ -26,7 +30,9 @@ class SettingsDialog : public QDialog {
 
   void on_buttonBox_rejected();
 
- private:
+  void on_recordStorage_activated(int index);
+
+private:
   Ui::SettingsDialog *ui;
 };
 

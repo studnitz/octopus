@@ -9,6 +9,10 @@
 #include <../server/src/grid.h>
 #include <src/videoplayer.h>
 
+/**
+ * @brief The PlaybackView class
+ * Class to handle the elements in the playback tab.
+ */
 class PlaybackView : public QObject {
   Q_OBJECT
  public:

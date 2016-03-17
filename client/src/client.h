@@ -17,6 +17,7 @@ class Client : public QObject {
   Q_OBJECT
  public:
   explicit Client(QObject *parent = 0);
+  bool isRecording = false;
   ~Client();
   /**
  * @brief start starts Client
@@ -26,11 +27,6 @@ class Client : public QObject {
  */
   void start(QString serverIp = "127.0.0.1", quint16 port = 1234);
 
-  /**
-   * @brief findServer finds local Server
-   * @return ServerIP default localhost or DHCP at eth0
-   */
-  QHostAddress findServer();
   /**
    * @brief Client::getCpuUsage
    * @return current CPU-Usage in percent
@@ -77,11 +73,7 @@ signals:
    */
   QTcpSocket::SocketState getState() const;
  private slots:
-  /**
-    * @brief sendInfo
-    * sends Informations to Server
-    */
-  void sendInfo();
+
   /**
    * @brief getCommand
    * started when ReadyRead is emitted to get new Command
@@ -90,38 +82,13 @@ signals:
 
  private:
   GstRecorder recorder;
-  /**
-   * @brief timesync
-   * DUMMY
-   */
-  bool timesync;
-  /**
-   * @brief numCamera
-   * DUMMY
-   */
-  short numCamera;
+
   /**
    * @brief socket
    * Client Socket
    */
   QTcpSocket socket;
 
-  /**
-   * @brief findCamera
-   * DUMMY
-   */
-  void findCamera();
-  /**
-   * @brief syncTime
-   * DUMMY
-   */
-  void syncTime();
-
-  /**
-   * @brief isConnected is used to test the connection
-   * @return "yes"
-   */
-  std::string isConnected();
   void executeCommand(QJsonObject json);
 };
 

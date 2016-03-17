@@ -34,44 +34,9 @@ QStringList Client::listAllDevices() {
   return outputList;
 }
 
-void Client::sendInfo() {
-  QByteArray message;
-  message.setNum(0).append("\n");
-  socket.write(message);
-  message.setNum((float)getMemoryUsage()).append("\n");
-  socket.write(message);
-  message.setNum((float)getCpuUsage()).append("\n");
-  socket.write(message);
-  message.setNum((float)getDiskUsage()).append("\n");
-  socket.write(message);
-  message.setNum((float)getFreeMemory()).append("\n");
-  socket.write(message);
-  message.setNum((float)getAllMemory()).append("\n");
-  socket.write(message);
-  message.setNum((float)getFreeDisk()).append("\n");
-  socket.write(message);
-  message.setNum((float)getTotalDisk()).append("\n");
-  socket.write(message);
-}
 
 void Client::start(QString ip, quint16 port) {
-  findCamera();
-  QHostAddress serverIp;
-  if (ip == "127.0.0.1") {
-    qDebug() << "Searching Server";
-    serverIp = findServer();
-  } else {
-    qDebug() << "Connecting to" << ip;
-    serverIp = QHostAddress(ip);
-  }
-
-  syncTime();
-
-  if (timesync) {
-    //  qDebug() << "Time synced";
-  } else {
-    // qDebug() << "Time Server not avaivble";
-  }
+  QHostAddress serverIp = QHostAddress(ip);
 
   socket.connectToHost(serverIp, port);
 
@@ -102,7 +67,6 @@ void Client::sendData(QString cmd, QJsonObject &str) {
     json["cmd"] = cmd;
     json["data"] = str;
     msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
-    qDebug() << msg;
     socket.write(msg);
   }
 }
@@ -127,51 +91,19 @@ void Client::executeCommand(QJsonObject json) {
       sendData(json["cmd"].toString(), data);
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
-        recorder.recordLocally();
-      // todo record
+      recorder.recordLocally();
+      isRecording = true;
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-        recorder.stop();
-      // todo stop
-    }
-  }
-  QJsonObject data;
-  data["data"] = "lololol";
-  sendData("TEST", data);
-}
-
-std::string Client::isConnected() { return "yes"; }
-
-QTcpSocket::SocketState Client::getState() const { return socket.state(); }
-
-QHostAddress Client::findServer() {
-  QHostAddress serverIP;
-  QNetworkInterface iface;
-  QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
-  QListIterator<QNetworkInterface> it(interfaces);
-  while (it.hasNext()) {
-    iface = it.next();
-    if (iface.humanReadableName() == "eth0") {
-      QList<QNetworkAddressEntry> entries = iface.addressEntries();
-      if (!entries.isEmpty()) {
-        QNetworkAddressEntry entry = entries.first();
-        serverIP = entry.broadcast();
-        return serverIP;
-      } else {
-        qDebug() << "No LAN Cable connected";
-        break;
+      if (isRecording) {
+        isRecording = false;
+        recorder.stopRecording();
       }
     }
   }
-  qDebug() << "Connecting to localhost";
-  serverIP = QHostAddress("127.0.0.1");
-  return serverIP;
 }
 
-void Client::syncTime() {
-  // HARDCODED
-  timesync = true;
-  return;
-}
+
+QTcpSocket::SocketState Client::getState() const { return socket.state(); }
 
 QString Client::getHostname() {
   QFile file("/etc/hostname");
@@ -183,11 +115,6 @@ QString Client::getHostname() {
   file.close();
   return line;
 }
-
-void Client::findCamera() {
-  // qDebug() << "Camera found";
-  return;
-};
 
 double Client::getCpuUsage() {
   double percent;

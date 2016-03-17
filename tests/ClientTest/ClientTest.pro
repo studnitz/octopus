@@ -15,3 +15,4 @@ include($$PWD/../../client/client.pri)
 CONFIG += link_pkgconfig
 PKGCONFIG += Qt5GStreamer-1.0 \
     Qt5GLib-2.0
+CONFIG   += c++11

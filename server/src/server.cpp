@@ -46,17 +46,6 @@ void Server::stopCameras() {
   broadcastCommand(json);
 }
 
-void Server::readInfo() {
-  QList<ServerThread*> clients = getClients();
-  QListIterator<ServerThread*> it(clients);
-  emit gotInfo();
-  while (it.hasNext()) {
-    QVectorIterator<float> cIt(it.next()->ClientInfo);
-    while (cIt.hasNext()) {
-      qDebug() << cIt.next();
-    }
-  }
-}
 
 QList<ServerThread*> Server::getClients() {
   return findChildren<ServerThread*>();

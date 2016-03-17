@@ -9,6 +9,10 @@
 #include <QGridLayout>
 #include "../server/src/recording.h"
 
+/**
+ * @brief RecordingView class
+ * Class for the recording tab.
+ */
 class RecordingView : public QObject {
   Q_OBJECT
  public:

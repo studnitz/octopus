@@ -22,6 +22,10 @@ namespace Ui {
 class MainWindow;
 }
 
+/**
+ * @brief The MainWindow class
+ * The MainWindow class is the frontend and main user interface of octopus.
+ */
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
@@ -54,7 +58,7 @@ class MainWindow : public QMainWindow {
   /**
    * @brief versionOctopus current version# of the octopus-program
    */
-  QString versionOctopus = "0.314a";  // Versionnumber
+  QString versionOctopus = "0.3141.a-unstable_alpha";  // Versionnumber
 
   /**
    * @brief settings to store settings
@@ -212,7 +216,6 @@ class MainWindow : public QMainWindow {
    * only. Does not change the grid-structure.
    */
   void clearVideoPlayers();
-
 };
 
 #endif  // MAINWINDOW_H
