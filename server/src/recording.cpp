@@ -1,6 +1,8 @@
 #include "recording.h"
 #include <QFile>
+#include <QDir>
 #include <QJsonDocument>
+#include <QDebug>
 Recording::Recording() : datetime(QDateTime::currentDateTime()), grid(Grid()) {}
 
 Recording::Recording(QDateTime datetime, Grid& grid)
@@ -20,9 +22,10 @@ void Recording::write(QJsonObject &json) const {
 
 bool Recording::saveRecording() const {
   QString recordingTime = datetime.toString("yyyy_MM_dd_hh_mm_ss");
-
-  QFile saveFile(recordingTime.append(".off"));
-
+  QDir saveDir = QDir::current();
+  saveDir.cd("recordings");
+  QFile saveFile(saveDir.absoluteFilePath(recordingTime.append(".off")));
+  qDebug() << saveDir.absolutePath();
   if (!saveFile.open(QIODevice::WriteOnly)) {
     qWarning("Couldn't open save file.");
     return false;
