@@ -66,7 +66,6 @@ void Communication::oneClientConnected() {
   QVERIFY(server->getNumClients() == 1);
   delete client1;
   delete server;
-  QVERIFY(false);
 }
 
 void Communication::twoClientConnected() {
