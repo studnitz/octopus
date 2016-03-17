@@ -36,10 +36,12 @@ class ServerThread : public QThread {
    */
   QString ClientIP;
 
+  quint16 videoId;
   QString clientName;
   float clientCpuUsage;
   float clientMemUsage;
   float clientDiskUsage;
+  QString clientFilePath;
   QStringList clientDevices;
   /**
    * @brief socket

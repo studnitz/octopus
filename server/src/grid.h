@@ -37,13 +37,13 @@ class Grid {
    * changes the variables accordingly.
    * @param json The JsonObject to read.
    */
-  void read(const QJsonObject &json);
+  void read(const QJsonObject& json);
   /**
    * @brief write Serialization helper class, writes to JSON object accordingly
    * to the current parameters.
    * @param json The JsonObject to write.
    */
-  void write(QJsonObject &json) const;
+  void write(QJsonObject& json) const;
 
   QPair<int, int> getVideoFilePositionById(quint32 id);
   VideoFile& getVideoFileById(quint32 id);

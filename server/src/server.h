@@ -6,6 +6,7 @@
 #include <QJsonObject>
 
 #include "serverthread.h"
+#include "recording.h"
 
 class Server : public QTcpServer {
   Q_OBJECT
@@ -29,6 +30,10 @@ class Server : public QTcpServer {
    */
   QList<ServerThread *> getClients();
 
+  Recording *rec;
+
+  ServerThread *getClientByHostname(QString hostname);
+  void updateRecording();
  signals:
   /**
    * @brief broadcastCommand sends command to all connected Clients

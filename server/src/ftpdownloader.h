@@ -6,23 +6,22 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-
-class FtpDownloader : public QObject
-{
+class FtpDownloader : public QObject {
   Q_OBJECT
-public:
+ public:
   FtpDownloader(QObject *parent = 0, QUrl ftpUrl = QUrl(""), QString path = "");
   double progress() const;
   void startDownload();
-signals:
+ signals:
 
-public slots:
+ public slots:
 
-private slots:
+ private slots:
   void readyRead();
   void finished();
   void updateDownloadProgress(qint64 const bytesRead, qint64 const totalBytes);
-private:
+
+ private:
   QUrl ftpUrl;
   QString path;
   qint64 bytes;
@@ -32,4 +31,4 @@ private:
   QFile *file;
 };
 
-#endif // FTPDOWNLOADER_H
+#endif  // FTPDOWNLOADER_H

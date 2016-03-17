@@ -28,6 +28,7 @@ void ServerInterface::sendData(QString cmd, QJsonObject &str) {
     json["cmd"] = cmd;
     json["data"] = str;
     msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
+    qDebug() << "sendData: " << msg;
     socket->write(msg);
   }
 }
@@ -56,6 +57,7 @@ QJsonObject ServerInterface::getJsonInfo() {
     jO["CPU"] = serverThread->clientCpuUsage;
     jO["Memory"] = serverThread->clientMemUsage;
     jO["Disk"] = serverThread->clientDiskUsage;
+    jO["Filename"] = serverThread->clientFilePath;
     jO["Devices"] = QJsonArray::fromStringList(serverThread->clientDevices);
     clientArray.append(jO);
   }
@@ -73,8 +75,14 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       sendData(json["cmd"].toString(), data);
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
+      QJsonObject obj = json["data"].toObject();
+      qDebug() << "JSONEXECCCCC:" << obj;
+      server->rec = new Recording();
+      server->rec->read(obj);
       server->recordLocally();
+      server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
+      server->updateRecording();
       server->stopCameras();
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();

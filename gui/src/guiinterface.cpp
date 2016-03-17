@@ -15,10 +15,11 @@ void GUIInterface::tryConnect(QHostAddress destAddr, quint16 port) {
   }
 }
 
-void GUIInterface::sendData(QString str, QString &data) {
+void GUIInterface::sendData(QString str, QJsonObject &data) {
   if (socket->state() == QTcpSocket::ConnectedState) {
     QByteArray msg;
     msg = newCommand(str, data).toJson(QJsonDocument::Compact).append("\n");
+    qDebug() << "sendData: " << msg;
     socket->write(msg);
   }
 }
@@ -35,8 +36,7 @@ void GUIInterface::receiveData() {
 }
 
 void GUIInterface::readData(QJsonObject json) {
-  if(json["cmd"] != "getInfo")
-      return;
+  if (json["cmd"] != "getInfo") return;
   if (json["data"].toObject()["clients"].isArray()) {
     clients->clear();
     QJsonArray arr = json["data"].toObject()["clients"].toArray();
@@ -60,9 +60,9 @@ void GUIInterface::readData(QJsonObject json) {
   }
 }
 
-QJsonDocument GUIInterface::newCommand(QString &cmd, QString &data) {
+QJsonDocument GUIInterface::newCommand(QString &cmd, QJsonObject &data) {
   QJsonObject json = QJsonObject();
   json["cmd"] = cmd;
-  json["data"] = data;
+  json["data"] = data["data"];
   return QJsonDocument(json);
 }

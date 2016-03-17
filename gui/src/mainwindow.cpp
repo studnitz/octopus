@@ -56,13 +56,15 @@ MainWindow::MainWindow(QWidget *parent)
 
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
-  connect(timer, &QTimer::timeout, recordingView, &RecordingView::updateVideoDevices);
+  connect(timer, &QTimer::timeout, recordingView,
+          &RecordingView::updateVideoDevices);
   connect(timer, &QTimer::timeout, recordingView, &RecordingView::updateGrid);
   QString serverIP = this->settings->value("octopus/ServerIP").toString();
   tryConnection(serverIP);
 
   // --- TESTDATA ---
-  QString data = "testdata";
+  QJsonObject data;
+  data["data"] = "testdata";
   QString cmd = "cmd";
   for (int i = 0; i < 2; i++) guiInterface->sendData(cmd, data);
 }
@@ -154,7 +156,8 @@ QColor MainWindow::getColorFromPercent(int percent) {
 }
 
 void MainWindow::continueUpdateClientList() {
-  QString data = QString("looool");
+  QJsonObject data;
+  data["data"] = "looool";
   guiInterface->sendData("getInfo", data);
 
   // Initialize RowCount with 0

@@ -46,9 +46,31 @@ void Server::stopCameras() {
   broadcastCommand(json);
 }
 
-
 QList<ServerThread*> Server::getClients() {
   return findChildren<ServerThread*>();
+}
+
+ServerThread* Server::getClientByHostname(QString hostname) {
+  foreach (ServerThread* client, getClients()) {
+    if (client->clientName == hostname) {
+      return client;
+    }
+  }
+  return new ServerThread(-1);
+}
+
+void Server::updateRecording() {
+  for (int i = 0; i < rec->grid.height; ++i) {
+    for (int j = 0; j < rec->grid.width; ++j) {
+      qDebug() << "hello" << i << "   " << j;
+      VideoFile* currentVid = &rec->grid.grid[i][j];
+      if (currentVid->id != 0) {
+        ServerThread* client = getClientByHostname(currentVid->hostname);
+        currentVid->filepath = client->clientFilePath;
+      }
+    }
+  }
+  rec->saveRecording();
 }
 
 int Server::getNumClients() { return getClients().size(); }

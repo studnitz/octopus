@@ -10,7 +10,6 @@ Client::Client(QObject *parent) : QObject(parent) {
     qDebug() << "Client started";
   }
   connect(&socket, SIGNAL(readyRead()), this, SLOT(getCommand()));
-
   // hostfound() signal connect?
 }
 
@@ -19,12 +18,12 @@ Client::~Client() {
   socket.close();
 }
 QStringList Client::listAllDevices() {
-  QProcess* v4l2 = new QProcess();
+  QProcess *v4l2 = new QProcess();
   QStringList args;
   args << "--list-devices";
   v4l2->start("v4l2-ctl", args);
 
-  if(!v4l2->waitForFinished()) return QStringList();
+  if (!v4l2->waitForFinished()) return QStringList();
 
   QString output(v4l2->readAllStandardOutput());
   QStringList outputList = output.split("\n");
@@ -33,7 +32,6 @@ QStringList Client::listAllDevices() {
 
   return outputList;
 }
-
 
 void Client::start(QString ip, quint16 port) {
   QHostAddress serverIp = QHostAddress(ip);
@@ -91,7 +89,10 @@ void Client::executeCommand(QJsonObject json) {
       sendData(json["cmd"].toString(), data);
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
-      recorder.recordLocally();
+      QString filename = recorder.recordLocally();
+      QJsonObject data;
+      data["Filename"] = filename;
+      sendData(json["cmd"].toString(), data);
       isRecording = true;
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
       if (isRecording) {
@@ -101,7 +102,6 @@ void Client::executeCommand(QJsonObject json) {
     }
   }
 }
-
 
 QTcpSocket::SocketState Client::getState() const { return socket.state(); }
 

@@ -64,7 +64,7 @@ class Client : public QObject {
   QJsonObject getJsonInfo();
   void sendData(QString cmd, QJsonObject &str);
   QStringList listAllDevices();
-signals:
+ signals:
 
  public slots:
   /**

@@ -9,8 +9,7 @@ void FtpDownloader::startDownload() {
   connect(reply, &QNetworkReply::readyRead, this, &FtpDownloader::readyRead);
   connect(reply, &QNetworkReply::downloadProgress, this,
           &FtpDownloader::updateDownloadProgress);
-  connect(reply, &QNetworkReply::finished, this,
-          &FtpDownloader::finished);
+  connect(reply, &QNetworkReply::finished, this, &FtpDownloader::finished);
 
   file = new QFile(path);
   file->open(QIODevice::WriteOnly);

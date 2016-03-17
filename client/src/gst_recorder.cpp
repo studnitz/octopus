@@ -42,7 +42,7 @@ QGst::BinPtr GstRecorder::createVideoMuxBin() {
   }
 }
 
-void GstRecorder::recordLocally() {
+QString GstRecorder::recordLocally() {
   QGst::BinPtr videoSrcBin = createVideoSrcBin();
   QGst::BinPtr videoMuxBin = createVideoMuxBin();
   QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
@@ -57,7 +57,7 @@ void GstRecorder::recordLocally() {
 
   if (!videoSrcBin || !sink) {
     qDebug() << "Error. One or more elements could not be created.";
-    return;
+    return "";
   }
 
   m_pipeline = QGst::Pipeline::create();
@@ -71,6 +71,8 @@ void GstRecorder::recordLocally() {
                  &GstRecorder::onBusMessage);
 
   m_pipeline->setState(QGst::StatePlaying);
+
+  return filename;
 }
 
 void GstRecorder::createRtpSink(quint16 port, QString address) {
@@ -123,10 +125,9 @@ void GstRecorder::createRtpSink(quint16 port, QString address) {
   m_pipeline->setState(QGst::StatePlaying);
 }
 
-void GstRecorder::stopRecording(){
-    m_pipeline->sendEvent(QGst::EosEvent::create());
+void GstRecorder::stopRecording() {
+  m_pipeline->sendEvent(QGst::EosEvent::create());
 }
-
 
 void GstRecorder::stop() {
   m_pipeline->setState(QGst::StateNull);

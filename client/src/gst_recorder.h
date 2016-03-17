@@ -28,8 +28,9 @@ class GstRecorder : public QObject {
    * x264 (rest).
    * The output file is named after the current date and time.
    * Format: yy_MM_dd_hh_mm_ss.mkv
+   * @return the complete filepath
    */
-  void recordLocally();
+  QString recordLocally();
   /**
    * @brief stopRecording
    */

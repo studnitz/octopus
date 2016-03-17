@@ -21,18 +21,21 @@ void RecordingView::record_button(QPushButton *recordButton) {
 }
 
 void RecordingView::createRecording() {
+  MainWindow *p = qobject_cast<MainWindow *>(this->parent());
   Grid grid = Grid(gridLayout->columnCount(), gridLayout->rowCount());
   quint32 id = 1;
+
   for (int i = 0; i < gridLayout->rowCount(); ++i) {
     for (int j = 0; j < gridLayout->columnCount(); ++j) {
       QLabel *currentItem =
           (QLabel *)gridLayout->itemAtPosition(i, j)->widget();
       QString current = currentItem->text();
 
-      if (current == "empty") break; // skip empty GridFrames
+      if (current == "empty") break;  // skip empty GridFrames
       // Current Videodevice is in format "hostname: /dev/videoX"
       QStringList videoInfo = current.split(": ");
       QString hostname = videoInfo.at(0);
+
       QString devicepath = videoInfo.at(1);
       VideoFile vid = VideoFile(id, true, "", hostname, devicepath);
       grid.addSource(vid, j, i);
@@ -41,6 +44,11 @@ void RecordingView::createRecording() {
   }
   rec = new Recording(QDateTime::currentDateTime(), grid);
   rec->saveRecording();
+  QJsonObject data1, data;
+  rec->write(data1);
+  data["data"] = data1;
+  qDebug() << "JSONREC:" << data;
+  p->guiInterface->sendData("recordLocally", data);
 }
 
 void RecordingView::updateGrid() {
@@ -88,14 +96,14 @@ void RecordingView::updateVideoDevices() {
 
 void RecordingView::recordStart() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
-  QString data("");
-  p->guiInterface->sendData("recordLocally", data);
+  QJsonObject data;
+  // p->guiInterface->sendData("recordLocally", data);
   p->log("Aufnahme starten");
 }
 
 void RecordingView::recordStop() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
-  QString data("");
+  QJsonObject data;
   p->guiInterface->sendData("stopCameras", data);
   p->log("Aufnahme stoppen");
 }

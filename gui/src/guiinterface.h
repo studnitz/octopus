@@ -19,10 +19,10 @@ class GUIInterface : public QObject {
   explicit GUIInterface(QHostAddress destAddr, quint16 port,
                         QObject *parent = 0);
   void tryConnect(QHostAddress destAddr, quint16 port);
-  void sendData(QString str, QString &data);
+  void sendData(QString str, QJsonObject &data);
   QList<ClientGui *> *clients;
   QTcpSocket *socket;
-  QJsonDocument newCommand(QString &cmd, QString &data);
+  QJsonDocument newCommand(QString &cmd, QJsonObject &data);
  signals:
 
  public slots:

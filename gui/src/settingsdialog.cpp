@@ -32,11 +32,13 @@ SettingsDialog::SettingsDialog(QWidget *parent)
   ui->recordQuality->setCurrentIndex(settingQuality);
 
   ui->recordStorage->addItem(tr("Nur auf dem Server"));
-  ui->recordStorage->addItem(tr("Server, dann auf GUI holen (Pfad auswählen...)"));
+  ui->recordStorage->addItem(
+      tr("Server, dann auf GUI holen (Pfad auswählen...)"));
   // If custom path was already chosen once, than add that option as well
   if (settings->value("octopus/LocationData").isValid()) {
     settingLocationData = settings->value("octopus/LocationData").toString();
-    ui->recordStorage->addItem(QString("Server, dann holen nach " + settingLocationData));
+    ui->recordStorage->addItem(
+        QString("Server, dann holen nach " + settingLocationData));
   }
   ui->recordStorage->setCurrentIndex(settingLocation);
 
