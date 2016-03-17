@@ -13,9 +13,9 @@ Grid::Grid(quint8 width, quint8 height) : width(width), height(height) {
   }
 }
 
-void Grid::addSource(VideoFile file, quint8 x, quint8 y) { grid[x][y] = file; }
+void Grid::addSource(VideoFile file, quint8 x, quint8 y) { grid[y][x] = file; }
 
-void Grid::deleteSource(quint8 x, quint8 y) { grid[x][y] = VideoFile(); }
+void Grid::deleteSource(quint8 x, quint8 y) { grid[y][x] = VideoFile(); }
 
 void Grid::read(const QJsonObject &json) {
   grid.clear();

@@ -1,20 +1,16 @@
 #include "recordingview.h"
 #include "mainwindow.h"
-#include <QGridLayout>
 #include <QLabel>
 
 RecordingView::RecordingView(QObject *parent, QWidget *tab) : QObject(parent) {
   this->tab = tab;
-  // updateGrid();
-  // updateVideoDevices();
 }
 
 void RecordingView::record_button(QPushButton *recordButton) {
   static bool startStopFlag = false;
   if (startStopFlag == false) {
     recordButton->setText("Stop");
-    updateVideoDevices();
-    updateGrid();
+    createRecording();
     recordStart();
     startStopFlag = true;
   } else {
@@ -24,22 +20,56 @@ void RecordingView::record_button(QPushButton *recordButton) {
   }
 }
 
+void RecordingView::createRecording() {
+  Grid grid = Grid(gridLayout->columnCount(), gridLayout->rowCount());
+  quint32 id = 1;
+  for (int i = 0; i < gridLayout->rowCount(); ++i) {
+    for (int j = 0; j < gridLayout->columnCount(); ++j) {
+      QLabel *currentItem =
+          (QLabel *)gridLayout->itemAtPosition(i, j)->widget();
+      QString current = currentItem->text();
+
+      if (current == "empty") break; // skip empty GridFrames
+      // Current Videodevice is in format "hostname: /dev/videoX"
+      QStringList videoInfo = current.split(": ");
+      QString hostname = videoInfo.at(0);
+      QString devicepath = videoInfo.at(1);
+      VideoFile vid = VideoFile(id, true, "", hostname, devicepath);
+      grid.addSource(vid, j, i);
+      id++;
+    }
+  }
+  rec = new Recording(QDateTime::currentDateTime(), grid);
+  rec->saveRecording();
+}
+
 void RecordingView::updateGrid() {
-  MainWindow *p = qobject_cast<MainWindow *>(this->parent());
-  QGridLayout *gridLayout = tab->findChild<QGridLayout *>("recordingGrid");
-  quint16 dimension = (quint16)ceil(sqrt(videoDeviceList->count()));
+  gridLayout = tab->findChild<QGridLayout *>("recordingGrid");
+  dimension = (quint16)ceil(sqrt(videoDeviceList->count()));
+  quint16 count = 0;
   for (int j = 0; j < dimension; ++j) {
-    quint16 count = 0;
     for (int k = 0; k < dimension; ++k) {
       // Out-of-Bounds checking
       if (count >= videoDeviceList->count()) {
-        break;
+        QLabel *emptyLabel = new QLabel("empty");
+        emptyLabel->setFrameStyle(QFrame::Panel);
+        emptyLabel->setAlignment(Qt::AlignCenter);
+        QFont currentFont = emptyLabel->font();
+        currentFont.setPointSize(24);
+        currentFont.setItalic(true);
+        emptyLabel->setFont(currentFont);
+        gridLayout->addWidget(emptyLabel, j, k);
       } else {
-        gridLayout->addWidget(new QLabel(videoDeviceList->item(count)->text()), j, k);
-        count++;
+        QLabel *frameLabel = new QLabel(videoDeviceList->item(count)->text());
+        frameLabel->setFrameStyle(QFrame::Panel);
+        frameLabel->setAlignment(Qt::AlignCenter);
+        QFont currentFont = frameLabel->font();
+        currentFont.setPointSize(24);
+        frameLabel->setFont(currentFont);
+        gridLayout->addWidget(frameLabel, j, k);
       }
+      count++;
     }
-    if (count >= videoDeviceList->count()) { break; }
   }
 }
 

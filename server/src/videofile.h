@@ -31,7 +31,8 @@ class VideoFile {
    * @param deltaMs offset in playback to the base Recording.
    */
   VideoFile(quint32 id, bool isRemote, QString filepath, QString hostname,
-            VideoFile::Orientation orientation = Up, qint64 deltaMs = 0);
+            QString devicepath, VideoFile::Orientation orientation = Up,
+            qint64 deltaMs = 0);
 
   /**
    * @brief read Serialization helper class, reads from a JSON object and
@@ -49,6 +50,7 @@ class VideoFile {
   quint32 id;
   bool isRemote;
   QString filepath;
+  QString devicepath;
   QString hostname;
   Orientation orientation;
   qint64 deltaMs;

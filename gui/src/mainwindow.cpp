@@ -56,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent)
 
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
+  connect(timer, &QTimer::timeout, recordingView, &RecordingView::updateVideoDevices);
+  connect(timer, &QTimer::timeout, recordingView, &RecordingView::updateGrid);
   QString serverIP = this->settings->value("octopus/ServerIP").toString();
   tryConnection(serverIP);
 

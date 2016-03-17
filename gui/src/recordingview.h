@@ -6,6 +6,8 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QListWidget>
+#include <QGridLayout>
+#include "../server/src/recording.h"
 
 class RecordingView : public QObject {
   Q_OBJECT
@@ -25,15 +27,42 @@ class RecordingView : public QObject {
    * @brief recordStop stops recording
    */
   void recordStop();
+  /**
+   * @brief updateGrid is used to update the recording grid
+   * This method should be called whenever the device video list is updated
+   */
   void updateGrid();
+  /**
+   * @brief updateVideoDevices updates the list of available video devices
+   */
   void updateVideoDevices();
-signals:
+
+  /**
+   * @brief createRecording creates a Recording from the current gridLayout and
+   * saves it as a *.off-file
+   */
+  void createRecording();
+ signals:
 
  public slots:
 
-
-private:
-  QListWidget *videoDeviceList;
+ private:
+  /**
+   * @brief dimension the grid dimension (dimension x dimension)
+   */
+  quint16 dimension;
+  /**
+   * @brief rec The recording we manipulate to create a *.off-file
+   */
+  Recording* rec;
+  /**
+   * @brief gridLayout the grid used for rendering the recording view grid
+   */
+  QGridLayout* gridLayout;
+  /**
+   * @brief videoDeviceList is the list of currently available video devices
+   */
+  QListWidget* videoDeviceList;
 };
 
 #endif  // RECORDINGVIEW_H
