@@ -8,6 +8,14 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+/**
+ * @brief The ServerBefehle class tests some standalone features of the server.
+ * This means features that do not need any clients or UIs to interact with.
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander
+ * Studnitz
+ * @copyright GNU Public Licence.
+ * @date 31.03.2016
+ */
 class ServerBefehle : public QObject {
   Q_OBJECT
 
@@ -16,18 +24,20 @@ class ServerBefehle : public QObject {
 
  private Q_SLOTS:
   /**
-   * @brief
-   * Initialize the server
+   * @brief initTestCase initializes the server.
    */
   void initTestCase();
 
+  /**
+   * @brief cleanupTestCase cleanes up the dirt left by initTestCase.
+   */
   void cleanupTestCase();
 
   /**
-   * @brief
-   * Test proper creation of VideFiles, their insertion to the grid, the grids
-   * insertion into a recording, as well as the proper conversion of a recording
-   * to JSON and back to a recording again.
+   * @brief testCase1 is a little-bit-too-big Test Case for pretty much
+   * everything. It tests proper creation of VideFiles, their insertion to the
+   * grid, the grids insertion into a recording, as well as the proper
+   * conversion of a recording to JSON and back to a recording again.
    */
   void testCase1();
 
@@ -86,12 +96,12 @@ void ServerBefehle::testCase1() {
   QJsonObject json = QJsonObject();
 
   rec->write(json);
-  Recording rec2;
-  rec2.read(json);
+  Recording *rec2 = new Recording();
+  rec2->read(json);
 
   for (int i = 0; i < rec->grid.grid.size(); i++)
     for (int j = 0; j < rec->grid.grid[i].size(); j++)
-      QVERIFY(rec->grid.grid[i][j].id == rec->grid.grid[i][j].id);
+      QVERIFY(rec->grid.grid[i][j].id == rec2->grid.grid[i][j].id);
 
   delete rec;
   delete grid;
