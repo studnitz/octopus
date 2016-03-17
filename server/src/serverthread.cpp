@@ -34,7 +34,6 @@ void ServerThread::getData() {
     data = socket->readLine();
     json = QJsonDocument::fromJson(data).object();
     readData(json);
-    // qDebug() << data;
   }
 }
 
@@ -46,6 +45,7 @@ void ServerThread::readData(QJsonObject json) {
   clientMemUsage = o["Memory"].toDouble();
   clientDiskUsage = o["Disk"].toDouble();
 }
+
 void ServerThread::sendCommand(QJsonObject json) {
   QByteArray message;
   QJsonDocument jsonDoc(json);

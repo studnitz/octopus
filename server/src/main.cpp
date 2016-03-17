@@ -1,8 +1,6 @@
 #include <QCoreApplication>
 #include "server.h"
 #include "src/serverinterface.h"
-Server server;
-ServerInterface* serverInterface;
 
 /**
  * @brief main starts the server.
@@ -13,11 +11,10 @@ ServerInterface* serverInterface;
  */
 int main(int argc, char* argv[]) {
   QCoreApplication a(argc, argv);
+  Server server;
   server.startServer();
-
-  serverInterface = new ServerInterface(0);
-  serverInterface->setServer(&server);
-  serverInterface->start();
-
+  ServerInterface serverInterface;
+  serverInterface.setServer(&server);
+  serverInterface.start();
   return a.exec();
 }

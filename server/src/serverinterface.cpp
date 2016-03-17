@@ -80,9 +80,4 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       qDebug() << "data: " << json["data"].toString();
     }
   }
-  QJsonObject data;
-  data["data"] = "lololol";
-  sendData("TEST", data);
 }
-
-void ServerInterface::writeJson() {}
