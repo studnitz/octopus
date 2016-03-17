@@ -43,7 +43,8 @@ void PlaybackView::updateRecordingList(QListWidget *list) {
   list->clear();
   QStringList nameFilter("*.off");
   QDir dir =
-      QDir("/home/tosz/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui");
+     QDir::current();
+  dir.cd("recordings");
   QStringList offFiles = dir.entryList(nameFilter);
   foreach (QString file, offFiles) { list->addItem(file); }
 }
@@ -130,10 +131,11 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
   videoPlayer->at(playerIndex)->move(playerPosX, playerPosY);
   videoPlayer->at(playerIndex)->resize(playerWidth, playerHeight);
   videoPlayer->at(playerIndex)->show();
-
+  QDir dir = QDir::current();
+  dir.cd("recordings");
   // Connect Source
   parent->player->at(playerIndex)
-      ->setMedia(QUrl::fromLocalFile(source.filepath));
+      ->setMedia(QUrl::fromLocalFile(dir.absoluteFilePath( source.filepath)));
 
   // Connect Signals
   connect(videoPlayer->at(playerIndex), &VideoPlayer::playerOpenOptions, parent,
@@ -146,9 +148,10 @@ void PlaybackView::openRecording(QListWidgetItem *item) {
   MainWindow *parent = qobject_cast<MainWindow *>(this->parent());
   if (!parent->player->empty()) delete parent->recording;
   parent->recording = new Recording();
+  QDir fullDir = QDir::current();
+  fullDir.cd("recordings");
   QString fullPath =
-      QDir::homePath() +
-      "/git/build-octopus-Desktop_Qt_5_5_1_GCC_64bit-Debug/gui/" + item->text();
+      fullDir.absolutePath()+ QDir::separator() + item->text();
 
   qDebug() << "opened Recording: " << fullPath;
   parent->recording->loadRecording(fullPath);

@@ -17,5 +17,6 @@ script:
     - qmake -v
     - qmake octopus.pro
     - make
+    - ./launchtests.sh
 notifications:
     slack: bptud:dEBgbHi0ZjLFGsAPBsD5SbPH

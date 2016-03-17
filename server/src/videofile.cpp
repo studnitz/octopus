@@ -24,6 +24,7 @@ VideoFile::VideoFile(quint32 id, bool isRemote, QString filepath,
       deltaMs(deltaMs) {}
 
 void VideoFile::read(const QJsonObject &json) {
+  qDebug() << "VIDEOREAD" << json;
   id = json["id"].toInt();
   isRemote = json["isRemote"].toBool();
   filepath = json["filepath"].toString();
@@ -35,11 +36,20 @@ void VideoFile::read(const QJsonObject &json) {
 }
 
 void VideoFile::write(QJsonObject &json) const {
+  qDebug() << "VIDEOWRITE BEGGIN";
+  qDebug() << "id: " << id;
   json["id"] = (double)id;
+  qDebug() << "isRemote" << isRemote;
   json["isRemote"] = isRemote;
+  qDebug() << "filepath" << filepath;
   json["filepath"] = filepath;
+  qDebug() << "hostname" << hostname;
   json["hostname"] = hostname;
+  qDebug() << "devicepath" << devicepath;
   json["devicepath"] = devicepath;
+  qDebug() << "orintation" << orientation;
   json["orientation"] = orientation;
+  qDebug() << "delta" << deltaMs;
   json["deltaMs"] = deltaMs;
+  qDebug() << "VIDEOWRITE" << json;
 }

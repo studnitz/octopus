@@ -28,7 +28,7 @@ void ServerInterface::sendData(QString cmd, QJsonObject &str) {
     json["cmd"] = cmd;
     json["data"] = str;
     msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
-    qDebug() << "sendData: " << msg;
+    //qDebug() << "sendData: " << msg;
     socket->write(msg);
   }
 }
@@ -82,16 +82,11 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       server->recordLocally();
       server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-      server->updateRecording();
+      //server->updateRecording();
       server->stopCameras();
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();
     }
   }
-  QJsonObject data;
-  data["data"] = "lololol";
-  sendData("TEST", data);
 }
-
-void ServerInterface::writeJson() {}

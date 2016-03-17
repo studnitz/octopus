@@ -4,6 +4,14 @@
 
 #include "src/client.h"
 
+/**
+ * @brief The ClientBefehle class tests some standalone features of the client.
+ * It does not test any communication between the clients and the server.
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander
+ * Studnitz
+ * @copyright GNU Public Licence.
+ * @date 31.03.2016
+ */
 class ClientBefehle : public QObject {
   Q_OBJECT
 

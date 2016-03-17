@@ -26,6 +26,7 @@ void Grid::read(const QJsonObject& json) {
     QList<VideoFile> row = QList<VideoFile>();
     QJsonArray rowArray = gridArray[rowIndex].toArray();
     for (int columnIndex = 0; columnIndex < rowArray.size(); ++columnIndex) {
+        qDebug() << "READ: " << rowIndex << "   " << columnIndex;
       QJsonObject videoObject = rowArray[columnIndex].toObject();
       VideoFile video;
       video.read(videoObject);
@@ -38,15 +39,20 @@ void Grid::read(const QJsonObject& json) {
 
 void Grid::write(QJsonObject& json) const {
   QJsonArray gridArray;
+  qDebug() << "b4 FOREACH";
   foreach (const QList<VideoFile> row, grid) {
+      qDebug() << "f0reach1";
     QJsonArray rowArray;
     foreach (const VideoFile video, row) {
+        qDebug() << "f0reach2";
       QJsonObject videoObject;
       video.write(videoObject);
+      qDebug() << "VIDEOOBJECTJSON" << videoObject;
       rowArray.append(videoObject);
     }
     gridArray.append(rowArray);
   }
+
   json["grid"] = gridArray;
 }
 
