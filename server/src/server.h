@@ -34,7 +34,8 @@ class Server : public QTcpServer {
 
   ServerThread *getClientByHostname(QString hostname);
   void updateRecording();
- signals:
+  void downloadFiles();
+signals:
   /**
    * @brief broadcastCommand sends command to all connected Clients
    * @param command command value

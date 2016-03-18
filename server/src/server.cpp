@@ -1,4 +1,5 @@
 #include "server.h"
+#include "ftpdownloader.h"
 
 Server::Server(QObject* parent) : QTcpServer(parent) {
   qDebug() << "Server created";
@@ -44,6 +45,21 @@ void Server::stopCameras() {
   QJsonObject json;
   json["cmd"] = "stopCameras";
   broadcastCommand(json);
+}
+
+void Server::downloadFiles() {
+  for (int i = 0; i < rec->grid.height; ++i) {
+    for (int j = 0; i < rec->grid.width; ++j) {
+      VideoFile* currentVid = &rec->grid[i][j];
+      if (currentVid->id != 0) {
+        QString ip = getClientByHostname(currentVid->hostname)->ClientIP;
+        QString ftpurl = "ftp://" + ip + currentVid->filepath;
+        FtpDownloader download(0, QUrl(ftpurl),
+                               hostname + "-" + currentVid->filepath);
+        download.startDownload();
+      }
+    }
+  }
 }
 
 QList<ServerThread*> Server::getClients() {
