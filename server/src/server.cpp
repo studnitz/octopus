@@ -50,12 +50,12 @@ void Server::stopCameras() {
 void Server::downloadFiles() {
   for (int i = 0; i < rec->grid.height; ++i) {
     for (int j = 0; i < rec->grid.width; ++j) {
-      VideoFile* currentVid = &rec->grid[i][j];
+      VideoFile* currentVid = &rec->grid.grid[i][j];
       if (currentVid->id != 0) {
         QString ip = getClientByHostname(currentVid->hostname)->ClientIP;
         QString ftpurl = "ftp://" + ip + currentVid->filepath;
         FtpDownloader download(0, QUrl(ftpurl),
-                               hostname + "-" + currentVid->filepath);
+                               currentVid->hostname + "-" + currentVid->filepath);
         download.startDownload();
       }
     }
