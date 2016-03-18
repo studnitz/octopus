@@ -76,7 +76,6 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
       QJsonObject obj = json["data"].toObject();
-      qDebug() << "JSONEXECCCCC:" << obj;
       server->rec = new Recording();
       server->rec->read(obj);
       server->recordLocally();

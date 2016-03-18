@@ -83,7 +83,7 @@ void MainWindow::tryConnection(QString serverIP) {
     qDebug() << "GUI Interface could not connect to Server Interface";
 
     bool ok;
-    QString text = QInputDialog::getText(this, tr("Connection Error"),
+    QString text = QInputDialog::getText(this, tr("Connection Error, server adress not found"),
                                          tr("IP des Servers:"),
                                          QLineEdit::Normal, "127.0.0.1", &ok);
     if (ok && !text.isEmpty()) {
