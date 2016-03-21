@@ -17,6 +17,12 @@ void Grid::addSource(VideoFile& file, quint8 x, quint8 y) { grid[x][y] = file; }
 
 void Grid::deleteSource(quint8 x, quint8 y) { grid[x][y] = VideoFile(); }
 
+void Grid::resizeGrid(quint8 width, quint8 height)
+{
+  this->width = width;
+  this->height = height;
+}
+
 void Grid::read(const QJsonObject &json) {
   grid.clear();
   grid = QList<QList<VideoFile> >();

@@ -4,8 +4,6 @@ Server::Server(QObject* parent) : QTcpServer(parent) {
   qDebug() << "Server created";
 }
 
-Server::~Server() { qDebug() << "Destroy Server"; }
-
 void Server::startServer(int port) {
   if (!this->listen(QHostAddress::Any, port)) {
     qDebug() << "Could not start server";
@@ -20,7 +18,6 @@ void Server::incomingConnection(qintptr socketDescriptor) {
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
   connect(this, &Server::broadcastCommand, thread, &ServerThread::sendCommand);
   connect(thread, SIGNAL(ready()), this, SLOT(getInfo()));
-  // connect(thread, SIGNAL(newInfo()), this, SLOT(readInfo()));
   thread->start();
 
   qDebug() << "New Client connected";
@@ -33,8 +30,6 @@ void Server::getInfo() {
 }
 
 void Server::recordLocally() {
-  // TODO(eventuell): Als Parameter (in data) Kamera/Client der aufnehmen soll
-  // mitschicken
   QJsonObject json;
   json["cmd"] = "recordLocally";
   broadcastCommand(json);

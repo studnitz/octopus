@@ -1,6 +1,5 @@
 #include "videofile.h"
 
-#include <iostream>
 #include <QDebug>
 
 VideoFile::VideoFile(quint32 id) : id(id) {}

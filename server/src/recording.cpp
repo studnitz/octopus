@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QJsonDocument>
 #include <QDebug>
+
 Recording::Recording() : datetime(QDateTime::currentDateTime()), grid(Grid()) {}
 
 Recording::Recording(QDateTime datetime, Grid& grid)
@@ -35,9 +36,6 @@ bool Recording::saveRecording() const {
   write(recordingObject);
   QJsonDocument saveDoc(recordingObject);
   saveFile.write(saveDoc.toJson());
-
-  // qDebug() << "saved recording!";
-
   return true;
 }
 

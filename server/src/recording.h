@@ -2,43 +2,71 @@
 #define RECORDING_H
 
 #include "grid.h"
-#include <QObject>
 #include <QDateTime>
 
+/**
+ * @brief The Recording class represents a complete recording. Every recording
+ * has it's own grid since the camera constellation can be different every time
+ * when recording. All the information from a recording can be written to and
+ * read from any .off file quite easy (in JSON format) using the Recording::read
+ * and Recording::write methods.
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * Studnitz
+ * @copyright GNU Public Licence
+ * @date 31.03.2016
+ */
 class Recording : public QObject {
  public:
-  Recording();
   /**
-   * @brief Recording Represents a recording with date and time and a grid.
-   * @param datetime The current date and time of the start of the recording
-   * @param grid The grid of VideoFile objects.
+   * @brief Standard-constructor for an empty Recording.
    */
-  Recording(QDateTime datetime, Grid& grid);
+  Recording();
+
+  /**
+   * @brief Constructs a Recording, using a QDateTime and a Grid. Note that the
+   * grid parameter is passed call-by-reference.
+   * @param datetime The date and the time of the start of the recording
+   * @param grid A reference to a grid containing VideoFile objects.
+   */
+  Recording(QDateTime datetime, Grid &grid);
+
+  /**
+   * @brief datetime The date and the time of the start of the recording.
+   */
   QDateTime datetime;
+
+  /**
+   * @brief grid contains a reference of the Grid-object containing all the
+   * VideoFiles and their position and orientation.
+   */
   Grid grid;
 
   /**
-   * @brief read Serialization helper class, reads from a JSON object and
-   * changes the variables accordingly.
-   * @param json The JsonObject to read.
+   * @brief Serialization helper method, reads from a JSON object and
+   * changes the variables accordingly. read is to be called on an empty object,
+   * so the empty object can be filled with the data from the JSON-file.
+   * @param json The JsonObject to read from
    */
   void read(const QJsonObject &json);
+
   /**
-   * @brief write Serialization helper class, writes to JSON object accordingly
-   * to the current parameters.
-   * @param json The JsonObject to write.
+   * @brief Serialization helper method, writes to JSON object accordingly
+   * to the current parameters. json should be an empty QJsonObject to be
+   * written to.
+   * @param json The JsonObject to write to
    */
   void write(QJsonObject &json) const;
 
   /**
    * @brief saveRecording saves the recording to a file in the format
-   * yyyy_MM_dd_hh_mm_ss.off, so it can be loaded again later
-   * @return true if the save-file was written successfully, otherwise false.
+   * yyyy_MM_dd_hh_mm_ss.off, so it can be loaded again later.
+   * @return true if the save-file was written successfully, otherwise false
    */
   bool saveRecording() const;
+
   /**
-   * @brief loadRecording loads a recording on the given path.
-   * @return true if the file was loaded successfully, otherwise false.
+   * @brief loadRecording loads a recording from the given path.
+   * @return true if the file was loaded successfully, otherwise false
    */
   bool loadRecording(QString path);
 };

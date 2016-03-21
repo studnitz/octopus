@@ -1,8 +1,6 @@
 #ifndef VIDEOFILE_H
 #define VIDEOFILE_H
 
-#include <QObject>
-#include <QFile>
 #include <QJsonObject>
 
 /**
@@ -10,18 +8,20 @@
  * of a container or not - inside the grid. Every VideoFile should have a unique
  * id (except for the case that the VideoFile is empty). Read and write are
  * methods for conversion to JSON. Orientation is currently not used yet.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
  * Studnitz
- * @copyright GNU Public Licence.
+ * @copyright GNU Public Licence
  * @date 31.03.2016
  */
 class VideoFile {
  public:
+
   /**
    * @brief The Orientation enum describes in which orientation a video is shown
    * in the grid. Up is 0°, Right 90°, Down 180° and Left 270° rotation.
    */
   enum Orientation { Up, Right, Down, Left };
+
   /**
    * @brief VideoFile Represents a live or recorded video. This constructor
    * creates an empty Videofile. Empty VideoFiles should have id = 0.
