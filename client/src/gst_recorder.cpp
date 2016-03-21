@@ -123,10 +123,9 @@ void GstRecorder::createRtpSink(quint16 port, QString address) {
   m_pipeline->setState(QGst::StatePlaying);
 }
 
-void GstRecorder::stopRecording(){
-    m_pipeline->sendEvent(QGst::EosEvent::create());
+void GstRecorder::stopRecording() {
+  if (m_pipeline) m_pipeline->sendEvent(QGst::EosEvent::create());
 }
-
 
 void GstRecorder::stop() {
   m_pipeline->setState(QGst::StateNull);
