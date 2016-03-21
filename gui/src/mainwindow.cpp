@@ -102,8 +102,9 @@ void MainWindow::on_recordButton_clicked() {
   recordingView->record_button(ui->recordButton);
 }
 
-// TODO functionality
-void MainWindow::saveFile() { qDebug() << "save"; }
+void MainWindow::saveFile() {
+  saveRecording();
+}
 
 void MainWindow::settingsDialogButton() {
   SettingsDialog *sD = new SettingsDialog();
@@ -297,8 +298,7 @@ void MainWindow::on_pushButton_clicked() {
   ui->debugTextEdit->adjustSize();
 }
 
-void MainWindow::on_recordStopButton_clicked()
-{
-    QString data("");
-    guiInterface->sendData("stopCameras", data);
+void MainWindow::on_recordStopButton_clicked() {
+  QString data("");
+  guiInterface->sendData("stopCameras", data);
 }
