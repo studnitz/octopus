@@ -70,12 +70,12 @@ void Client::executeCommand(QJsonObject json) {
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
       recorder.recordLocally();
-      isRecording = true;
+      // isRecording = true;
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-      if (isRecording) {
-        isRecording = false;
-        recorder.stopRecording();
-      }
+      // if (isRecording) {
+      // isRecording = false;
+      recorder.stopRecording();
+      //}
     }
   }
 }
