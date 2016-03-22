@@ -81,7 +81,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       server->recordLocally();
       server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-      //server->updateRecording();
+      server->updateRecording();
       server->stopCameras();
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
