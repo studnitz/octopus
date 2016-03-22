@@ -259,7 +259,9 @@ class MainWindow : public QMainWindow {
    */
   void on_recordStopButton_clicked();
 
- private:
+  void on_pauseButton_clicked();
+
+private:
   /**
 X   * @brief getColorFromPercent creates a color ranging from green over yellow
    * to red, depending on percent. 100% is deep red, while 0% is green.

@@ -25,6 +25,7 @@ class PlaybackView : public QObject {
   explicit PlaybackView(QObject *parent = 0);
 
   void playAllPlayers();
+  void pauseAllPlayers();
   void stopAllPlayers();
   void updateRecordingList(QListWidget *list);
   void videoPlayerDelete(quint8 index);

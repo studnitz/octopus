@@ -8,24 +8,29 @@ void PlaybackView::playAllPlayers() {
   QList<QMediaPlayer *> *player = p->player;
 
   QList<QMediaPlayer *>::iterator i;
-  if (!player->empty()) switch (player->at(0)->state()) {
-      case QMediaPlayer::PlayingState:
-        for (i = player->begin(); i != player->end(); ++i) {
-          (*i)->pause();
-        }
-        // ui->playButton->setText("Play");
-        p->log("Pausiere Wiedergabe der Aufnahme");
-        break;
-      default:
-        for (i = player->begin(); i != player->end(); ++i) {
-          (*i)->play();
-        }
-        if (player->at(0)->state() == QMediaPlayer::PlayingState) {
-          // ui->playButton->setText("Pause");
-          p->log("Starte Wiedergabe der Aufnahme");
-        }
-        break;
+  if (!player->empty()) {
+      for (i = player->begin(); i != player->end(); ++i) {
+        (*i)->play();
+      }
+      if (player->at(0)->state() == QMediaPlayer::PlayingState) {
+        // ui->playButton->setText("Pause");
+        p->log("Starte Wiedergabe der Aufnahme");
+      }
+  }
+}
+
+void PlaybackView::pauseAllPlayers() {
+  MainWindow *p = qobject_cast<MainWindow *>(this->parent());
+  QList<QMediaPlayer *> *player = p->player;
+
+  QList<QMediaPlayer *>::iterator i;
+  if (!player->empty()) {
+    for (i = player->begin(); i != player->end(); ++i) {
+      (*i)->pause();
     }
+    // ui->playButton->setText("Play");
+    p->log("Pausiere Wiedergabe der Aufnahme");
+  }
 }
 
 void PlaybackView::stopAllPlayers() {
@@ -42,8 +47,7 @@ void PlaybackView::stopAllPlayers() {
 void PlaybackView::updateRecordingList(QListWidget *list) {
   list->clear();
   QStringList nameFilter("*.off");
-  QDir dir =
-     QDir::current();
+  QDir dir = QDir::current();
   dir.cd("recordings");
   QStringList offFiles = dir.entryList(nameFilter);
   foreach (QString file, offFiles) { list->addItem(file); }
@@ -135,7 +139,7 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
   dir.cd("recordings");
   // Connect Source
   parent->player->at(playerIndex)
-      ->setMedia(QUrl::fromLocalFile(dir.absoluteFilePath( source.filepath)));
+      ->setMedia(QUrl::fromLocalFile(dir.absoluteFilePath(source.filepath)));
 
   // Connect Signals
   connect(videoPlayer->at(playerIndex), &VideoPlayer::playerOpenOptions, parent,
@@ -150,8 +154,7 @@ void PlaybackView::openRecording(QListWidgetItem *item) {
   parent->recording = new Recording();
   QDir fullDir = QDir::current();
   fullDir.cd("recordings");
-  QString fullPath =
-      fullDir.absolutePath()+ QDir::separator() + item->text();
+  QString fullPath = fullDir.absolutePath() + QDir::separator() + item->text();
 
   qDebug() << "opened Recording: " << fullPath;
   parent->recording->loadRecording(fullPath);
