@@ -30,7 +30,6 @@ void GUIInterface::receiveData() {
     data = socket->readLine();
     json = QJsonDocument::fromJson(data).object();
     readData(json);
-    // qDebug() << data;
   }
 }
 

@@ -1,17 +1,23 @@
 #ifndef PLAYBACKVIEW_H
 #define PLAYBACKVIEW_H
 
-#include <QObject>
-#include <QtGui>
+#include <QTimer>
+#include <QDir>
 #include <QListWidget>
 #include <QMediaPlayer>
 #include <../server/src/recording.h>
-#include <../server/src/grid.h>
-#include <src/videoplayer.h>
+#include "videoplayer.h"
 
 /**
- * @brief The PlaybackView class
- * Class to handle the elements in the playback tab.
+ * @brief The PlaybackView class stores the functionality from MainWindow that
+ * is needed for the whole playback-tab. It was once introduced to make
+ * MainWindow handier and more overseeable. For a detailed description of the
+ * methods go to the MainWindow-class where a method with the same name for each
+ * method of this class exists.
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * Studnitz
+ * @copyright GNU Public Licence
+ * @date 31.03.2016
  */
 class PlaybackView : public QObject {
   Q_OBJECT
@@ -30,9 +36,6 @@ class PlaybackView : public QObject {
   void loadPlayersFromRecording(QList<VideoPlayer *> *videoPlayer,
                                 Recording *recording);
   quint8 getFreePlayerId(const QList<VideoPlayer *> *videoPlayer);
-
- private:
- signals:
 
  public slots:
   void videoPlayerDeleteAlsoInGrid(quint8 index);
