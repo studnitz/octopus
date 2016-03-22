@@ -7,6 +7,7 @@
 
 #include <QSettings>
 #include "settingsdialog.h"
+#include "exportierendialog.h"
 #include "playersettingsdialog.h"
 
 #include <QMediaPlayer>
@@ -228,6 +229,11 @@ class MainWindow : public QMainWindow {
   void settingsDialogButton();
 
   /**
+   * @brief Opens the export-Dialog implemented by ExportierenDialog.
+   */
+  void exportierenDialogButton();
+
+  /**
    * @brief about gives a brief overview about octopus
    */
   void about();
@@ -264,7 +270,7 @@ class MainWindow : public QMainWindow {
 
   void on_pauseButton_clicked();
 
-private:
+ private:
   /**
 X   * @brief getColorFromPercent creates a color ranging from green over yellow
    * to red, depending on percent. 100% is deep red, while 0% is green.
