@@ -50,7 +50,7 @@ class MainWindow : public QMainWindow {
   /**
    * @brief versionOctopus current version# of the octopus-program
    */
-  QString versionOctopus = "0.3141.a-unstable_alpha";  // Versionnumber
+  QString versionOctopus = "0.31415-tested-alpha";  // Versionnumber
 
   /**
    * @brief settings to store settings
