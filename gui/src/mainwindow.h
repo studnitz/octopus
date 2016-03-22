@@ -82,7 +82,7 @@ class MainWindow : public QMainWindow {
    * @brief versionOctopus holds the current version number of the
    * octopus-program
    */
-  QString versionOctopus = "0.3141.a-unstable_alpha";
+  QString versionOctopus = "0.31415-tested-alpha";  // Versionnumber
 
   /**
    * @brief settings stores a pointer to settings. The file itself is stored in
@@ -262,9 +262,11 @@ class MainWindow : public QMainWindow {
    */
   void on_recordStopButton_clicked();
 
- private:
+  void on_pauseButton_clicked();
+
+private:
   /**
-   * @brief getColorFromPercent creates a color ranging from green over yellow
+X   * @brief getColorFromPercent creates a color ranging from green over yellow
    * to red, depending on percent. 100% is deep red, while 0% is green.
    * @param percent percentage
    * @return QColor ranging from green over yellow to red

@@ -37,6 +37,8 @@ class PlaybackView : public QObject {
    */
   void stopAllPlayers();
 
+  void pauseAllPlayers();
+
   /**
    * @brief updateRecordingList updates the list of recordings with .off files.
    * The files are beeing searched in a subfolder to the executable octopus

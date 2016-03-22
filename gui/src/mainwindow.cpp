@@ -304,3 +304,8 @@ void MainWindow::on_recordStopButton_clicked()
     guiInterface->sendData("stopCameras", data);
     log("Aufnahme stoppen");
 }
+
+void MainWindow::on_pauseButton_clicked()
+{
+    playbackView->pauseAllPlayers();
+}
