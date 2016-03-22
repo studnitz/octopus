@@ -107,10 +107,12 @@ class MainWindow : public QMainWindow {
   QList<QMediaPlayer *> *player;
 
   /**
-   * @brief loadPlayersFromRecording reads a Recording and creates VideoPlayers,
-   * QMediaPlayers and connect signals and slots on them for the amount of
-   * players contained in the Recording. The Recording was beforehand read from
-   * an .off file
+   * @brief loadPlayersFromRecording needs a set Recording. It can then execute
+   * connectSourceToNewVideo for every file in the given recording. So to sum it
+   * up this method reads a Recording and creates VideoPlayers, QMediaPlayers
+   * and connects signals and slots on them for the amount of players contained
+   * in the Recording. The Recording was beforehand read from an .off file or
+   * set otherwise.
    */
   void loadPlayersFromRecording();
 
@@ -129,7 +131,8 @@ class MainWindow : public QMainWindow {
 
   /**
    * @brief connectSourceToNewVideo connects source to the player at position
-   * [i, j]
+   * [i, j]. It also creates this QMediaPlayer and VideoPlayer, calculates where
+   * to print the player and does this as well.
    * @param source VideoFile to be connected to player
    * @param i x-coordinate in grid
    * @param j y-coordinate in grid

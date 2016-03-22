@@ -70,17 +70,11 @@ void Client::executeCommand(QJsonObject json) {
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
       recorder.recordLocally();
-      // isRecording = true;
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-      // if (isRecording) {
-      // isRecording = false;
       recorder.stopRecording();
-      //}
     }
   }
 }
-
-std::string Client::isConnected() { return "yes"; }
 
 QTcpSocket::SocketState Client::getState() const { return socket.state(); }
 
