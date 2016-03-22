@@ -59,6 +59,10 @@ void GstRecorder::recordLocally() {
     qDebug() << "Error. One or more elements could not be created.";
     return;
   }
+  if (m_pipeline) {
+    qDebug() << "Another Recording was not started. Already one in progress";
+    return;
+  }
 
   m_pipeline = QGst::Pipeline::create();
   m_pipeline->add(videoSrcBin, videoMuxBin, sink);
@@ -131,6 +135,7 @@ void GstRecorder::stop() {
   m_pipeline->setState(QGst::StateNull);
 
   m_pipeline.clear();
+  qDebug() << "recording stopped (theoretically)";
 }
 
 void GstRecorder::onBusMessage(const QGst::MessagePtr &message) {
