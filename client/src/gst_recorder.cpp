@@ -131,6 +131,7 @@ void GstRecorder::stopRecording() {
 
 void GstRecorder::stop() {
   m_pipeline->setState(QGst::StateNull);
+  qDebug() << "stop() called";
 
   m_pipeline.clear();
 }
