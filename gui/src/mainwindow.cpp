@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
   QMenu *menuFile = ui->menuBar->addMenu(tr("Datei"));
   QAction *speichern = new QAction(tr("Speichern"), this);
   menuFile->addAction(speichern);
+  QAction *exportieren = new QAction(tr("Exportieren"), this);
+  menuFile->addAction(exportieren);
   QMenu *menuEdit = ui->menuBar->addMenu(tr("Bearbeiten"));
   QAction *settings = new QAction(tr("Einstellungen"), this);
   menuEdit->addAction(settings);
@@ -38,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent)
   updateRecordingList();
   connect(speichern, SIGNAL(triggered()), this, SLOT(saveFile()));
   connect(settings, SIGNAL(triggered()), this, SLOT(settingsDialogButton()));
+  connect(exportieren, SIGNAL(triggered()), this,
+          SLOT(exportierenDialogButton()));
   connect(about, SIGNAL(triggered()), this, SLOT(about()));
   connect(close, SIGNAL(triggered()), this, SLOT(close()));
   connect(ui->recordingList, &QListWidget::itemDoubleClicked, this,
@@ -62,11 +66,6 @@ MainWindow::MainWindow(QWidget *parent)
   QString serverIP = this->settings->value("octopus/ServerIP").toString();
   tryConnection(serverIP);
 
-  // --- TESTDATA ---
-  QJsonObject data;
-  data["data"] = "testdata";
-  QString cmd = "cmd";
-  for (int i = 0; i < 2; i++) guiInterface->sendData(cmd, data);
 }
 
 void MainWindow::tryConnection(QString serverIP) {
@@ -106,12 +105,16 @@ void MainWindow::on_recordButton_clicked() {
   recordingView->record_button(ui->recordButton);
 }
 
-// TODO functionality
-void MainWindow::saveFile() { qDebug() << "save"; }
+void MainWindow::saveFile() { saveRecording(); }
 
 void MainWindow::settingsDialogButton() {
   SettingsDialog *sD = new SettingsDialog();
   sD->show();
+}
+
+void MainWindow::exportierenDialogButton() {
+  ExportierenDialog *eD = new ExportierenDialog(this);
+  eD->show();
 }
 
 void MainWindow::about() {
@@ -302,8 +305,12 @@ void MainWindow::on_pushButton_clicked() {
   ui->debugTextEdit->adjustSize();
 }
 
-void MainWindow::on_recordStopButton_clicked()
-{
-    //QString data("");
-    //guiInterface->sendData("stopCameras", data);
+void MainWindow::on_recordStopButton_clicked() {
+  QString data2("");
+  QJsonObject data;
+  data["data"] = data2;
+  guiInterface->sendData("stopCameras", data);
+  log("Aufnahme stoppen");
 }
+
+void MainWindow::on_pauseButton_clicked() { playbackView->pauseAllPlayers(); }

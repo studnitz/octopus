@@ -7,17 +7,8 @@ RecordingView::RecordingView(QObject *parent, QWidget *tab) : QObject(parent) {
 }
 
 void RecordingView::record_button(QPushButton *recordButton) {
-  static bool startStopFlag = false;
-  if (startStopFlag == false) {
-    recordButton->setText("Stop");
-    createRecording();
     recordStart();
-    startStopFlag = true;
-  } else {
-    recordButton->setText("Aufnehmen");
-    recordStop();
-    startStopFlag = false;
-  }
+    createRecording();
 }
 
 void RecordingView::createRecording() {

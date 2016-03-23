@@ -17,9 +17,9 @@
  * client gets one ServerThread exactly. As the name suggests, every
  * ServerThread also gets its own thread. It stores information about the client
  * as well as methods to communicate with it using a TCP-Socket.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
  * Studnitz
- * @copyright GNU Public Licence.
+ * @copyright GNU Public Licence
  * @date 31.03.2016
  */
 class ServerThread : public QThread {

@@ -15,13 +15,15 @@
  * wasn't my idea.) Anyway, in this relationship the Server is the slave as all
  * the requests come from the GUI and the server simply answers them. The
  * ServerInterface has a reference to the Server, but not the other way round.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
  * Studnitz
- * @copyright GNU Public Licence.
+ * @copyright GNU Public Licence
  * @date 31.03.2016
  */
 class ServerInterface : public QTcpServer {
  public:
+   int exportStatus = 0;
+
   /**
    * @brief ServerInterface is the standard constructor. ServerInterface is
    * usually created in the main()-method of the Server-Application.

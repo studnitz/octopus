@@ -12,9 +12,9 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
     if (!encoder) {
       // if we don't have omx (when we're not on a RPI), use x264enc instead
       videoBin = QGst::Bin::fromDescription(
-          "v4l2src device=/dev/video1 ! x264enc tune=zerolatency "
+          "v4l2src device=/dev/video0 ! x264enc tune=zerolatency "
           "byte-stream=true ");
-      qDebug() << "Using x264enc on device /dev/video1";
+      qDebug() << "Using x264enc on device /dev/video0";
     } else {
       videoBin = QGst::Bin::fromDescription("v4l2src ! omxh264enc ");
       qDebug() << "Using omxh264enc";
@@ -57,6 +57,10 @@ QString GstRecorder::recordLocally() {
 
   if (!videoSrcBin || !sink) {
     qDebug() << "Error. One or more elements could not be created.";
+    return "";
+  }
+  if (m_pipeline) {
+    qDebug() << "Another Recording was not started. Already one in progress";
     return "";
   }
 
@@ -126,14 +130,14 @@ void GstRecorder::createRtpSink(quint16 port, QString address) {
 }
 
 void GstRecorder::stopRecording() {
-  m_pipeline->sendEvent(QGst::EosEvent::create());
+  if (m_pipeline) m_pipeline->sendEvent(QGst::EosEvent::create());
 }
 
 void GstRecorder::stop() {
   m_pipeline->setState(QGst::StateNull);
-  qDebug() << "stop() called";
 
   m_pipeline.clear();
+  qDebug() << "recording stopped";
 }
 
 void GstRecorder::onBusMessage(const QGst::MessagePtr &message) {

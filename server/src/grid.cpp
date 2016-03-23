@@ -17,7 +17,13 @@ void Grid::addSource(VideoFile& file, quint8 x, quint8 y) { grid[y][x] = file; }
 
 void Grid::deleteSource(quint8 x, quint8 y) { grid[y][x] = VideoFile(); }
 
-void Grid::read(const QJsonObject& json) {
+void Grid::resizeGrid(quint8 width, quint8 height)
+{
+  this->width = width;
+  this->height = height;
+}
+
+void Grid::read(const QJsonObject &json) {
   grid.clear();
   grid = QList<QList<VideoFile> >();
   QJsonArray gridArray = json["grid"].toArray();
@@ -36,7 +42,7 @@ void Grid::read(const QJsonObject& json) {
   }
 }
 
-void Grid::write(QJsonObject& json) const {
+void Grid::write(QJsonObject &json) const {
   QJsonArray gridArray;
   foreach (const QList<VideoFile> row, grid) {
     QJsonArray rowArray;
@@ -47,7 +53,6 @@ void Grid::write(QJsonObject& json) const {
     }
     gridArray.append(rowArray);
   }
-
   json["grid"] = gridArray;
 }
 

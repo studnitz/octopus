@@ -3,9 +3,10 @@
 #include <QDir>
 #include <QJsonDocument>
 #include <QDebug>
+
 Recording::Recording() : datetime(QDateTime::currentDateTime()), grid(Grid()) {}
 
-Recording::Recording(QDateTime datetime, Grid &grid)
+Recording::Recording(QDateTime datetime, Grid& grid)
     : datetime(datetime), grid(grid) {}
 
 void Recording::read(const QJsonObject &json) {
@@ -26,6 +27,7 @@ bool Recording::saveRecording() const {
   saveDir.mkdir("recordings");
   saveDir.cd("recordings");
   QFile saveFile(saveDir.absoluteFilePath(recordingTime.append(".off")));
+  qDebug() << saveDir.absolutePath();
   if (!saveFile.open(QIODevice::WriteOnly)) {
     qWarning("Couldn't open save file.");
     return false;
@@ -35,7 +37,6 @@ bool Recording::saveRecording() const {
   write(recordingObject);
   QJsonDocument saveDoc(recordingObject);
   saveFile.write(saveDoc.toJson());
-
   return true;
 }
 

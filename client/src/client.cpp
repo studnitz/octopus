@@ -10,7 +10,6 @@ Client::Client(QObject *parent) : QObject(parent) {
     qDebug() << "Client started";
   }
   connect(&socket, SIGNAL(readyRead()), this, SLOT(getCommand()));
-  // hostfound() signal connect?
 }
 
 Client::~Client() {
@@ -93,12 +92,8 @@ void Client::executeCommand(QJsonObject json) {
       QJsonObject data;
       data["Filename"] = filename;
       sendData(json["cmd"].toString(), data);
-      isRecording = true;
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
-      if (isRecording) {
-        isRecording = false;
-        recorder.stopRecording();
-      }
+      recorder.stopRecording();
     }
   }
 }

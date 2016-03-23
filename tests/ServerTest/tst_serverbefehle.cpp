@@ -11,9 +11,9 @@
 /**
  * @brief The ServerBefehle class tests some standalone features of the server.
  * This means features that do not need any clients or UIs to interact with.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
  * Studnitz
- * @copyright GNU Public Licence.
+ * @copyright GNU Public Licence
  * @date 31.03.2016
  */
 class ServerBefehle : public QObject {

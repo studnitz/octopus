@@ -286,17 +286,28 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QPushButton" name="playButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Play</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QPushButton" name="playButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Play</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pauseButton">
+                <property name="text">
+                 <string>Pause</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
              <widget class="QPushButton" name="stopButton">
@@ -326,14 +337,14 @@
               <item>
                <widget class="QPushButton" name="saveRecordingButton">
                 <property name="text">
-                 <string>Speichern</string>
+                 <string>Recording speichern</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QPushButton" name="reloadButton">
                 <property name="text">
-                 <string>Neu laden</string>
+                 <string>Liste neu laden</string>
                 </property>
                </widget>
               </item>

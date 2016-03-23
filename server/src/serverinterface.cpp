@@ -28,7 +28,6 @@ void ServerInterface::sendData(QString cmd, QJsonObject &str) {
     json["cmd"] = cmd;
     json["data"] = str;
     msg = QJsonDocument(json).toJson(QJsonDocument::Compact).append("\n");
-    //qDebug() << "sendData: " << msg;
     socket->write(msg);
   }
 }
@@ -68,6 +67,7 @@ QJsonObject ServerInterface::getJsonInfo() {
 
 void ServerInterface::executeCommand(const QJsonObject &json) {
   if (!json.isEmpty()) {
+    qDebug() << json["cmd"] << json["data"];
     if (json["cmd"].toString().compare("getInfo") == 0) {
       // do getInfo
       QJsonObject data = getJsonInfo();
@@ -84,6 +84,14 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       server->updateRecording();
       server->stopCameras();
       server->downloadFiles();
+    } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
+      exportStatus = (exportStatus + 1) % 100;
+      QJsonObject data = QJsonObject();
+      data["exportStatus"] = exportStatus;
+      sendData(json["cmd"].toString(), data);
+    } else if (json["cmd"].toString().compare("startExport") == 0) {
+      // TODO Start Export
+      exportStatus = 0;
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();
