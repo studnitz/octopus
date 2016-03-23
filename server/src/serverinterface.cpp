@@ -1,5 +1,7 @@
 #include "serverinterface.h"
 
+#include <QThread>
+
 ServerInterface::ServerInterface(QObject *parent) : QTcpServer(parent) {}
 
 void ServerInterface::start(quint16 port) {
@@ -83,6 +85,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
       server->updateRecording();
       server->stopCameras();
+      QThread::msleep(100);
       server->downloadFiles();
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
       exportStatus = (exportStatus + 1) % 100;
