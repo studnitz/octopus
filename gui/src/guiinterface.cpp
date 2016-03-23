@@ -34,23 +34,25 @@ void GUIInterface::receiveData() {
 }
 
 void GUIInterface::readData(QJsonObject json) {
-  if(json["cmd"] != "getInfo")
-      return;
-  if (json["data"].toObject()["clients"].isArray()) {
-    clients->clear();
-    QJsonArray arr = json["data"].toObject()["clients"].toArray();
-    while (!arr.empty()) {
-      QJsonObject o = arr.takeAt(0).toObject();
-      QString IP = o["IP"].toString();
-      if (IP.compare("")) {
-        float cpu = o["CPU"].toDouble();
-        float mem = o["Memory"].toDouble();
-        float disk = o["Disk"].toDouble();
-        QString name = o["Name"].toString();
-        ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk);
-        clients->append(Client);
+  if (json["cmd"] == "getInfo") {
+    if (json["data"].toObject()["clients"].isArray()) {
+      clients->clear();
+      QJsonArray arr = json["data"].toObject()["clients"].toArray();
+      while (!arr.empty()) {
+        QJsonObject o = arr.takeAt(0).toObject();
+        QString IP = o["IP"].toString();
+        if (IP.compare("")) {
+          float cpu = o["CPU"].toDouble();
+          float mem = o["Memory"].toDouble();
+          float disk = o["Disk"].toDouble();
+          QString name = o["Name"].toString();
+          ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk);
+          clients->append(Client);
+        }
       }
     }
+  } else if (json["cmd"] == "getExportStatus") {
+    exportStatus = json["data"].toObject()["exportStatus"].toInt();
   }
 }
 
@@ -59,4 +61,20 @@ QJsonDocument GUIInterface::newCommand(QString &cmd, QString &data) {
   json["cmd"] = cmd;
   json["data"] = data;
   return QJsonDocument(json);
+}
+
+void GUIInterface::getExportStatus() {
+  QString cmd = QString("getExportStatus");
+  QString data = QString("");
+  sendData(cmd, data);
+}
+
+void GUIInterface::startExport(QString quality, QString codec) {
+  QString cmd = "startExport";
+  QJsonObject o = QJsonObject();
+  o["codec"] = codec;
+  o["quality"] = quality;
+  QString data = QJsonDocument(o).toJson(QJsonDocument::Compact);
+  qDebug() << data;
+  sendData(cmd, data);
 }

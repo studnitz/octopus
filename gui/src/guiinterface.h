@@ -19,6 +19,8 @@
 class GUIInterface : public QObject {
   Q_OBJECT
  public:
+  int exportStatus = 0;
+
   /**
    * @brief Constructor for a GUIInterface
    * @param destAddr The IP-Address to communicate with
@@ -74,6 +76,18 @@ class GUIInterface : public QObject {
    * and executes readData for each sent [command, data]-pair.
    */
   void receiveData();
+
+  /**
+   * @brief startExport
+   * starts export on the server
+   */
+  void startExport(QString quality, QString codec);
+
+  /**
+   * @brief getExportStatus
+   * gets the status of the export from the server.
+   */
+  void getExportStatus();
 
  private:
   /**

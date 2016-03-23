@@ -22,6 +22,8 @@
  */
 class ServerInterface : public QTcpServer {
  public:
+   int exportStatus = 0;
+
   /**
    * @brief ServerInterface is the standard constructor. ServerInterface is
    * usually created in the main()-method of the Server-Application.

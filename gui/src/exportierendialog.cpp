@@ -11,7 +11,6 @@ ExportierenDialog::ExportierenDialog(QWidget *parent)
   ui->progressBar->setValue(0);
   timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &ExportierenDialog::new_progress);
-
 }
 
 ExportierenDialog::~ExportierenDialog() { delete ui; }
@@ -20,12 +19,13 @@ void ExportierenDialog::on_startButton_clicked() {
   QString quality = ui->qualityComboBox->currentText();
   QString codec = ui->codecComboBox->currentText();
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
-  p->guiInterface;
+  p->guiInterface->startExport(quality, codec);
   timer->start(500);
-
+  p->guiInterface->exportStatus = 0;
 }
 
-void ExportierenDialog::new_progress(){
-    ui->progressBar
-            ->setValue((ui->progressBar->value()+1)%100);
+void ExportierenDialog::new_progress() {
+  MainWindow *p = qobject_cast<MainWindow *>(this->parent());
+  ui->progressBar->setValue(p->guiInterface->exportStatus);
+  p->guiInterface->getExportStatus();
 }

@@ -75,6 +75,14 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       server->recordLocally();
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
       server->stopCameras();
+    } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
+      exportStatus = (exportStatus + 1) % 100;
+      QJsonObject data = QJsonObject();
+      data["exportStatus"] = exportStatus;
+      sendData(json["cmd"].toString(), data);
+    } else if (json["cmd"].toString().compare("startExport") == 0) {
+      // TODO Start Export
+      exportStatus = 0;
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();
