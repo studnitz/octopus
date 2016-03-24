@@ -40,7 +40,7 @@ void Client::start(QString ip, quint16 port) {
   if (socket.waitForConnected()) {  // Timeout included in waitfor
     qDebug() << "Client connected";
   } else {
-    qDebug() << "Client not connected";
+    //qDebug() << "Client not connected";
   }
 }
 
@@ -70,7 +70,7 @@ void Client::sendData(QString cmd, QJsonObject &str) {
 
 QJsonObject Client::getJsonInfo() {
   QJsonObject json;
-  json["IP"] = socket.peerAddress().toString();
+  json["IP"] = socket.localAddress().toString();
   json["Name"] = getHostname();
   json["CPU"] = getCpuUsage();
   json["Memory"] = getMemoryUsage();

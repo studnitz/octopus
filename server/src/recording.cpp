@@ -26,6 +26,7 @@ bool Recording::saveRecording() const {
   QDir saveDir = QDir::current();
   saveDir.mkdir("recordings");
   saveDir.cd("recordings");
+  saveDir.mkdir(recordingTime);
   QFile saveFile(saveDir.absoluteFilePath(recordingTime.append(".off")));
   qDebug() << saveDir.absolutePath();
   if (!saveFile.open(QIODevice::WriteOnly)) {

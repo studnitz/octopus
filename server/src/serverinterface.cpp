@@ -69,7 +69,6 @@ QJsonObject ServerInterface::getJsonInfo() {
 
 void ServerInterface::executeCommand(const QJsonObject &json) {
   if (!json.isEmpty()) {
-    qDebug() << json["cmd"] << json["data"];
     if (json["cmd"].toString().compare("getInfo") == 0) {
       // do getInfo
       QJsonObject data = getJsonInfo();

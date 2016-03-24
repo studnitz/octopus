@@ -1,5 +1,6 @@
 #include "server.h"
 #include "ftpdownloader.h"
+#include <QDir>
 
 Server::Server(QObject* parent) : QTcpServer(parent) {
   qDebug() << "Server created";
@@ -49,9 +50,18 @@ void Server::downloadFiles() {
       if (currentVid->id != 0) {
         QString ip = getClientByHostname(currentVid->hostname)->ClientIP;
         QString ftpurl = "ftp://" + ip + currentVid->filepath;
-        FtpDownloader download(0, QUrl(ftpurl),
-                               currentVid->hostname + "-" + currentVid->filepath);
-        download.startDownload();
+        QString filename = currentVid->filepath;
+        filename.replace("/", "");
+        filename = currentVid->hostname + "-" + filename;
+
+        QDir savedir = QDir::currentPath();
+        QString recordingTime = rec->datetime.toString("yyyy_MM_dd_hh_mm_ss");
+        savedir.cd("recordings");
+        savedir.cd(recordingTime);
+        QString finalPath = savedir.absoluteFilePath(filename);
+        qDebug() << ip << "    " << currentVid->filepath;
+        FtpDownloader *download =  new FtpDownloader(0, QUrl(ftpurl), finalPath);
+        download->startDownload();
       }
     }
   }

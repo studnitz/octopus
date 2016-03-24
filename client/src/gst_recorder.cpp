@@ -51,7 +51,7 @@ QString GstRecorder::recordLocally() {
       QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm_ss");
 
   QString filename =
-      QDir::currentPath() + QDir::separator() + currentTime + ".mp4";
+      QDir::current().absoluteFilePath(currentTime + ".mp4");
   qDebug() << "writing to:" << filename;
   sink->setProperty("location", filename);
 
