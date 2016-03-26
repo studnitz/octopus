@@ -69,6 +69,8 @@ class GUIInterface : public QObject {
    */
   QJsonDocument newCommand(QString &cmd, QJsonObject &data);
 
+  QStringList deviceList() const { return *deviceList_; }
+
  public slots:
 
   /**
@@ -89,6 +91,10 @@ class GUIInterface : public QObject {
    */
   void getExportStatus();
 
+ signals:
+
+  void deviceListUpdated(QStringList list);
+
  private:
   /**
    * @brief readData decides on what to do and which action to take, depending
@@ -97,6 +103,8 @@ class GUIInterface : public QObject {
    * evaluated
    */
   void readData(QJsonObject json);
+
+  QStringList *deviceList_;
 };
 
 #endif  // GUIINTERFACE_H

@@ -1,15 +1,21 @@
 #ifndef RECORDINGVIEW_H
 #define RECORDINGVIEW_H
 
+#include "../server/src/recording.h"
+#include "recordinggrid.h"
+
 #include <QPushButton>
 #include <QListWidget>
+#include <QStringListModel>
+#include <QListView>
 #include <QGridLayout>
-#include "../server/src/recording.h"
+#include <QLabel>
 
 /**
  * @brief The RecordingView class stores the functionality from MainWindow that
  * is needed for the whole recording-tab. It was once introduced to make
- * MainWindow handier and more overseeable. For a more detailed description of the
+ * MainWindow handier and more overseeable. For a more detailed description of
+ * the
  * methods go to the MainWindow-class where a method with the same name for each
  * method of this class exists.
  * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
@@ -49,10 +55,6 @@ class RecordingView : public QObject {
    * This method should be called whenever the device video list is updated
    */
   void updateGrid();
-  /**
-   * @brief updateVideoDevices updates the list of available video devices
-   */
-  void updateVideoDevices();
 
   /**
    * @brief recordStop stops to record. More precisely it sends data via
@@ -61,7 +63,12 @@ class RecordingView : public QObject {
   void recordStop();
 
   void createRecording();
-public slots:
+ public slots:
+
+  void updateVideoDeviceList(QStringList list);
+  void updateGrid2();
+  QLabel* createEmptyEntry() const;
+  QLabel* createEntry(RecordingGrid::GridElement* entry) const;
 
  private:
   /**
@@ -76,10 +83,12 @@ public slots:
    * @brief gridLayout the grid used for rendering the recording view grid
    */
   QGridLayout* gridLayout;
-  /**
-   * @brief videoDeviceList is the list of currently available video devices
-   */
-  QListWidget* videoDeviceList;
+
+  QListView* videoDeviceListView;
+
+  QStringListModel* videoDeviceListModel;
+
+  RecordingGrid* recGrid;
 };
 
 #endif  // RECORDINGVIEW_H

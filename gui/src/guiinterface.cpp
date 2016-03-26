@@ -5,6 +5,7 @@ GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
     : QObject(parent) {
   clients = new QList<ClientGui *>();
   socket = new QTcpSocket(this);
+  deviceList_ = new QStringList();
 
   tryConnect(destAddr, port);
 }
@@ -48,8 +49,19 @@ void GUIInterface::readData(QJsonObject json) {
           QString name = o["Name"].toString();
           QJsonArray deviceArray = o["Devices"].toArray();
           QStringList devices = QStringList();
+          bool changed = false;
           for (int i = 0; i < deviceArray.size(); ++i) {
-            devices.append(deviceArray[i].toString());
+            QString device = deviceArray[i].toString();
+            devices.append(device);
+            QString clientDevicename = name + ": " + device;
+            if (!deviceList_->contains(clientDevicename)) {
+              qDebug() << clientDevicename;
+              deviceList_->append(clientDevicename);
+              changed = true;
+            }
+          }
+          if (changed) {
+            emit deviceListUpdated(*deviceList_);
           }
           ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk, devices);
           clients->append(Client);

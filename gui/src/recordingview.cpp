@@ -1,14 +1,20 @@
 #include "recordingview.h"
+
 #include "mainwindow.h"
+
 #include <QLabel>
 
 RecordingView::RecordingView(QObject *parent, QWidget *tab) : QObject(parent) {
   this->tab = tab;
+  recGrid = new RecordingGrid();
+  videoDeviceListModel = new QStringListModel();
+  videoDeviceListView = tab->findChild<QListView *>("videoDeviceListView");
+  videoDeviceListView->setModel(videoDeviceListModel);
 }
 
 void RecordingView::record_button(QPushButton *recordButton) {
-    recordStart();
-    createRecording();
+  recordStart();
+  createRecording();
 }
 
 void RecordingView::createRecording() {
@@ -42,14 +48,19 @@ void RecordingView::createRecording() {
   p->guiInterface->sendData("recordLocally", data);
 }
 
+void RecordingView::updateVideoDeviceList(QStringList list) {
+  qDebug() << list;
+  videoDeviceListModel->setStringList(list);
+}
+
 void RecordingView::updateGrid() {
   gridLayout = tab->findChild<QGridLayout *>("recordingGrid");
-  dimension = (quint16)ceil(sqrt(videoDeviceList->count()));
+  dimension = (quint16)ceil(sqrt(videoDeviceListModel->rowCount()));
   quint16 count = 0;
   for (int j = 0; j < dimension; ++j) {
     for (int k = 0; k < dimension; ++k) {
       // Out-of-Bounds checking
-      if (count >= videoDeviceList->count()) {
+      if (count >= videoDeviceListModel->rowCount()) {
         QLabel *emptyLabel = new QLabel("empty");
         emptyLabel->setFrameStyle(QFrame::Panel);
         emptyLabel->setAlignment(Qt::AlignCenter);
@@ -59,7 +70,7 @@ void RecordingView::updateGrid() {
         emptyLabel->setFont(currentFont);
         gridLayout->addWidget(emptyLabel, j, k);
       } else {
-        QLabel *frameLabel = new QLabel(videoDeviceList->item(count)->text());
+        QLabel *frameLabel = new QLabel(videoDeviceListModel->stringList().at(count));
         frameLabel->setFrameStyle(QFrame::Panel);
         frameLabel->setAlignment(Qt::AlignCenter);
         QFont currentFont = frameLabel->font();
@@ -72,18 +83,39 @@ void RecordingView::updateGrid() {
   }
 }
 
-void RecordingView::updateVideoDevices() {
-  MainWindow *p = qobject_cast<MainWindow *>(this->parent());
-  videoDeviceList = tab->findChild<QListWidget *>("deviceListWidget");
-  videoDeviceList->clear();
-  QList<ClientGui *> *clientList = p->guiInterface->clients;
-  for (int i = 0; i < clientList->length(); ++i) {
-    ClientGui *client = clientList->at(i);
-    foreach (const QString &deviceName, client->devices) {
-      videoDeviceList->addItem(client->name + ": " + deviceName);
+void RecordingView::updateGrid2() {
+
+  gridLayout = tab->findChild<QGridLayout *>("recordingGrid");
+  for (int i = 0; i < recGrid->height(); ++i) {
+    for (int j = 0; j < recGrid->width(); ++j) {
     }
   }
 }
+
+QLabel *RecordingView::createEmptyEntry() const {
+  QLabel *result = new QLabel("empty");
+  result->setFrameStyle(QFrame::Panel);
+  result->setAlignment(Qt::AlignCenter);
+  QFont currentFont = result->font();
+  currentFont.setPointSize(24);
+  currentFont.setItalic(true);
+  result->setFont(currentFont);
+
+  return result;
+}
+
+QLabel *RecordingView::createEntry(RecordingGrid::GridElement *entry) const {
+  QString labeltext = entry->hostname + ": " + entry->device;
+  QLabel *result = new QLabel(labeltext);
+  result->setFrameStyle(QFrame::Panel);
+  result->setAlignment(Qt::AlignCenter);
+  QFont currentFont = result->font();
+  currentFont.setPointSize(24);
+  result->setFont(currentFont);
+
+  return result;
+}
+
 
 void RecordingView::recordStart() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());

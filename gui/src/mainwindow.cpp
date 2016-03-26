@@ -60,12 +60,9 @@ MainWindow::MainWindow(QWidget *parent)
 
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
-  connect(timer, &QTimer::timeout, recordingView,
-          &RecordingView::updateVideoDevices);
   connect(timer, &QTimer::timeout, recordingView, &RecordingView::updateGrid);
   QString serverIP = this->settings->value("octopus/ServerIP").toString();
   tryConnection(serverIP);
-
 }
 
 void MainWindow::tryConnection(QString serverIP) {
@@ -78,13 +75,15 @@ void MainWindow::tryConnection(QString serverIP) {
     qDebug() << "GUI Interface connected";
     connect(guiInterface->socket, &QTcpSocket::readyRead, guiInterface,
             &GUIInterface::receiveData);
+    connect(guiInterface, &GUIInterface::deviceListUpdated, recordingView,
+            &RecordingView::updateVideoDeviceList);
   } else {
     qDebug() << "GUI Interface could not connect to Server Interface";
 
     bool ok;
-    QString text = QInputDialog::getText(this, tr("Connection Error, server adress not found"),
-                                         tr("IP des Servers:"),
-                                         QLineEdit::Normal, "127.0.0.1", &ok);
+    QString text = QInputDialog::getText(
+        this, tr("Connection Error, server adress not found"),
+        tr("IP des Servers:"), QLineEdit::Normal, "127.0.0.1", &ok);
     if (ok && !text.isEmpty()) {
       tryConnection(text);
       this->settings->setValue("octopus/ServerIP", text);
