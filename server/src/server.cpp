@@ -62,9 +62,28 @@ void Server::downloadFiles() {
         qDebug() << ip << "    " << currentVid->filepath;
         FtpDownloader *download =  new FtpDownloader(0, QUrl(ftpurl), finalPath);
         download->startDownload();
+
+        //Update recording-data
+        //.off-file now points to the videofiles on the server instead of the remote-files on the clients.
+        currentVid->filepath = recordingTime + "/" + filename;
+        currentVid->hostname = getHostname();
+        currentVid->isRemote = false;
+        qDebug() << "filepath:" << currentVid->filepath << "   hostname:" << currentVid->hostname;
+        rec->grid.grid[i][j] = *currentVid;
       }
     }
   }
+}
+
+QString Server::getHostname() {
+  QFile file("/etc/hostname");
+  if (!file.open(QIODevice::ReadOnly)) {
+    qDebug() << file.errorString();
+  }
+  QTextStream in(&file);
+  QString line = in.readLine();
+  file.close();
+  return line;
 }
 
 QList<ServerThread*> Server::getClients() {

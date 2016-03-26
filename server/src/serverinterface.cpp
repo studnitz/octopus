@@ -86,6 +86,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       server->stopCameras();
       QThread::msleep(100);
       server->downloadFiles();
+      server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
       exportStatus = (exportStatus + 1) % 100;
       QJsonObject data = QJsonObject();

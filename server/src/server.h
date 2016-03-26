@@ -37,6 +37,13 @@ class Server : public QTcpServer {
   int getNumClients();
 
   /**
+   * @brief getHostname
+   * Retrieves the local hostname. Is probably "server", but for stability reasons it is read dynamically.
+   * @return hostname
+   */
+  QString getHostname();
+
+  /**
    * @brief startServer starts the server. From then on the server is listening
    * for incoming connections. By default on port 1234.
    * @param port The default port to be listened to (default=1234)
