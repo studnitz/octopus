@@ -6,7 +6,8 @@
 /**
  * @brief The RecordingView class stores the functionality from MainWindow that
  * is needed for the whole recording-tab. It was once introduced to make
- * MainWindow handier and more overseeable. For a more detailed description of the
+ * MainWindow handier and more overseeable. For a more detailed description of
+ * the
  * methods go to the MainWindow-class where a method with the same name for each
  * method of this class exists.
  * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
