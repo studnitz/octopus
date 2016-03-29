@@ -154,7 +154,7 @@ void PlaybackView::openRecording(QListWidgetItem *item) {
   parent->recording = new Recording();
   QDir fullDir = QDir::current();
   fullDir.cd("recordings");
-  QString fullPath = fullDir.absolutePath() + QDir::separator() + item->text();
+  QString fullPath = fullDir.absoluteFilePath(item->text());
 
   qDebug() << "opened Recording: " << fullPath;
   parent->recording->loadRecording(fullPath);

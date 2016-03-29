@@ -4,6 +4,7 @@
 #include <QTcpServer>
 #include <QJsonObject>
 #include "serverthread.h"
+#include "recording.h"
 
 /**
  * @brief The Server class inherits from QTcpServer. It is the core of the
@@ -28,13 +29,19 @@ class Server : public QTcpServer {
    * @param parent obvious, isn't it?
    */
   Server(QObject *parent = 0);
-
   /**
    * @brief getNumClients counts the amount of Clients currently connected to
    * the server by counting the Number of existing ServerThreads.
    * @return Number of clients connected to the server
    */
   int getNumClients();
+
+  /**
+   * @brief getHostname
+   * Retrieves the local hostname. Is probably "server", but for stability reasons it is read dynamically.
+   * @return hostname
+   */
+  QString getHostname();
 
   /**
    * @brief startServer starts the server. From then on the server is listening
@@ -49,6 +56,12 @@ class Server : public QTcpServer {
    * @return list of ServerThreads containing the connected clients
    */
   QList<ServerThread *> getClients();
+
+  Recording *rec;
+
+  ServerThread *getClientByHostname(QString hostname);
+  void updateRecording();
+  void downloadFiles();
 
   /**
    * @brief stopCameras broadcasts the String "stopCameras" via broadcastCommand
@@ -74,7 +87,6 @@ class Server : public QTcpServer {
   void broadcastCommand(QJsonObject json);
 
  public slots:
-
   /**
    * @brief getInfo broadcasts the String "getInfo" via broadcastCommand to the
    * clients, making a request to send their current status-information to the

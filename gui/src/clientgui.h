@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVector>
+#include <QStringList>
 /**
  * @brief Class for representation and storage of clientinfo for the GUI.
  * HAS NO TCP-COMMUNICATION-FUNCTIONALITY
@@ -18,7 +19,7 @@ class ClientGui {
    * @param mem
    * @param disk
    */
-  ClientGui(QString ip, QString name, float cpu, float mem, float disk);
+  ClientGui(QString ip, QString name, float cpu, float mem, float disk, QStringList devices);
   /**
    * @brief ip
    * Stores the IP-Address of a client
@@ -44,6 +45,7 @@ class ClientGui {
    * Stores the disk-usage of a client
    */
   float disk;
+  QStringList devices;
 };
 
 #endif  // CLIENTGUI_H

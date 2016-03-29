@@ -41,8 +41,9 @@ class VideoFile {
    * layout
    * @param deltaMs offset in playback to the base Recording.
    */
-  VideoFile(quint32 id, bool isRemote, QString& filepath, QString& hostname,
-            VideoFile::Orientation orientation = Up, qint64 deltaMs = 0);
+  VideoFile(quint32 id, bool isRemote, QString filepath, QString hostname,
+            QString devicepath, VideoFile::Orientation orientation = Up,
+            qint64 deltaMs = 0);
 
   /**
    * @brief read Serialization helper class, reads from a JSON object and
@@ -71,9 +72,7 @@ class VideoFile {
   bool isRemote;
 
   /**
-   * @brief filepath stores the location of the video. Can also be a live source
-   * like
-   * /dev/video0/.
+   * @brief filepath stores the location of the video
    */
   QString filepath;
 
@@ -81,6 +80,11 @@ class VideoFile {
    * @brief hostname is the name of the host that stores the video file.
    */
   QString hostname;
+
+  /**
+   * @brief devicepath is the path to the videodevice used as source
+   */
+  QString devicepath;
 
   /**
    * @brief orientation can be used to save an eventual rotation of the videos

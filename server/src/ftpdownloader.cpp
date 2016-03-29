@@ -9,11 +9,14 @@ void FtpDownloader::startDownload() {
   connect(reply, &QNetworkReply::readyRead, this, &FtpDownloader::readyRead);
   connect(reply, &QNetworkReply::downloadProgress, this,
           &FtpDownloader::updateDownloadProgress);
-  connect(reply, &QNetworkReply::finished, this,
-          &FtpDownloader::finished);
+  connect(reply, &QNetworkReply::finished, this, &FtpDownloader::finished);
 
   file = new QFile(path);
-  file->open(QIODevice::WriteOnly);
+  qDebug() << "FtpDownload:  from: " + ftpUrl.toString() +  " Writing to: " + path;
+  if (!file->open(QIODevice::WriteOnly)) {
+    qWarning() << "Couldn't open file to download to";
+  }
+
 }
 
 void FtpDownloader::readyRead() {
@@ -34,6 +37,7 @@ double FtpDownloader::progress() const {
 }
 
 void FtpDownloader::finished() {
+  qDebug() << "FtpDownloader: finished";
   file->flush();
   file->close();
   reply->deleteLater();

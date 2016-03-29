@@ -1,5 +1,7 @@
 #include "serverinterface.h"
 
+#include <QThread>
+
 ServerInterface::ServerInterface(QObject *parent) : QTcpServer(parent) {}
 
 void ServerInterface::start(quint16 port) {
@@ -56,6 +58,8 @@ QJsonObject ServerInterface::getJsonInfo() {
     jO["CPU"] = serverThread->clientCpuUsage;
     jO["Memory"] = serverThread->clientMemUsage;
     jO["Disk"] = serverThread->clientDiskUsage;
+    jO["Filename"] = serverThread->clientFilePath;
+    jO["Devices"] = QJsonArray::fromStringList(serverThread->clientDevices);
     clientArray.append(jO);
   }
   QJsonObject json;
@@ -72,9 +76,17 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       sendData(json["cmd"].toString(), data);
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
+      QJsonObject obj = json["data"].toObject();
+      server->rec = new Recording();
+      server->rec->read(obj);
       server->recordLocally();
+      server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
+      server->updateRecording();
       server->stopCameras();
+      QThread::msleep(100);
+      server->downloadFiles();
+      server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
       exportStatus = (exportStatus + 1) % 100;
       QJsonObject data = QJsonObject();

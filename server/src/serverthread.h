@@ -64,7 +64,8 @@ class ServerThread : public QThread {
    * @brief clientDiskUsage stores the client's current disk usage.
    */
   float clientDiskUsage;
-
+  QString clientFilePath;
+  QStringList clientDevices;
   /**
    * @brief socket stores a pointer, that points to the QTcpSocket that is used
    * for communication with the client.

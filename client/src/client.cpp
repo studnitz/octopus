@@ -1,5 +1,7 @@
 #include "client.h"
 #include <QStorageInfo>
+#include <QProcess>
+#include <QStringList>
 
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
@@ -14,6 +16,21 @@ Client::~Client() {
   qDebug() << "Destroy Client";
   socket.close();
 }
+QStringList Client::listAllDevices() {
+  QProcess *v4l2 = new QProcess();
+  QStringList args;
+  args << "--list-devices";
+  v4l2->start("v4l2-ctl", args);
+
+  if (!v4l2->waitForFinished()) return QStringList();
+
+  QString output(v4l2->readAllStandardOutput());
+  QStringList outputList = output.split("\n");
+  outputList = outputList.filter("dev");
+  outputList.replaceInStrings("\t", "");
+
+  return outputList;
+}
 
 void Client::start(QString ip, quint16 port) {
   QHostAddress serverIp = QHostAddress(ip);
@@ -23,7 +40,7 @@ void Client::start(QString ip, quint16 port) {
   if (socket.waitForConnected()) {  // Timeout included in waitfor
     qDebug() << "Client connected";
   } else {
-    qDebug() << "Client not connected";
+    //qDebug() << "Client not connected";
   }
 }
 
@@ -53,11 +70,13 @@ void Client::sendData(QString cmd, QJsonObject &str) {
 
 QJsonObject Client::getJsonInfo() {
   QJsonObject json;
-  json["IP"] = socket.peerAddress().toString();
+  json["IP"] = socket.localAddress().toString();
   json["Name"] = getHostname();
   json["CPU"] = getCpuUsage();
   json["Memory"] = getMemoryUsage();
   json["Disk"] = getDiskUsage();
+  QJsonArray devices = QJsonArray::fromStringList(listAllDevices());
+  json["Devices"] = devices;
   return json;
 }
 
@@ -69,7 +88,10 @@ void Client::executeCommand(QJsonObject json) {
       sendData(json["cmd"].toString(), data);
       return;
     } else if (json["cmd"].toString().compare("recordLocally") == 0) {
-      recorder.recordLocally();
+      QString filename = recorder.recordLocally();
+      QJsonObject data;
+      data["Filename"] = filename;
+      sendData(json["cmd"].toString(), data);
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
       recorder.stopRecording();
     }

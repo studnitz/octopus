@@ -8,7 +8,9 @@ SOURCES += $$PWD/src/mainwindow.cpp         \
         $$PWD/src/recordingview.cpp \
     $$PWD/src/guiinterface.cpp \
     $$PWD/src/exportierendialog.cpp \
-    $$PWD/src/clientgui.cpp
+    $$PWD/src/clientgui.cpp \
+    $$PWD/src/recordinggrid.cpp \
+    $$PWD/src/recordinggridelement.cpp
 
 HEADERS  += $$PWD/src/mainwindow.h          \
         $$PWD/src/videoplayer.h             \
@@ -18,7 +20,9 @@ HEADERS  += $$PWD/src/mainwindow.h          \
         $$PWD/src/recordingview.h \
     $$PWD/src/guiinterface.h \
     $$PWD/src/exportierendialog.h \
-    $$PWD/src/clientgui.h
+    $$PWD/src/clientgui.h \
+    $$PWD/src/recordinggrid.h \
+    $$PWD/src/recordinggridelement.h
 
 FORMS    += $$PWD/forms/mainwindow.ui \
     $$PWD/forms/settingsdialog.ui 	\

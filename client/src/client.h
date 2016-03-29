@@ -118,6 +118,8 @@ class Client : public QObject {
    * @param str The data
    */
   void sendData(QString cmd, QJsonObject &str);
+  QStringList listAllDevices();
+ signals:
 
  public slots:
 

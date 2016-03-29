@@ -1,4 +1,5 @@
 #include "serverthread.h"
+#include <QJsonArray>
 
 ServerThread::ServerThread(qintptr ID, QObject *parent) : QThread(parent) {
   this->socketDescriptor = ID;
@@ -39,11 +40,20 @@ void ServerThread::getData() {
 
 void ServerThread::readData(QJsonObject json) {
   QJsonObject o = json["data"].toObject();
-  ClientIP = o["IP"].toString();
-  clientName = o["Name"].toString();
-  clientCpuUsage = o["CPU"].toDouble();
-  clientMemUsage = o["Memory"].toDouble();
-  clientDiskUsage = o["Disk"].toDouble();
+  if (json["cmd"] == "recordLocally") {
+    clientFilePath = o["Filename"].toString();
+  } else {
+    ClientIP = o["IP"].toString();
+    clientName = o["Name"].toString();
+    clientCpuUsage = o["CPU"].toDouble();
+    clientMemUsage = o["Memory"].toDouble();
+    clientDiskUsage = o["Disk"].toDouble();
+    QJsonArray clientDevicesArray = o["Devices"].toArray();
+    clientDevices = QStringList();
+    foreach (const QJsonValue &value, clientDevicesArray) {
+      clientDevices.push_back(value.toString());
+    }
+  }
 }
 
 void ServerThread::sendCommand(QJsonObject json) {

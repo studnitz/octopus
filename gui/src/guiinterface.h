@@ -46,7 +46,7 @@ class GUIInterface : public QObject {
    * @param str name of the command
    * @param data content of the data for the given command
    */
-  void sendData(QString str, QString &data);
+  void sendData(QString str, QJsonObject &data);
 
   /**
    * @brief clients points to a list of ClientGUi-pointers. It stores all the
@@ -67,7 +67,9 @@ class GUIInterface : public QObject {
    * @param data the data to be converted
    * @return the QJsonDocument containing all the data and cmd
    */
-  QJsonDocument newCommand(QString &cmd, QString &data);
+  QJsonDocument newCommand(QString &cmd, QJsonObject &data);
+
+  QStringList deviceList() const { return *deviceList_; }
 
  public slots:
 
@@ -89,6 +91,10 @@ class GUIInterface : public QObject {
    */
   void getExportStatus();
 
+ signals:
+
+  void deviceListUpdated(QStringList list);
+
  private:
   /**
    * @brief readData decides on what to do and which action to take, depending
@@ -97,6 +103,8 @@ class GUIInterface : public QObject {
    * evaluated
    */
   void readData(QJsonObject json);
+
+  QStringList *deviceList_;
 };
 
 #endif  // GUIINTERFACE_H

@@ -79,10 +79,12 @@ void ServerBefehle::testCase1() {
   QString name1("CLIENT1");
   QString path2("\asdf.mov");
   QString name2("OFFCLIENT");
+  QString devicepath1("/dev/video0");
+  QString devicepath2("/dev/video1");
 
   VideoFile *vid1 = new VideoFile(0);
-  VideoFile *vid2 = new VideoFile(1337, false, path1, name1);
-  VideoFile *vid3 = new VideoFile(1338, true, path2, name2);
+  VideoFile *vid2 = new VideoFile(1337, false, path1, name1, devicepath1);
+  VideoFile *vid3 = new VideoFile(1338, true, path2, name2, devicepath2);
   VideoFile *vid4 = new VideoFile(0);
 
   rec->grid.addSource(*vid1, 0, 0);
@@ -90,8 +92,8 @@ void ServerBefehle::testCase1() {
   rec->grid.addSource(*vid3, 1, 0);
   rec->grid.addSource(*vid4, 1, 1);
 
-  QVERIFY(&rec->grid.grid.at(0).at(1) == &rec->grid.getVideoFileById(1337));
-  QVERIFY(&rec->grid.grid[1][0] == &rec->grid.getVideoFileById(1338));
+  QVERIFY(&rec->grid.grid.at(1).at(0) == &rec->grid.getVideoFileById(1337));
+  QVERIFY(&rec->grid.grid[0][1] == &rec->grid.getVideoFileById(1338));
 
   QJsonObject json = QJsonObject();
 

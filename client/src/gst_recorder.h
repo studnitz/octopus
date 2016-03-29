@@ -15,14 +15,6 @@
 #include <QHostAddress>
 #include <QDir>
 
-/**
- * @brief The GstRecorder class represents our backend. It communicates with
- * gstreamer and does low-level evaluation of the returned output.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
- * Studnitz
- * @copyright GNU Public Licence
- * @date 31.03.2016
- */
 class GstRecorder : public QObject {
   Q_OBJECT
  public:
@@ -51,7 +43,7 @@ class GstRecorder : public QObject {
    * lot. Between 2 and 30 recordings were needed. No clear pattern recognizable
    * to me. Waiting for a gstreamer update seems best to me.
    */
-  void recordLocally();
+  QString recordLocally();
   /**
    * @brief stopRecording
    */

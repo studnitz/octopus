@@ -5,6 +5,7 @@ GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
     : QObject(parent) {
   clients = new QList<ClientGui *>();
   socket = new QTcpSocket(this);
+  deviceList_ = new QStringList();
 
   tryConnect(destAddr, port);
 }
@@ -15,7 +16,7 @@ void GUIInterface::tryConnect(QHostAddress destAddr, quint16 port) {
   }
 }
 
-void GUIInterface::sendData(QString str, QString &data) {
+void GUIInterface::sendData(QString str, QJsonObject &data) {
   if (socket->state() == QTcpSocket::ConnectedState) {
     QByteArray msg;
     msg = newCommand(str, data).toJson(QJsonDocument::Compact).append("\n");
@@ -46,7 +47,23 @@ void GUIInterface::readData(QJsonObject json) {
           float mem = o["Memory"].toDouble();
           float disk = o["Disk"].toDouble();
           QString name = o["Name"].toString();
-          ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk);
+          QJsonArray deviceArray = o["Devices"].toArray();
+          QStringList devices = QStringList();
+          bool changed = false;
+          for (int i = 0; i < deviceArray.size(); ++i) {
+            QString device = deviceArray[i].toString();
+            devices.append(device);
+            QString clientDevicename = name + ": " + device;
+            if (!deviceList_->contains(clientDevicename)) {
+              qDebug() << clientDevicename;
+              deviceList_->append(clientDevicename);
+              changed = true;
+            }
+          }
+          if (changed) {
+            emit deviceListUpdated(*deviceList_);
+          }
+          ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk, devices);
           clients->append(Client);
         }
       }
@@ -56,25 +73,27 @@ void GUIInterface::readData(QJsonObject json) {
   }
 }
 
-QJsonDocument GUIInterface::newCommand(QString &cmd, QString &data) {
+QJsonDocument GUIInterface::newCommand(QString &cmd, QJsonObject &data) {
   QJsonObject json = QJsonObject();
   json["cmd"] = cmd;
-  json["data"] = data;
+  json["data"] = data["data"];
   return QJsonDocument(json);
 }
 
 void GUIInterface::getExportStatus() {
   QString cmd = QString("getExportStatus");
-  QString data = QString("");
+  QString data2 = QString("");
+  QJsonObject data;
+  data["data"] = data2;
   sendData(cmd, data);
 }
 
 void GUIInterface::startExport(QString quality, QString codec) {
   QString cmd = "startExport";
   QJsonObject o = QJsonObject();
+  QJsonObject data;
   o["codec"] = codec;
   o["quality"] = quality;
-  QString data = QJsonDocument(o).toJson(QJsonDocument::Compact);
-  qDebug() << data;
+  data["data"] = o;
   sendData(cmd, data);
 }

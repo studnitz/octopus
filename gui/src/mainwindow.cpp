@@ -60,13 +60,9 @@ MainWindow::MainWindow(QWidget *parent)
 
   playbackView = new PlaybackView(this);
   recordingView = new RecordingView(this, ui->tab);
+  connect(timer, &QTimer::timeout, recordingView, &RecordingView::updateGrid);
   QString serverIP = this->settings->value("octopus/ServerIP").toString();
   tryConnection(serverIP);
-
-  // --- TESTDATA ---
-  QString data = "testdata";
-  QString cmd = "cmd";
-  for (int i = 0; i < 2; i++) guiInterface->sendData(cmd, data);
 }
 
 void MainWindow::tryConnection(QString serverIP) {
@@ -79,13 +75,15 @@ void MainWindow::tryConnection(QString serverIP) {
     qDebug() << "GUI Interface connected";
     connect(guiInterface->socket, &QTcpSocket::readyRead, guiInterface,
             &GUIInterface::receiveData);
+    connect(guiInterface, &GUIInterface::deviceListUpdated, recordingView,
+            &RecordingView::updateVideoDeviceList);
   } else {
     qDebug() << "GUI Interface could not connect to Server Interface";
 
     bool ok;
-    QString text = QInputDialog::getText(this, tr("Connection Error"),
-                                         tr("IP des Servers:"),
-                                         QLineEdit::Normal, "127.0.0.1", &ok);
+    QString text = QInputDialog::getText(
+        this, tr("Connection Error, server adress not found"),
+        tr("IP des Servers:"), QLineEdit::Normal, "127.0.0.1", &ok);
     if (ok && !text.isEmpty()) {
       tryConnection(text);
       this->settings->setValue("octopus/ServerIP", text);
@@ -160,7 +158,8 @@ QColor MainWindow::getColorFromPercent(int percent) {
 }
 
 void MainWindow::continueUpdateClientList() {
-  QString data = QString("looool");
+  QJsonObject data;
+  data["data"] = "looool";
   guiInterface->sendData("getInfo", data);
 
   // Initialize RowCount with 0
@@ -306,7 +305,9 @@ void MainWindow::on_pushButton_clicked() {
 }
 
 void MainWindow::on_recordStopButton_clicked() {
-  QString data("");
+  QString data2("");
+  QJsonObject data;
+  data["data"] = data2;
   guiInterface->sendData("stopCameras", data);
   log("Aufnahme stoppen");
 }

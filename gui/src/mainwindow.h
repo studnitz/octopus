@@ -68,6 +68,14 @@ class MainWindow : public QMainWindow {
   RecordingView *recordingView;
 
   /**
+   * @brief guiInterface Interface to communicate with ServerPI
+   */
+  GUIInterface *guiInterface;
+  /**
+   * @brief ui pointer to the complete UI
+   */
+  Ui::MainWindow *ui;
+  /**
    * @brief playbackView holds a pointer to the subclass that contains the
    * playback functionality.
    */
@@ -148,12 +156,6 @@ class MainWindow : public QMainWindow {
    * work
    */
   void tryConnection(QString serverIP);
-
-  /**
-   * @brief guiInterface holds a pointer to the interface that handles all the
-   * communication with the Server.
-   */
-  GUIInterface *guiInterface;
 
  public slots:
 
@@ -272,17 +274,13 @@ class MainWindow : public QMainWindow {
 
  private:
   /**
-X   * @brief getColorFromPercent creates a color ranging from green over yellow
+   * @brief getColorFromPercent creates a color ranging from green over yellow
    * to red, depending on percent. 100% is deep red, while 0% is green.
    * @param percent percentage
    * @return QColor ranging from green over yellow to red
    */
   QColor getColorFromPercent(int percent);
 
-  /**
-   * @brief ui pointer to the complete UI
-   */
-  Ui::MainWindow *ui;
 
   /**
    * @brief getFreePlayerId finds the lowest ID that is not used by another

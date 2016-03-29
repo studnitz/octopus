@@ -12,7 +12,7 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
     if (!encoder) {
       // if we don't have omx (when we're not on a RPI), use x264enc instead
       videoBin = QGst::Bin::fromDescription(
-          "v4l2src device=/dev/video1 ! x264enc tune=zerolatency "
+          "v4l2src device=/dev/video0 ! x264enc tune=zerolatency "
           "byte-stream=true ");
       qDebug() << "Using x264enc on device /dev/video0";
     } else {
@@ -42,7 +42,7 @@ QGst::BinPtr GstRecorder::createVideoMuxBin() {
   }
 }
 
-void GstRecorder::recordLocally() {
+QString GstRecorder::recordLocally() {
   QGst::BinPtr videoSrcBin = createVideoSrcBin();
   QGst::BinPtr videoMuxBin = createVideoMuxBin();
   QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
@@ -51,17 +51,17 @@ void GstRecorder::recordLocally() {
       QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm_ss");
 
   QString filename =
-      QDir::currentPath() + QDir::separator() + currentTime + ".mp4";
+      QDir::current().absoluteFilePath(currentTime + ".mp4");
   qDebug() << "writing to:" << filename;
   sink->setProperty("location", filename);
 
   if (!videoSrcBin || !sink) {
     qDebug() << "Error. One or more elements could not be created.";
-    return;
+    return "";
   }
   if (m_pipeline) {
     qDebug() << "Another Recording was not started. Already one in progress";
-    return;
+    return "";
   }
 
   m_pipeline = QGst::Pipeline::create();
@@ -75,6 +75,8 @@ void GstRecorder::recordLocally() {
                  &GstRecorder::onBusMessage);
 
   m_pipeline->setState(QGst::StatePlaying);
+
+  return filename;
 }
 
 void GstRecorder::createRtpSink(quint16 port, QString address) {
@@ -135,7 +137,7 @@ void GstRecorder::stop() {
   m_pipeline->setState(QGst::StateNull);
 
   m_pipeline.clear();
-  qDebug() << "recording stopped (theoretically)";
+  qDebug() << "recording stopped";
 }
 
 void GstRecorder::onBusMessage(const QGst::MessagePtr &message) {
