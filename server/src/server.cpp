@@ -60,9 +60,8 @@ void Server::downloadFiles() {
         savedir.cd(recordingTime);
         QString finalPath = savedir.absoluteFilePath(filename);
         qDebug() << ip << "    " << currentVid->filepath;
-        FtpDownloader *download =  new FtpDownloader(0, QUrl(ftpurl), finalPath);
+        FtpDownloader *download =  new FtpDownloader(this, QUrl(ftpurl), finalPath);
         download->startDownload();
-
         //Update recording-data
         //.off-file now points to the videofiles on the server instead of the remote-files on the clients.
         currentVid->filepath = recordingTime + "/" + filename;
@@ -70,6 +69,7 @@ void Server::downloadFiles() {
         currentVid->isRemote = false;
         qDebug() << "filepath:" << currentVid->filepath << "   hostname:" << currentVid->hostname;
         rec->grid.grid[i][j] = *currentVid;
+
       }
     }
   }

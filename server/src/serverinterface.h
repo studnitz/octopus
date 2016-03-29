@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <src/server.h>
+#include "ftpdownloader.h"
 
 /**
  * @brief The ServerInterface class is stored on the same physical device as the
@@ -59,6 +60,8 @@ class ServerInterface : public QTcpServer {
    * executes executeCommand on it.
    */
   void receiveData();
+
+  void putFilesToGui();
 
  private:
   /**

@@ -36,6 +36,8 @@ class Server : public QTcpServer {
    */
   int getNumClients();
 
+
+
   /**
    * @brief getHostname
    * Retrieves the local hostname. Is probably "server", but for stability reasons it is read dynamically.
@@ -93,6 +95,7 @@ class Server : public QTcpServer {
    * server. It is started when the ready-signal is emitted by ServerThread.
    */
   void getInfo();
+
 
  protected:
   /**

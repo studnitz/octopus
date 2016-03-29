@@ -87,14 +87,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       QThread::msleep(100);
       server->downloadFiles();
       server->rec->saveRecording();
-      QThread::msleep(100);
-      QString cmd = "getFilesfromServer";
-      QJsonObject recordingObject;
-      server->rec->write(recordingObject);
-      QJsonObject data;
-      data["timename"] = server->rec->datetime.toString("yyyy_MM_dd_hh_mm_ss");
-      data["recording"] = recordingObject;
-      sendData(cmd, data);
+      putFilesToGui();
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
       exportStatus = (exportStatus + 1) % 100;
       QJsonObject data = QJsonObject();
@@ -108,4 +101,17 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       qDebug() << "data: " << json["data"].toString();
     }
   }
+}
+
+void ServerInterface::putFilesToGui() {
+  QThread::sleep(3);
+  qDebug() << "fire";
+  QString cmd = "getFilesfromServer";
+  QJsonObject recordingObject;
+  server->rec->write(recordingObject);
+  QJsonObject data;
+  data["timename"] = server->rec->datetime.toString("yyyy_MM_dd_hh_mm_ss");
+  data["recording"] = recordingObject;
+  sendData(cmd, data);
+  return;
 }
