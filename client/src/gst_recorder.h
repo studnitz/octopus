@@ -28,7 +28,20 @@ class GstRecorder : public QObject {
    * x264 (rest).
    * The output file is named after the current date and time.
    * Format: yy_MM_dd_hh_mm_ss.mkv
-   * @return the complete filepath
+   *
+   * @bug We call it fondly the "Video-device busy"-bug. The good thing is, it's
+   * not our fault. The bad thing is: That doesn't really matter.
+   * The bug is the following: When starting and stopping recordings multiple
+   * times in a row without restarting the client application, eventually a
+   * message will show up telling you that the video-device is busy and that a
+   * recording could not be started. A not-critital error message could already
+   * show up on stopping the recording before that. The bug lies with gstreamer
+   * or the v4l2 interface (bug number 732912 - should officially be fixed...)
+   * We downloaded an official gstreamer example to try just the record start
+   * and stop functionality with their GUI. On every device that we tried the
+   * error was reproducable. However the tries it took to reproduce varied a
+   * lot. Between 2 and 30 recordings were needed. No clear pattern recognizable
+   * to me. Waiting for a gstreamer update seems best to me.
    */
   QString recordLocally();
   /**
@@ -37,6 +50,14 @@ class GstRecorder : public QObject {
   void stopRecording();
   /**
    * @brief stop stops a ongoing recording or socket
+   *
+   * @bug We call it simply the Stop-Bug. It's not that bad. It refers to the
+   * phenomenon that sometimes (we didn't find a pattern yet) the recording
+   * won't stop. Or to be more precise, it stops, but immediately after that it
+   * starts again. It's not critical because a file is created and can be used
+   * normally. And the second recording can be killed by killing the client
+   * application. Not nice though. Especially because you see that the webcam
+   * light is still on after clicking on stop.
    */
   void stop();
   /**

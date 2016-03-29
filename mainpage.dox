@@ -1,0 +1,34 @@
+/**
+@mainpage Welcome to the octopus project!
+
+This is the documentation of the well known and very useful octopus project. This application was designed in a 5 months lab at the TU-Darmstadt for Torsten Wagner, a scientist from the IAD Institue of the TU Darmstadt who does ergonomic analysis and had the idea to make his work easier by a synchronous video-capture tool.
+
+Here' a list of what you can do with octopus at the moment:
+
+<ul>
+    <li> Make synchronous recordings from multiple clients connected in a LAN
+    <li> Collect all that data onto the server or the PC that the GUI runs on
+    <li> Rearrange the order of those videoclips in a 2 dimensional grid
+    <li> Create a new video file containing the synchronous video streams in the order that you specified
+</ul>
+
+Octopus is a distributed application that consists of 3 parts. The first part runs on a client (in our case those were Raspberry PIs which have a webcam connected to them). Typically you would have multiple clients for the application to really make sense. They handle the recording and encoding and store the recorded data on their persistent memory (e.g. SDCs, HDDs).
+
+The second part is the server application. The server works just like you would assume that part of a Client-Server application would work. It gives orders to clients making them start or stop recordings or also send the recordings onto the server's hard drive. The server is also the part to do manipulations on the video-files after the actual recording, like exporting the recordings (i.e. rerendering them into a single video file).
+
+The third part is the graphical user interface. The GUI connects to the server when opened and lets you do all the actions described above. The GUI however is independent of the server, so it is also possible to start an action (like recording) and close the GUI. Since the GUI does nothing but give orders to the server, everythings works out fine. You could open the GUI afterwards and collect the recorded files from the server.
+The GUI also has a playback-functionality. It is rather rudimental since it's mostly meant for rearranging the video-clips into an order that is useful for the user and exporting the clips in this constellation afterwards.
+
+On top of that (as bonus you might say) you get preconfigured images with ArchLinux for the clients and the server that have all the necessary packages installed for the application to work out-of-the-box. They also have an already set up DCHP-Server on the server-app and an FTP-Server on the client-app.
+
+For the GUI and the Server we used Qt5, while the recording backend uses gstreamer.
+
+<i> Certain features have been left out intentionally to concentrate on features that are not given by any existing applications yet. Of course it'd be possible to implement an UI that is more stylish or videoplayers that can actually play a file from the point that you wish. But all those programms already exist, so we concentrated on the essential.</i>
+
+Note that our focus here was to create a reliable, user-friendly apllication that works out-of-the box and gives effects quickly. Features like securtiy were not considered at all! Use this application in LAN only if you don't make any drastical adjustments to the application.
+
+@authors Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von Studnitz
+@copyright GNU Public Licence
+@date 31.03.2016
+
+*/

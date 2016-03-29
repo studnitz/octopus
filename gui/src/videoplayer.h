@@ -32,6 +32,14 @@ class VideoPlayer : public QVideoWidget {
    * @brief contextMenuEvent is an event handler for context-menu opening. A
    * context menu is created and a following option chosen.
    * @param e e contains details about the occured event needed for evaluation
+   *
+   * @bug Sometimes, when the amount of VideoPlayers created is nearly the
+   * maximum allowed by the Grid, a click on deletePlayer or on Settings in the
+   * context menu makes the programm crash. We haven't had the time to analyze
+   * patterns yet, the bug occurs on linux and windows though. When it occured,
+   * it was also pretty strange that it occured on 2 from 4 created players (2*2
+   * grid), on the players with ID=2 and ID=3, so it doesn't seem like an
+   * off-by-one bug...
    */
   void contextMenuEvent(QContextMenuEvent *e);
 

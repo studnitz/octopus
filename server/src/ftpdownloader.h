@@ -6,6 +6,16 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
+/**
+ * @brief The FtpDownloader class is responsible for fetching the recorded data
+ * stored on the clients after a recording. The client has to run an FTP-Server
+ * and the Server has to get access rights as well (currently realized by
+ * allowing total access for anyone on the root-directory of the client).
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * Studnitz
+ * @copyright GNU Public Licence
+ * @date 31.03.2016
+ */
 class FtpDownloader : public QObject {
   Q_OBJECT
  public:

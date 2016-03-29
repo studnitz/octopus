@@ -1,0 +1,105 @@
+/**
+@page communicationpage Our communication protocols
+
+@brief This page is to help you get a better overview of the (custom) protocols that we used in the octopus project.
+
+@tableofcontents
+
+In the project, there is internal communication between the GUI and the Server (@ref subsection1) and the Server and the Clients(@ref subsection2). All the communication uses TCP as communication protocol, further information see here @ref subsection3.
+
+    @subsection subsection1 The GUI-Server communication
+    <h1> The GUI-Server communication </h1>
+    Responsible for the communication on the GUI side is GUIInterface. On the Server's side it's ServerInterface. 
+    Those two classes exchange messages over a TCP-channel encoded as JSON-Objects. Most of the time GUIInterface makes requests and ServerInterface answers. When exchanging information through JSON in the end everything is sent as String. While this may seem an unconventional datatype for data exchange, it's fast, it's simple and since all the information is exchanged in a LAN, it doesn't matter.
+    
+    @code{.unparsed}
+    
+    Level         |     Content       |     Explanation
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    Top level     |     QJsonObject   |     A QJsonObject containing two attributes: cmd and data.
+                  |                   |
+                  |                   |
+    2.  Level     |     [cmd, data]   |     where   cmd is a String and contains information about how to interpret and what 
+                  |                   |             to do with data.
+                  |                   |               
+                  |                   |             data is a any kind of object. Knowing cmd we know what type data is. 
+                  |                   |             Obviously data can be built recursively and contain any number of layers.
+    @endcode
+    
+    <h2> GUIInterface </h2>
+        @subsubsection subsub1 Commands GUIInterface sends
+        Here's a list of what commands GUIInterface can send:
+        
+        <ul>
+            <li> <b>getInfo</b>: A request to get new information on the clients that are connected to Server at the moment.
+            <li> <b>getExportStatus</b>: A request to get an update on how far the exporting is. <i>data</i> is irrelevant (can be left empty).
+            <li> <b>startExport</b>: A request to start an export-process. <i>data</i> is a QJsonObject consisting of
+                <ul>
+                    <li><i>codec</i>: A QString specifying the used codec.
+                    <li><i>quality</i>: A QString specifying the quality to be used.
+                </ul>
+            <li> <b>recordLocally</b>: A request to start a recording where the saving destination of the files lies on their local memory. <i>data</i> is irrelevant
+            <li> <b>stopCameras</b>: A request to make the clients stop their current recording. <i>data</i> is irrelevant
+        </ul>
+    
+        @subsubsection subsub2 Commands GUIInterface interprets
+        And here's what commands GUIInterface can interpret:
+        
+        <ul>
+            <li> <b>getInfo</b>: Interpreting the answer to a already sent <i>getInfo</i>-request. In that case <i>data</i> contains a QJsonArray with the following fields:
+                <ul>
+                    <li> <i>IP</i>: Contains the IP of the client
+                    <li> <i>CPU</i>: Contains the CPU usage of the client
+                    <li> <i>Memory</i>: Contains the memory usage of the client
+                    <li> <i>Disk</i>: Contains the disk usage of the client
+                    <li> <i>Name</i>: Contains the name of the client
+                </ul>
+        </ul>
+    
+    <h2> ServerInterface </h2>
+        @subsubsection subsub3 Commands ServerInterface sends
+        Here's a list of what commands ServerInterface can send:
+        
+        <ul>
+            <li> <b>getInfo</b>: The answer to GuiInterface's <i>getInfo</i>-request. <i>data</i> contains a QJsonArray with the following fields:
+                <ul>
+                    <li> <i>IP</i>: Contains the IP of the client
+                    <li> <i>CPU</i>: Contains the CPU usage of the client
+                    <li> <i>Memory</i>: Contains the memory usage of the client
+                    <li> <i>Disk</i>: Contains the disk usage of the client
+                    <li> <i>Name</i>: Contains the name of the client
+                </ul>
+        </ul>
+    
+        @subsubsection subsub4 Commands ServerInterface interprets
+        And here's a list of what commands ServerInterface can interpret:
+        
+        <ul>
+            <li> <b>getInfo</b>: Collect information about the clients and send it to the GUIInterface
+            <li> <b>recordLocally</b>: Start a recording where the saving destination of the files lies on their local memory
+            <li> <b>stopCameras</b>: Make the clients stop their current recording
+            <li> <b>getExportStatus</b>: Check the current export status and send an answer to GUIInterface
+            <li> <b>startExport</b>: Start an export-process
+        </ul>
+    
+    @subsection subsection2 The Client-Server communication
+    <h1>The Client-Server communication</h1>
+    The Server basically just forwards the commands that it got from the GUIInterface. The Server's communication with the clients is limited because it can only communicate with all clients at the same, not with individuals. When communicating with the clients, it's not ServerInterface that does the communication but Server. For that Server sometimes uses methods from ServerThread (since each ServerThread represents a client on the Server).
+    
+        @subsubsection subsub5 Commands the Server broadcasts
+        <h2>The Server</h2>
+        Here are the commands that the Server can broadcast to the clients:
+        <ul>
+            <li> <b>getInfo</b>: Request for the clients to give their information to the Server
+            <li> <b>recordLocally</b>: Request for the clients to start a recording where the saving destination of the files lies on their local memory
+            <li> <b>stopCameras</b>: Request for the clients to stop their current recording
+        </ul>
+        
+        @subsubsection subsub6 Commands the Server receives
+        The only commands that the Server receives from the clients however, are the answers to the <i>getInfo</i>-requests. How the <i>data</i>-objects returned look, can be seen above already. More importantly the fetching of the files (when recording is finished) is done by the FtpDownloader class. No special communication is used for that.
+        
+    @subsection subsection3 Reliable communication
+    <h1>Reliable communication</h1>
+    We decided for TCP as communication protocol because our product owner needed reliable communication. If you need more information on TCP, feel free to visit the wikipedia page regarding that protocol. Without explaining everything again, I'll just say that TCP uses a 3-way handshake securing a connection-oriented communication channel on which data can then be exchanged with certain guarantees. For example TCP itself, on the communication layer, makes sure that no packages are lost, that's why we don't have to care for the possibility of lost frames in our application. What can happen is that some frames arrive before others. That of course we have considered.
+
+*/
