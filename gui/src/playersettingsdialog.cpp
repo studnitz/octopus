@@ -44,15 +44,15 @@ void PlayerSettingsDialog::on_buttonBox_accepted() {
     // Apply changes to grid
     VideoFile vid = parent->recording->grid.getVideoFileById(
         parent->videoPlayer->at(playerIndex)->videoFileId);
-    parent->recording->grid.deleteSource(pos.first, pos.second);
+    parent->recording->grid.deleteSource(pos.second, pos.first);
     if (parent->recording->grid
             .grid[ui->spinBox_2->value()][ui->spinBox_4->value()]
             .id != 0) {
-      parent->recording->grid.deleteSource(ui->spinBox_2->value(),
-                                           ui->spinBox_4->value());
+      parent->recording->grid.deleteSource(ui->spinBox_4->value(),
+                                           ui->spinBox_2->value());
     }
-    parent->recording->grid.addSource(vid, ui->spinBox_2->value(),
-                                      ui->spinBox_4->value());
+    parent->recording->grid.addSource(vid, ui->spinBox_4->value(),
+                                      ui->spinBox_2->value());
 
     // Delete all existing players
     for (int i = parent->videoPlayer->length() - 1; i >= 0; i--)
