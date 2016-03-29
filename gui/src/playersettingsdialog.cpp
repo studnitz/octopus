@@ -41,7 +41,7 @@ void PlayerSettingsDialog::on_buttonBox_accepted() {
     changesDone = true;
 
   if (changesDone) {
-    // Apply changes to grid
+    // Apply changes to grid.
     VideoFile vid = parent->recording->grid.getVideoFileById(
         parent->videoPlayer->at(playerIndex)->videoFileId);
     parent->recording->grid.deleteSource(pos.second, pos.first);
