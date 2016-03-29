@@ -7,6 +7,9 @@
 #include <QHostAddress>
 #include <QJsonObject>
 #include "clientgui.h"
+#include "../server/src/ftpdownloader.h"
+#include <QDir>
+#include <QFile>
 
 /**
  * @brief The GUIInterface class is responsible for the communication between
@@ -90,6 +93,12 @@ class GUIInterface : public QObject {
    * gets the status of the export from the server.
    */
   void getExportStatus();
+
+  /**
+   * @brief downloadFiles
+   * downloads files from server
+   */
+  void downloadFiles(QJsonObject recording, QString dirName);
 
  signals:
 

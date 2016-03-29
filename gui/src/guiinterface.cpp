@@ -1,5 +1,6 @@
 #include "guiinterface.h"
 #include <iostream>
+#include "mainwindow.h"
 
 GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
     : QObject(parent) {
@@ -35,6 +36,8 @@ void GUIInterface::receiveData() {
 }
 
 void GUIInterface::readData(QJsonObject json) {
+  MainWindow *p = qobject_cast<MainWindow *>(this->parent());
+
   if (json["cmd"] == "getInfo") {
     if (json["data"].toObject()["clients"].isArray()) {
       clients->clear();
@@ -70,6 +73,18 @@ void GUIInterface::readData(QJsonObject json) {
     }
   } else if (json["cmd"] == "getExportStatus") {
     exportStatus = json["data"].toObject()["exportStatus"].toInt();
+  } else if (json["cmd"] == "getFilesfromServer") {
+    QJsonObject recording = json["data"].toObject()["recording"].toObject();
+    QString dirName = json["data"].toObject()["timename"].toString();
+    downloadFiles(recording, dirName);
+    QDir dir = QDir::current();
+    dir.cd("recordings");
+    QFile f(QString("recordings/" + dirName + ".off"));
+    qDebug() << f.fileName();
+    f.open(QIODevice::WriteOnly);
+    QJsonDocument saveDoc(recording);
+    f.write(saveDoc.toJson());
+    p->updateRecordingList();
   }
 }
 
@@ -78,6 +93,25 @@ QJsonDocument GUIInterface::newCommand(QString &cmd, QJsonObject &data) {
   json["cmd"] = cmd;
   json["data"] = data["data"];
   return QJsonDocument(json);
+}
+
+void GUIInterface::downloadFiles(QJsonObject recording, QString dirName) {
+  QJsonArray grid = recording["grid"].toObject()["grid"].toArray();
+  for (int i = 0; i < grid.count(); i++) {
+    QJsonArray line = grid.at(i).toArray();
+    for (int j = 0; j < line.count(); j++) {
+      QJsonObject file = line.at(j).toObject();
+      QDir dir = QDir::current();
+      dir.mkdir("dirName");
+
+      FtpDownloader *ftp = new FtpDownloader(
+          0,
+          QUrl("ftp://192.168.1.1/recordings/" + file["filepath"].toString()),
+          dir.absolutePath() + QDir::separator() + "recordings" +
+              QDir::separator() + file["filepath"].toString());
+      ftp->startDownload();
+    }
+  }
 }
 
 void GUIInterface::getExportStatus() {
