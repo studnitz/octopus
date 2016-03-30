@@ -3,8 +3,12 @@
 
 #include <QTcpServer>
 #include <QJsonObject>
-#include "serverthread.h"
+#include <QDir>
+
+#include "ftpdownloader.h"
 #include "recording.h"
+#include "serverthread.h"
+
 
 /**
  * @brief The Server class inherits from QTcpServer. It is the core of the

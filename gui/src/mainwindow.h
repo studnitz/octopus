@@ -2,23 +2,29 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "../server/src/server.h"
-#include "../server/src/recording.h"
-
+#include <QHostInfo>
+#include <QDir>
+#include <QtWidgets/QLabel>
+#include <QDialog>
+#include <QInputDialog>
 #include <QSettings>
+#include <QMediaPlayer>
+#include <QListWidget>
+#include <QDateTime>
+
 #include "settingsdialog.h"
 #include "exportierendialog.h"
 #include "playersettingsdialog.h"
-
-#include <QMediaPlayer>
-#include <QListWidget>
-
-#include <QDateTime>
-
 #include "videoplayer.h"
 #include "recordingview.h"
 #include "playbackview.h"
 #include "guiinterface.h"
+
+#include "ui_mainwindow.h"
+
+#include "../server/src/server.h"
+#include "../server/src/recording.h"
+
 
 namespace Ui {
 class MainWindow;

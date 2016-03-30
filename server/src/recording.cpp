@@ -1,8 +1,4 @@
 #include "recording.h"
-#include <QFile>
-#include <QDir>
-#include <QJsonDocument>
-#include <QDebug>
 
 Recording::Recording() : datetime(QDateTime::currentDateTime()), grid(Grid()) {}
 

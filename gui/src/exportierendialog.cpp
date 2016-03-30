@@ -1,6 +1,4 @@
 #include "exportierendialog.h"
-#include "ui_exportierendialog.h"
-#include "mainwindow.h"
 
 ExportierenDialog::ExportierenDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::ExportierenDialog) {

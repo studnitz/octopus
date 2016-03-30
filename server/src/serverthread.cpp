@@ -1,5 +1,4 @@
 #include "serverthread.h"
-#include <QJsonArray>
 
 ServerThread::ServerThread(qintptr ID, QObject *parent) : QThread(parent) {
   this->socketDescriptor = ID;

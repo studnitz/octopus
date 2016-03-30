@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QDebug>
 
 class RecordingGrid : public QObject {
   Q_OBJECT

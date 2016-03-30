@@ -1,7 +1,5 @@
 #include "videofile.h"
 
-#include <QDebug>
-
 VideoFile::VideoFile(quint32 id)
     : id(id),
       isRemote(false),

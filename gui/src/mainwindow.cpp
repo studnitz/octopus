@@ -1,11 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-
-#include <QHostInfo>
-#include <QDir>
-#include <QtWidgets/QLabel>
-#include <QDialog>
-#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {

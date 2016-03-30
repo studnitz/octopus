@@ -1,7 +1,4 @@
 #include "client.h"
-#include <QStorageInfo>
-#include <QProcess>
-#include <QStringList>
 
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
@@ -40,7 +37,7 @@ void Client::start(QString ip, quint16 port) {
   if (socket.waitForConnected()) {  // Timeout included in waitfor
     qDebug() << "Client connected";
   } else {
-    //qDebug() << "Client not connected";
+    // qDebug() << "Client not connected";
   }
 }
 

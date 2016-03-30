@@ -1,6 +1,4 @@
 #include "server.h"
-#include "ftpdownloader.h"
-#include <QDir>
 
 Server::Server(QObject* parent) : QTcpServer(parent) {
   qDebug() << "Server created";

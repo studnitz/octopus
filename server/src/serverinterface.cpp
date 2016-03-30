@@ -1,7 +1,5 @@
 #include "serverinterface.h"
 
-#include <QThread>
-
 ServerInterface::ServerInterface(QObject *parent) : QTcpServer(parent) {}
 
 void ServerInterface::start(quint16 port) {

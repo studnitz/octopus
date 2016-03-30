@@ -2,6 +2,7 @@
 #define VIDEOFILE_H
 
 #include <QJsonObject>
+#include <QDebug>
 
 /**
  * @brief The VideoFile class represents a simple video-file - may it be inside

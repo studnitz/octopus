@@ -2,6 +2,8 @@
 #define RECORDINGGRIDELEMENT_H
 
 #include <QLabel>
+#include <QMouseEvent>
+#include <QMenu>
 
 class RecordingGridElement : public QLabel {
   Q_OBJECT

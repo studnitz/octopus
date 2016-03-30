@@ -6,15 +6,17 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 #include <QJsonObject>
-#include "clientgui.h"
-#include "../server/src/ftpdownloader.h"
 #include <QDir>
 #include <QFile>
+
+#include "clientgui.h"
+#include "../server/src/ftpdownloader.h"
+
 
 /**
  * @brief The GUIInterface class is responsible for the communication between
  * the Server and MainWindow. It is beeing used by the MainWindow class.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

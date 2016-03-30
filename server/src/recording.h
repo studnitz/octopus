@@ -3,6 +3,11 @@
 
 #include "grid.h"
 #include <QDateTime>
+#include <QFile>
+#include <QDir>
+#include <QJsonDocument>
+#include <QDebug>
+
 
 /**
  * @brief The Recording class represents a complete recording. Every recording

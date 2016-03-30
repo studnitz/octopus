@@ -1,5 +1,4 @@
 #include "recordinggrid.h"
-#include <QDebug>
 
 RecordingGrid::RecordingGrid(quint8 width, quint8 height, QObject* parent)
     : QObject(parent) {

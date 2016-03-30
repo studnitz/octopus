@@ -1,8 +1,6 @@
 #ifndef RECORDINGVIEW_H
 #define RECORDINGVIEW_H
 
-#include "../server/src/recording.h"
-#include "recordinggrid.h"
 
 #include <QPushButton>
 #include <QListWidget>
@@ -10,6 +8,11 @@
 #include <QListView>
 #include <QGridLayout>
 #include <QLabel>
+
+#include "recordinggrid.h"
+
+#include "../server/src/recording.h"
+
 
 /**
  * @brief The RecordingView class stores the functionality from MainWindow that

@@ -1,8 +1,5 @@
 #include "playersettingsdialog.h"
-#include "ui_playersettingsdialog.h"
 
-#include <QMessageBox>
-#include "src/mainwindow.h"
 
 PlayerSettingsDialog::PlayerSettingsDialog(quint8 index, QWidget *parent)
     : QDialog(parent), ui(new Ui::PlayerSettingsDialog) {
