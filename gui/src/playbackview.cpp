@@ -77,7 +77,7 @@ void PlaybackView::videoPlayerDeleteAlsoInGrid(quint8 index) {
 
   QPair<int, int> pos =
       grid->getVideoFilePositionById(videoPlayer->at(index)->videoFileId);
-  grid->deleteSource(pos.first, pos.second);
+  grid->deleteSource(pos.second, pos.first);
 
   videoPlayerDelete(index);
 }
