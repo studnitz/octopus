@@ -178,6 +178,8 @@ void GstExporter::stop() {
   timer->stop();
   timer->disconnect();
 
+  emit exportFinished();
+
   qInfo() << "Videoexport finished!";
 }
 
@@ -245,7 +247,7 @@ QGst::BinPtr GstExporter::createFileSrcBin(const QString path, const int i) {
 
   QDir current = QDir::current();
   current.cd("recordings");
-  QString fullPath = current.absoluteFilePath(path);
+  const QString fullPath = current.absoluteFilePath(path);
 
   try {
     char* srcname = nameWithIndex("file", i);

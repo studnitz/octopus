@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <src/server.h>
+#include "gst_exporter.h"
 
 /**
  * @brief The ServerInterface class is stored on the same physical device as the
@@ -22,7 +23,7 @@
  */
 class ServerInterface : public QTcpServer {
  public:
-   int exportStatus = 0;
+   double exportStatus = 0;
 
   /**
    * @brief ServerInterface is the standard constructor. ServerInterface is
@@ -51,7 +52,9 @@ class ServerInterface : public QTcpServer {
    */
   QJsonObject getJsonInfo();
 
- private slots:
+public slots:
+  void exporterProgressChange(float value);
+private slots:
 
   /**
    * @brief receiveData is called when new data comes in through the socket.

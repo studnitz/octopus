@@ -26,6 +26,6 @@ void ExportierenDialog::on_startButton_clicked() {
 
 void ExportierenDialog::new_progress() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
-  ui->progressBar->setValue(p->guiInterface->exportStatus);
+  ui->progressBar->setValue((int) p->guiInterface->exportStatus);
   p->guiInterface->getExportStatus();
 }

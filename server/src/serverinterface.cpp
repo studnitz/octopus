@@ -67,6 +67,11 @@ QJsonObject ServerInterface::getJsonInfo() {
   return json;
 }
 
+void ServerInterface::exporterProgressChange(float value) {
+  exportStatus = value;
+  qDebug() << "exporterProgresChange: " << value;
+}
+
 void ServerInterface::executeCommand(const QJsonObject &json) {
   if (!json.isEmpty()) {
     if (json["cmd"].toString().compare("getInfo") == 0) {
@@ -88,13 +93,20 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       server->downloadFiles();
       server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
-      exportStatus = (exportStatus + 1) % 100;
       QJsonObject data = QJsonObject();
       data["exportStatus"] = exportStatus;
       sendData(json["cmd"].toString(), data);
     } else if (json["cmd"].toString().compare("startExport") == 0) {
       // TODO Start Export
+
       exportStatus = 0;
+      Recording *rec = new Recording();
+      rec->loadRecording("recordings/2016_03_29_15_53_32.off");
+      GstExporter *exporter = new GstExporter(rec, 1280, 960);
+      connect(exporter, &GstExporter::progressChanged, this,
+              &ServerInterface::exporterProgressChange);
+      exporter->exportVideo();
+
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();
