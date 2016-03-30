@@ -159,6 +159,12 @@ void PlaybackView::openRecording(QListWidgetItem *item) {
   qDebug() << "opened Recording: " << fullPath;
   parent->recording->loadRecording(fullPath);
   parent->loadPlayersFromRecording();
+
+  connect((parent->player->first()), SIGNAL(positionChanged(qint64)), parent,
+          SLOT(positionChanged(qint64)));
+  connect((parent->player->first()), SIGNAL(durationChanged(qint64)), parent,
+          SLOT(durationChanged(qint64)));
+
 }
 
 void PlaybackView::loadPlayersFromRecording(QList<VideoPlayer *> *videoPlayer,

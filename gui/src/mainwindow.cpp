@@ -54,6 +54,9 @@ MainWindow::MainWindow(QWidget *parent)
   connect(timer, &QTimer::timeout, this, &MainWindow::continueUpdateClientList);
   timer->start(1000);
 
+  connect(ui->videoSeeker, SIGNAL(sliderMoved(int)), this,
+          SLOT(setPosition(int)));
+
   /* --- PLAY-TAB: videoplayer set-up --- */
   player = new QList<QMediaPlayer *>();
   videoPlayer = new QList<VideoPlayer *>();
@@ -91,6 +94,30 @@ void MainWindow::tryConnection(QString serverIP) {
   }
 }
 
+void MainWindow::setPosition(int m) {
+  QList<QMediaPlayer *>::iterator i;
+  for (i = player->begin(); i != player->end(); ++i) {
+    (*i)->setPosition(m);
+  }
+}
+
+void MainWindow::positionChanged(qint64 m) {
+  ui->videoSeeker->setValue(m);
+  // ui->labelTime->setText(QString::number(m));
+
+  ui->labelNowTime->setText(
+      QDateTime::fromTime_t(m / 1000).toUTC().toString("hh:mm:ss"));
+}
+
+void MainWindow::durationChanged(qint64 m) {
+  ui->videoSeeker->setRange(0, m);
+  // QTime time = QTime::fromString("0", "m");
+  // time.addMSecs(m);
+
+  ui->labelTotalTime->setText(
+      QDateTime::fromTime_t(m / 1000).toUTC().toString("hh:mm:ss"));
+}
+
 MainWindow::~MainWindow() {
   QList<VideoPlayer *>::iterator i;
   for (i = videoPlayer->begin(); i != videoPlayer->end(); ++i) {
@@ -119,20 +146,21 @@ void MainWindow::exportierenDialogButton() {
 void MainWindow::about() {
   // Create dialog
   QDialog *aboutDialog = new QDialog(this);
-  aboutDialog->resize(300, 150);
+  aboutDialog->resize(500, 200);
   aboutDialog->setWindowTitle(QString("Über"));
   aboutDialog->move(this->x() + 250, this->y() + 300);
 
   // Create info label
-  QLabel *aboutLabel =
-      new QLabel(QString("Octopus: Vernetztes Video Capturetool\nVersion ")
-                     .append(versionOctopus),
-                 aboutDialog);
+  QLabel *aboutLabel = new QLabel(
+      QString("Octopus: Vernetztes Video Capturetool\nVersion ")
+          .append(versionOctopus)
+          .append("\nEntstanden im Rahmen des Bachelorpraktikums 2015/2016 \ndes Fachbereichs Informatik an der TU Darmstadt\n\n\nEntwickelt von \nAlexander von Studnitz, Bartosz Miljeski, Nicolas Schickert und Yannick Schädle"),
+      aboutDialog);
   aboutLabel->move(10, 10);
 
   // Create save button and connect functinality
   QPushButton *closeButton = new QPushButton("Schließen", aboutDialog);
-  closeButton->move(115, 120);
+  closeButton->move(415, 170);
   connect(closeButton, &QPushButton::pressed,
           [this, aboutDialog]() { aboutDialog->close(); });
   aboutDialog->exec();

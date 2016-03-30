@@ -13,6 +13,8 @@
 #include <QMediaPlayer>
 #include <QListWidget>
 
+#include <QDateTime>
+
 #include "videoplayer.h"
 #include "recordingview.h"
 #include "playbackview.h"
@@ -91,7 +93,7 @@ class MainWindow : public QMainWindow {
    * @brief versionOctopus holds the current version number of the
    * octopus-program
    */
-  QString versionOctopus = "0.31415-tested-alpha";  // Versionnumber
+  QString versionOctopus = "3.1415926-release";  // Versionnumber
 
   /**
    * @brief settings stores a pointer to settings. The file itself is stored in
@@ -158,6 +160,22 @@ class MainWindow : public QMainWindow {
   void tryConnection(QString serverIP);
 
  public slots:
+
+  /**
+   * @brief setPosition
+   * sets new position of videoplayers
+   */
+  void setPosition(int);
+
+  /**
+   * @brief positionChanged
+   */
+  void positionChanged(qint64);
+
+  /**
+   * @brief durationChanged
+   */
+  void durationChanged(qint64);
 
   /**
    * @brief on_record_button is triggered when the Record-Button is clicked
@@ -280,7 +298,6 @@ class MainWindow : public QMainWindow {
    * @return QColor ranging from green over yellow to red
    */
   QColor getColorFromPercent(int percent);
-
 
   /**
    * @brief getFreePlayerId finds the lowest ID that is not used by another

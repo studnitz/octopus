@@ -104,7 +104,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
 }
 
 void ServerInterface::putFilesToGui() {
-  QThread::sleep(3);
+  QThread::sleep(10);
   qDebug() << "fire";
   QString cmd = "getFilesfromServer";
   QJsonObject recordingObject;

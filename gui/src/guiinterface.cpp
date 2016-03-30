@@ -102,7 +102,6 @@ void GUIInterface::downloadFiles(QJsonObject recording, QString dirName) {
     for (int j = 0; j < line.count(); j++) {
       QJsonObject file = line.at(j).toObject();
       QDir dir = QDir::current();
-      dir.mkdir("dirName");
 
       FtpDownloader *ftp = new FtpDownloader(
           0,
