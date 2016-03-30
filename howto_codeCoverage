@@ -1,0 +1,18 @@
+1. Install gcov, lcov and genhtml
+2. Build the Qt test project (before add the following code to the .pro file) (Neu Erstellen !)
+This generates the .gcno files
+
+QMAKE_CXXFLAGS += -g -Wall -fprofile-arcs -ftest-coverage -O0
+QMAKE_LFLAGS += -g -Wall -fprofile-arcs -ftest-coverage  -O0
+
+LIBS += \
+    -lgcov
+
+
+3. Run the testsuite (Also important. This generates the .gcda files)
+4. Change into the directory
+5. lcov --directory . --capture --output-file app.info
+6. genhtml app.info
+7. chromium-browser index.html          # Replace chromium by your standard browser of course
+8. What's important in the generated html output is the coverage of your test files: If testing 
+client: click on blabla/octopus/client/src. Then you see the coverage for your files.
