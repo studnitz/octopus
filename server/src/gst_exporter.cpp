@@ -4,8 +4,14 @@
 #include <QDebug>
 
 GstExporter::GstExporter(Recording* rec, QObject* parent)
-    : QObject(parent), rec_(rec), elementHeight(960), elementWidth(1280) {
+    : QObject(parent), rec_(rec), exportHeightPx(960), exportWidthPx(1280) {
   QGst::init();
+  height_ = rec_->grid.height;
+  width_ = rec_->grid.width;
+  double elementHeightPxD = 1.0 * exportHeightPx / height_;
+  double elementWidthPxD = 1.0 * exportWidthPx / width_;
+  elementHeightPx = (int)elementHeightPxD;
+  elementWidthPx = (int)elementWidthPxD;
 }
 
 QGst::BinPtr GstExporter::createVideoMixer() {
@@ -25,8 +31,8 @@ QGst::BinPtr GstExporter::createVideoMixer() {
 
           QGst::PadPtr pad = videoMixer->getRequestPad("sink_%u");
           qDebug() << "pad created";
-          pad->setProperty("xpos", i * elementHeight);
-          pad->setProperty("ypos", j * elementWidth);
+          pad->setProperty("xpos", i * elementWidthPx);
+          pad->setProperty("ypos", j * elementHeightPx);
           qDebug() << "pad props set, x: " << pad->property("xpos")
                    << " ypos: " << pad->property("ypos");
           QGst::BinPtr filesrc = createFileSrcBin(current->filepath, count);
@@ -84,8 +90,9 @@ void GstExporter::exportVideo() {
   QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
   QGst::ElementPtr capsfilter =
       QGst::ElementFactory::make("capsfilter", "filter-mix");
-  QGst::CapsPtr caps =
-      QGst::Caps::fromString("video/x-raw,width=1280,height=960");
+  QGst::CapsPtr caps = QGst::Caps::createSimple("video/x-raw");
+  caps->setValue("width", (int)exportWidthPx);
+  caps->setValue("height", (int)exportHeightPx);
   capsfilter->setProperty("caps", caps);
 
   QGst::PadPtr sinktest =
@@ -109,9 +116,9 @@ void GstExporter::exportVideo() {
   m_pipeline = QGst::Pipeline::create();
   m_pipeline->add(mixer, capsfilter, encoder, scale, sink);
 
-  mixer->link(encoder);
-  // capsfilter->link(scale);
-  // scale->link(encoder);
+  mixer->link(capsfilter);
+  capsfilter->link(scale);
+  scale->link(encoder);
   encoder->link(sink);
 
   m_pipeline->bus()->addSignalWatch();
@@ -140,13 +147,21 @@ void GstExporter::onBusMessage(const QGst::MessagePtr& message) {
   }
 }
 
-void GstExporter::callbackNewPad(const QGst::PadPtr pad) {
+void GstExporter::callbackNewPad(const QGst::ElementPtr& sender,
+                                 const QGst::PadPtr& pad) {
   QString padName = pad->name();
   qDebug() << "new pad created: " << padName;
 
-  QGst::ElementPtr decoder = createDecoder();
-  m_pipeline->add(decoder);
-  decoder->syncStateWithParent();
+  QString demuxerName = sender->name();
+  QRegExp rx("(\\d+)");
+  rx.indexIn(demuxerName);
+  int i = rx.cap(1).toInt();
+
+  QString decoderQString = "decoder" + QString::number(i);
+  QByteArray decoderBa = decoderQString.toLocal8Bit();
+  char* decoderName = decoderBa.data();
+
+  QGst::ElementPtr decoder = m_pipeline->getElementByName(decoderName);
 
   pad->link(decoder->getStaticPad("sink"));
 }
@@ -159,15 +174,30 @@ void GstExporter::stop() {
   qDebug() << "exporting finished";
 }
 
-QGst::BinPtr GstExporter::createDecoder() {
+QGst::BinPtr GstExporter::createDecoder(int i) {
   qDebug() << "createDecoder start";
+  QString name = "decoder" + QString::number(i);
+  QByteArray nameAr = name.toLocal8Bit();
+  char* decArray = nameAr.data();
   QGst::BinPtr decoderBin;
   try {
+    decoderBin = QGst::Bin::create(decArray);
+    QGst::ElementPtr parser = QGst::ElementFactory::make("h264parse");
+    QGst::ElementPtr decoder;
     if (usesOmx) {
-      decoderBin = QGst::Bin::fromDescription("h264parse ! omxh264dec");
+      decoder = QGst::ElementFactory::make("omxh264dec");
     } else {
-      decoderBin = QGst::Bin::fromDescription("h264parse ! avdec_h264");
+      decoder = QGst::ElementFactory::make("avdec_h264");
     }
+    decoderBin->add(parser, decoder);
+    parser->link(decoder);
+
+    QGst::PadPtr parserSinkPad = parser->getStaticPad("sink");
+    QGst::PadPtr decoderSrcPad = decoder->getStaticPad("src");
+
+    decoderBin->addPad(QGst::GhostPad::create(parserSinkPad, "sink"));
+    decoderBin->addPad(QGst::GhostPad::create(decoderSrcPad, "src"));
+
   } catch (const QGlib::Error& error) {
     qDebug() << "Failed to create a decoder:" << error;
     return QGst::BinPtr();
@@ -184,12 +214,46 @@ QGst::BinPtr GstExporter::createFileSrcBin(QString path, int i) {
   QString fullPath = current.absoluteFilePath(path);
 
   try {
-    QGst::ElementPtr src = QGst::ElementFactory::make("filesrc");
+    // srcname = file%i
+    QString name = "file" + QString::number(i);
+    QByteArray nameAr = name.toLocal8Bit();
+    char* srcname = nameAr.data();
+    QGst::ElementPtr src = QGst::ElementFactory::make("filesrc", srcname);
     src->setProperty("location", fullPath);
-    QGst::ElementPtr demux = QGst::ElementFactory::make("qtdemux");
-    QGlib::connect(demux, "pad-added", this, &GstExporter::callbackNewPad);
-    videoBin = QGst::Bin::create();
-    videoBin->add(src, demux);
+
+    QString demuxName = "demux" + QString::number(i);
+    QByteArray demuxAr = demuxName.toLocal8Bit();
+    char* demuxCa = demuxAr.data();
+
+    QGst::ElementPtr demuxer = QGst::ElementFactory::make("qtdemux", demuxCa);
+    QGst::BinPtr decoder = createDecoder(i);
+    QGst::ElementPtr scale = QGst::ElementFactory::make("videoscale");
+
+    QGst::CapsPtr caps = QGst::Caps::createSimple("video/x-raw");
+    qDebug() << "elementheight: " << elementHeightPx
+             << " element width: " << elementWidthPx;
+    caps->setValue("height", (int)elementHeightPx);
+    caps->setValue("width", (int)elementWidthPx);
+
+    QGst::ElementPtr capsfilter = QGst::ElementFactory::make("capsfilter");
+    capsfilter->setProperty("caps", caps);
+
+    QString binName = "filebin" + QString::number(i);
+    QByteArray binNameAr = binName.toLocal8Bit();
+    char* binname = binNameAr.data();
+    videoBin = QGst::Bin::create(binname);
+
+    videoBin->add(src, demuxer, decoder, capsfilter, scale);
+    src->link(demuxer);
+    decoder->link(scale);
+    scale->link(capsfilter);
+    capsfilter->link(scale);
+
+    QGst::PadPtr filterPadSrc = capsfilter->getStaticPad("src");
+    videoBin->addPad(QGst::GhostPad::create(filterPadSrc, "src"));
+
+    QGlib::connect(demuxer, "pad-added", this, &GstExporter::callbackNewPad,
+                   QGlib::PassSender);
 
   } catch (const QGlib::Error& error) {
     qDebug() << "Failed to create a filesource:" << error;

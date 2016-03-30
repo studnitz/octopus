@@ -23,22 +23,28 @@ class GstExporter : public QObject {
   QGst::BinPtr createFileSrcBin(QString path, int i);
 
   QGst::BinPtr createVideoMixer();
-signals:
+
+ signals:
 
  public slots:
 
   void exportVideo();
-private:
+
+ private:
+  quint16 height_;
+  quint16 width_;
   bool usesOmx = false;
   Recording* rec_;
-  quint16 elementHeight;
-  quint16 elementWidth;
+  quint16 exportHeightPx;
+  quint16 exportWidthPx;
+  quint16 elementHeightPx;
+  quint16 elementWidthPx;
   QGst::PipelinePtr m_pipeline;
-  void onBusMessage(const QGst::MessagePtr &message);
+  void onBusMessage(const QGst::MessagePtr& message);
   void stop();
   QGst::BinPtr createEncoder();
-  QGst::BinPtr createDecoder();
-  void callbackNewPad(QGst::PadPtr pad);
+  QGst::BinPtr createDecoder(int i);
+  void callbackNewPad(const QGst::ElementPtr &sender, const QGst::PadPtr &pad);
 };
 
 #endif  // GSTEXPORTER_H

@@ -15,11 +15,11 @@ int main(int argc, char* argv[]) {
 
   Recording* rec = new Recording();
   rec->loadRecording("recordings/2016_03_29_15_53_32.off");
-  Server server;
-  server.startServer();
-  ServerInterface serverInterface;
-  serverInterface.setServer(&server);
-  serverInterface.start();
+  //Server server;
+  //server.startServer();
+  //ServerInterface serverInterface;
+  //serverInterface.setServer(&server);
+  //serverInterface.start();
 
   GstExporter* exporter = new GstExporter(rec);
 
