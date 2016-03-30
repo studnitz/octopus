@@ -20,7 +20,7 @@ class GstExporter : public QObject {
  public:
   explicit GstExporter(Recording* rec, QObject* parent = 0);
   ~GstExporter();
-  QGst::BinPtr createFileSrcBin(QString path, int i);
+  QGst::BinPtr createFileSrcBin(const QString path, const int i);
 
   QGst::BinPtr createVideoMixer();
 
@@ -35,16 +35,23 @@ class GstExporter : public QObject {
   quint16 width_;
   bool usesOmx = false;
   Recording* rec_;
+
   quint16 exportHeightPx;
   quint16 exportWidthPx;
+
   quint16 elementHeightPx;
   quint16 elementWidthPx;
+
   QGst::PipelinePtr m_pipeline;
+
   void onBusMessage(const QGst::MessagePtr& message);
+
   void stop();
   QGst::BinPtr createEncoder();
-  QGst::BinPtr createDecoder(int i);
+  QGst::BinPtr createDecoder(const int i);
   void callbackNewPad(const QGst::ElementPtr &sender, const QGst::PadPtr &pad);
+  QGst::ElementPtr createCapsFilter(const quint16 width, const quint16 height);
+  char *nameWithIndex(const QString name, const quint16 i);
 };
 
 #endif  // GSTEXPORTER_H
