@@ -11,7 +11,7 @@ void ServerThread::run() {
 
   if (!socket->setSocketDescriptor(this->socketDescriptor)) {
     // something's wrong, we just emit a signal
-    emit error(socket->error());
+    emit this->error(socket->error());
     return;
   }
 
