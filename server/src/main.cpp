@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
   //serverInterface.setServer(&server);
   //serverInterface.start();
 
-  GstExporter* exporter = new GstExporter(rec);
+  GstExporter* exporter = new GstExporter(rec, 1280, 960);
 
   exporter->exportVideo();
 

@@ -2,9 +2,10 @@
 
 #include <QDir>
 #include <QDebug>
+#include <QTimer>
 
-GstExporter::GstExporter(Recording* rec, QObject* parent)
-    : QObject(parent), rec_(rec), exportHeightPx(960), exportWidthPx(1280) {
+GstExporter::GstExporter(Recording* rec, quint16 widthPx, quint16 heightPx, QObject* parent)
+    : QObject(parent), rec_(rec), exportHeightPx(heightPx), exportWidthPx(widthPx) {
   QGst::init();
   height_ = rec_->grid.height;
   width_ = rec_->grid.width;
@@ -27,7 +28,8 @@ QGst::BinPtr GstExporter::createVideoMixer() {
       for (int j = 0; j < rec_->grid.width; ++j) {
         VideoFile* current = &rec_->grid.grid[i][j];
         if (current->id != 0) {
-          qDebug() << "Working on video[" << i << "][" << j << "] with id: " << current->id;
+          qDebug() << "Working on video[" << i << "][" << j
+                   << "] with id: " << current->id;
 
           QGst::PadPtr pad = videoMixer->getRequestPad("sink_%u");
           pad->setProperty("xpos", i * elementWidthPx);
@@ -61,11 +63,11 @@ QGst::BinPtr GstExporter::createEncoder() {
   try {
     if (usesOmx) {
       encoder = QGst::Bin::fromDescription(
-          "omxh264enc ! h264parse ! mp4mux ! progressreport");
+          "omxh264enc ! h264parse ! mp4mux");
       qDebug() << "Encoder: using omxh264enc";
     } else {
       encoder = QGst::Bin::fromDescription(
-          "x264enc ! h264parse ! mp4mux ! progressreport");
+          "x264enc ! h264parse ! mp4mux");
       qDebug() << "Encoder: using x264enc";
     }
   } catch (const QGlib::Error& error) {
@@ -125,6 +127,10 @@ void GstExporter::exportVideo() {
                  &GstExporter::onBusMessage);
   qDebug() << "exportVideo(): Starting pipeline";
   m_pipeline->setState(QGst::StatePlaying);
+
+  timer = new QTimer(this);
+  connect(timer, &QTimer::timeout, this, &GstExporter::progressPercent);
+  timer->start(1000);
 }
 
 void GstExporter::onBusMessage(const QGst::MessagePtr& message) {
@@ -155,7 +161,7 @@ void GstExporter::callbackNewPad(const QGst::ElementPtr& sender,
   QString demuxerName = sender->name();
   QRegExp rx("(\\d+)");
   rx.indexIn(demuxerName);
-  int i = rx.cap(1).toInt();
+  quint16 i = rx.cap(1).toInt();
 
   QString decoderQString = "decoder" + QString::number(i);
   QByteArray decoderBa = decoderQString.toLocal8Bit();
@@ -168,9 +174,28 @@ void GstExporter::callbackNewPad(const QGst::ElementPtr& sender,
 
 void GstExporter::stop() {
   m_pipeline->setState(QGst::StateNull);
-
   m_pipeline.clear();
+  timer->stop();
+  timer->disconnect();
+
   qInfo() << "Videoexport finished!";
+}
+
+void GstExporter::progressPercent() {
+  float result = -1;  // if not active
+
+  if (m_pipeline) {
+    QGst::PositionQueryPtr currentPosition =
+        QGst::PositionQuery::create(QGst::FormatPercent);
+    m_pipeline->query(currentPosition);
+    qint64 currentPos = currentPosition->position();
+    result = 1.0 * currentPos / 10000;
+  }
+
+  emit progressChanged(result);
+  qDebug() << "Querying time, result: " << result << "%";
+
+  return;
 }
 
 QGst::BinPtr GstExporter::createDecoder(const int i) {
@@ -192,7 +217,7 @@ QGst::BinPtr GstExporter::createDecoder(const int i) {
     QGst::PadPtr parserSinkPad = parser->getStaticPad("sink");
     QGst::PadPtr decoderSrcPad = decoder->getStaticPad("src");
 
-    //Add Ghostpads for abstraction
+    // Add Ghostpads for abstraction
     decoderBin->addPad(QGst::GhostPad::create(parserSinkPad, "sink"));
     decoderBin->addPad(QGst::GhostPad::create(decoderSrcPad, "src"));
 
