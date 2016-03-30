@@ -24,6 +24,9 @@ class ExportierenDialog : public QDialog {
   explicit ExportierenDialog(QWidget *parent = 0);
   ~ExportierenDialog();
 
+ public slots:
+  void exportFinished();
+
  private slots:
   void on_startButton_clicked();
   void new_progress();

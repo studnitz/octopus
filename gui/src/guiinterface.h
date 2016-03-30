@@ -94,6 +94,7 @@ class GUIInterface : public QObject {
  signals:
 
   void deviceListUpdated(QStringList list);
+  void exportIsFinished();
 
  private:
   /**
@@ -105,6 +106,8 @@ class GUIInterface : public QObject {
   void readData(QJsonObject json);
 
   QStringList *deviceList_;
+
+  bool exportFinished = false;
 };
 
 #endif  // GUIINTERFACE_H

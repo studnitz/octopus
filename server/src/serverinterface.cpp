@@ -72,6 +72,11 @@ void ServerInterface::exporterProgressChange(float value) {
   qDebug() << "exporterProgresChange: " << value;
 }
 
+void ServerInterface::exportIsFinished() {
+  exportFinished = true;
+  qDebug() << "exportFinished!";
+}
+
 void ServerInterface::executeCommand(const QJsonObject &json) {
   if (!json.isEmpty()) {
     if (json["cmd"].toString().compare("getInfo") == 0) {
@@ -95,6 +100,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
       QJsonObject data = QJsonObject();
       data["exportStatus"] = exportStatus;
+      data["exportFinished"] = exportFinished;
       sendData(json["cmd"].toString(), data);
     } else if (json["cmd"].toString().compare("startExport") == 0) {
       // TODO Start Export
@@ -105,6 +111,8 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       GstExporter *exporter = new GstExporter(rec, 1280, 960);
       connect(exporter, &GstExporter::progressChanged, this,
               &ServerInterface::exporterProgressChange);
+      connect(exporter, &GstExporter::exportFinished, this,
+              &ServerInterface::exportIsFinished);
       exporter->exportVideo();
 
     } else {

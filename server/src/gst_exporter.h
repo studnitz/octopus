@@ -31,6 +31,7 @@ class GstExporter : public QObject {
  signals:
 
   void progressChanged(float value);
+  void exportFinished();
 
  public slots:
 

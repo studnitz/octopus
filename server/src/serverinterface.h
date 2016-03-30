@@ -54,6 +54,7 @@ class ServerInterface : public QTcpServer {
 
 public slots:
   void exporterProgressChange(float value);
+  void exportIsFinished();
 private slots:
 
   /**
@@ -70,6 +71,8 @@ private slots:
    * @param handle the socket descriptor
    */
   void incomingConnection(qintptr handle);
+
+  bool exportFinished = false;
 
   /**
    * @brief sendData sends information to GUI as JSON-Object. cmd represents the
