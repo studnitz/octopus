@@ -11,10 +11,10 @@ RecordingView::RecordingView(QObject *parent, QWidget *tab) : QObject(parent) {
 
 void RecordingView::record_button(QPushButton *recordButton) {
   recordStart();
-  createRecording();
+  createAndStartRecording();
 }
 
-void RecordingView::createRecording() {
+void RecordingView::createAndStartRecording() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
   Grid grid = Grid(gridLayout->columnCount(), gridLayout->rowCount());
   quint32 id = 1;

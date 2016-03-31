@@ -4,13 +4,18 @@
 #include <QDebug>
 #include <QTimer>
 
-GstExporter::GstExporter(Recording* rec, quint16 widthPx, quint16 heightPx, QObject* parent)
-    : QObject(parent), rec_(rec), exportHeightPx(heightPx), exportWidthPx(widthPx) {
+GstExporter::GstExporter(Recording* rec, quint16 widthPx, quint16 heightPx,
+                         QObject* parent)
+    : QObject(parent),
+      rec_(rec),
+      exportHeightPx(heightPx),
+      exportWidthPx(widthPx) {
   QGst::init();
-  height_ = rec_->grid.height;
-  width_ = rec_->grid.width;
-  double elementHeightPxD = 1.0 * exportHeightPx / height_;
-  double elementWidthPxD = 1.0 * exportWidthPx / width_;
+  if (QGst::ElementFactory::find("omxh264dec")) usesOmx = true;
+  rowCount = rec_->grid.height;
+  columnCount = rec_->grid.width;
+  double elementHeightPxD = 1.0 * exportHeightPx / rowCount;
+  double elementWidthPxD = 1.0 * exportWidthPx / columnCount;
   elementHeightPx = (int)elementHeightPxD;
   elementWidthPx = (int)elementWidthPxD;
 }
@@ -24,6 +29,7 @@ QGst::BinPtr GstExporter::createVideoMixer() {
         QGst::ElementFactory::make("videomixer", "mix");
     videoMixerBin->add(videoMixer);
     int count = 0;
+    // go through every element in the grid
     for (int i = 0; i < rec_->grid.height; ++i) {
       for (int j = 0; j < rec_->grid.width; ++j) {
         VideoFile* current = &rec_->grid.grid[i][j];
@@ -62,12 +68,10 @@ QGst::BinPtr GstExporter::createEncoder() {
 
   try {
     if (usesOmx) {
-      encoder = QGst::Bin::fromDescription(
-          "omxh264enc ! h264parse ! mp4mux");
+      encoder = QGst::Bin::fromDescription("omxh264enc ! h264parse ! mp4mux");
       qDebug() << "Encoder: using omxh264enc";
     } else {
-      encoder = QGst::Bin::fromDescription(
-          "x264enc ! h264parse ! mp4mux");
+      encoder = QGst::Bin::fromDescription("x264enc ! h264parse ! mp4mux");
       qDebug() << "Encoder: using x264enc";
     }
   } catch (const QGlib::Error& error) {

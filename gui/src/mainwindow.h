@@ -25,7 +25,6 @@
 #include "../server/src/server.h"
 #include "../server/src/recording.h"
 
-
 namespace Ui {
 class MainWindow;
 }
@@ -99,7 +98,7 @@ class MainWindow : public QMainWindow {
    * @brief versionOctopus holds the current version number of the
    * octopus-program
    */
-  QString versionOctopus = "3.1415926-release";  // Versionnumber
+  QString const versionOctopus = "3.1415926-release";  // Versionnumber
 
   /**
    * @brief settings stores a pointer to settings. The file itself is stored in
@@ -275,8 +274,12 @@ class MainWindow : public QMainWindow {
    */
   void saveRecording();
 
+  /**
+   * @brief rebootAllClients sends a signal to the server to reboot all clients
+   */
   void rebootAllClients();
-private slots:
+
+ private slots:
 
   /**
    * @brief on_pushButton_Percent_clicked Make the GUI show the percentage in

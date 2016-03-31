@@ -1,7 +1,6 @@
 #ifndef RECORDINGVIEW_H
 #define RECORDINGVIEW_H
 
-
 #include <QPushButton>
 #include <QListWidget>
 #include <QStringListModel>
@@ -12,7 +11,6 @@
 #include "recordinggrid.h"
 
 #include "../server/src/recording.h"
-
 
 /**
  * @brief The RecordingView class stores the functionality from MainWindow that
@@ -65,12 +63,32 @@ class RecordingView : public QObject {
    */
   void recordStop();
 
-  void createRecording();
+  /**
+   * @brief createRecording creates a Recording object and sends a signal to the
+   * server to start the recording with the current grid
+   */
+  void createAndStartRecording();
+
  public slots:
 
+  /**
+   * @brief updateVideoDeviceList updates the video device list in the GUI
+   * @param list the updated list
+   */
   void updateVideoDeviceList(QStringList list);
   void updateGrid2();
+
+  /**
+   * @brief createEmptyEntry creates an empty grid entry
+   * @return the empty grid entry
+   */
   QLabel* createEmptyEntry() const;
+
+  /**
+   * @brief createEntry creates a normal entry
+   * @param entry a grid element with the device name
+   * @return the grid element
+   */
   QLabel* createEntry(RecordingGrid::GridElement* entry) const;
 
  private:
@@ -87,10 +105,20 @@ class RecordingView : public QObject {
    */
   QGridLayout* gridLayout;
 
+  /**
+   * @brief videoDeviceListView the list view used to display the video device
+   * list
+   */
   QListView* videoDeviceListView;
 
+  /**
+   * @brief videoDeviceListModel the model used by the device list view
+   */
   QStringListModel* videoDeviceListModel;
 
+  /**
+   * @brief recGrid the grid representing the current video device elements
+   */
   RecordingGrid* recGrid;
 };
 

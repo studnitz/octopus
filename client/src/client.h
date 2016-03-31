@@ -35,6 +35,9 @@ class Client : public QObject {
 
   ~Client();
 
+  /**
+   * @brief EXIT_CODE_REBOOT contains the exit code, that lets the Client reboot
+   */
   static int const EXIT_CODE_REBOOT;
 
   /**
@@ -123,6 +126,12 @@ class Client : public QObject {
    * @param str The data
    */
   void sendData(QString cmd, QJsonObject &str);
+
+  /**
+   * @brief listAllDevices lists all video devices, that are currently connected
+   * to the client
+   * @return a list of all devices with every entry representing the devicepath
+   */
   QStringList listAllDevices();
  signals:
 
@@ -134,9 +143,13 @@ class Client : public QObject {
    */
   QTcpSocket::SocketState getState() const;
 
-protected slots:
+ protected slots:
+  /**
+   * @brief reboot reboots the client, used to free stuck/bugged video devices
+   */
   void reboot();
-private slots:
+
+ private slots:
 
   /**
    * @brief getCommand is started every time when readyRead is emmited.
@@ -145,6 +158,11 @@ private slots:
    */
   void getCommand();
 
+  /**
+   * @brief deleteLastRecording deletes the last recorded video file. Used for
+   * cleaning up after the videofile was transferred to the server
+   * @return if deleting the file was succesful
+   */
   bool deleteLastRecording();
 
  private:
@@ -166,8 +184,19 @@ private slots:
    * @param json The JSON object json=[command|data]
    */
   void executeCommand(QJsonObject json);
+
+  /**
+   * @brief currentTime returns the current time of the client. It may differ
+   * from local time or server time due to no network access
+   * @return the current time
+   */
   QString currentTime();
-  QString lastRecording = "";
+
+  /**
+   * @brief lastRecordingPath contains the filepath of the last recording.
+   * Useful for cleaning up
+   */
+  QString lastRecordingPath = "";
 };
 
 #endif  // TCPCLIENT_H

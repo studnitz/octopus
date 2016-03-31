@@ -24,19 +24,45 @@ class ExportierenDialog : public QDialog {
   Q_OBJECT
 
  public:
+  /**
+   * @brief ExportierenDialog creates a new export dialog
+   * @param parent the parent object
+   */
   explicit ExportierenDialog(QWidget *parent = 0);
   ~ExportierenDialog();
 
  public slots:
+  /**
+   * @brief exportFinished is called when the export is finished
+   */
   void exportFinished();
 
+  /**
+   * @brief exportErrored is called when the export encountered an error
+   */
   void exportErrored();
-private slots:
+
+ private slots:
+  /**
+   * @brief on_startButton_clicked startes the video export by sending the
+   * server a signal to start it
+   */
   void on_startButton_clicked();
+
+  /**
+   * @brief new_progress is called when the progress has updated
+   */
   void new_progress();
 
  private:
+  /**
+   * @brief ui the ui we use
+   */
   Ui::ExportierenDialog *ui;
+
+  /**
+   * @brief timer timer used for updating the progress and status
+   */
   QTimer *timer;
 };
 

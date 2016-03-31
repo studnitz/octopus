@@ -44,10 +44,12 @@ class GstRecorder : public QObject {
    * to me. Waiting for a gstreamer update seems best to me.
    */
   QString recordLocally();
+
   /**
    * @brief stopRecording
    */
   void stopRecording();
+
   /**
    * @brief stop stops a ongoing recording or socket
    *
@@ -60,6 +62,7 @@ class GstRecorder : public QObject {
    * light is still on after clicking on stop.
    */
   void stop();
+
   /**
    * @brief createUdpSink creates an RTP sink for others to consume. Creates 3
    * ports.
@@ -87,6 +90,7 @@ class GstRecorder : public QObject {
    * @brief m_pipeline the pipeline we use to create a recodring or a stream
    */
   QGst::PipelinePtr m_pipeline;
+
   /**
    * @brief createVideoMuxBin is used to create a videoMuxer, important for
    * local recording

@@ -10,16 +10,17 @@
  */
 class ClientGui {
  public:
-    /**
-   * @brief ClientGui
-   * Standard constructor
-   * @param ip
-   * @param name
-   * @param cpu
-   * @param mem
-   * @param disk
-   */
-  ClientGui(QString ip, QString name, float cpu, float mem, float disk, QStringList devices, QString currentTime);
+  /**
+ * @brief ClientGui
+ * Standard constructor
+ * @param ip
+ * @param name
+ * @param cpu
+ * @param mem
+ * @param disk
+ */
+  ClientGui(QString ip, QString name, float cpu, float mem, float disk,
+            QStringList devices, QString currentTime);
   /**
    * @brief ip
    * Stores the IP-Address of a client
@@ -45,7 +46,15 @@ class ClientGui {
    * Stores the disk-usage of a client
    */
   float disk;
+
+  /**
+   * @brief devices list of video devices in form of their device paths
+   */
   QStringList devices;
+
+  /**
+   * @brief currentTime is the current time on the client
+   */
   QString currentTime;
 };
 

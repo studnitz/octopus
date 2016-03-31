@@ -74,6 +74,10 @@ class GUIInterface : public QObject {
    */
   QJsonDocument newCommand(QString &cmd, QJsonObject &data);
 
+  /**
+   * @brief deviceList getter for deviceList
+   * @return the current device list
+   */
   QStringList deviceList() const { return *deviceList_; }
 
  public slots:
@@ -104,8 +108,20 @@ class GUIInterface : public QObject {
 
  signals:
 
+  /**
+   * @brief deviceListUpdated signal emitted when the deviceList hast changed
+   * @param list the updated device list
+   */
   void deviceListUpdated(QStringList list);
+
+  /**
+   * @brief exportIsFinished signal emitted when the video export has finished
+   */
   void exportIsFinished();
+
+  /**
+   * @brief exportErrored signal emitted when the video export has errored
+   */
   void exportErrored();
 
  private:
@@ -117,10 +133,19 @@ class GUIInterface : public QObject {
    */
   void readData(QJsonObject json);
 
+  /**
+   * @brief deviceList_ contains the list of video devices
+   */
   QStringList *deviceList_;
 
+  /**
+   * @brief exportFinished status variable if the export has finished
+   */
   bool exportFinished = false;
 
+  /**
+   * @brief exportError status variable ix the export encountered an error
+   */
   bool exportError = false;
 };
 

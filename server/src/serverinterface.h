@@ -26,6 +26,9 @@
  */
 class ServerInterface : public QTcpServer {
  public:
+  /**
+   * @brief exportStatus contains the current export progress status in percent
+   */
   double exportStatus = 0;
 
   /**
@@ -56,10 +59,25 @@ class ServerInterface : public QTcpServer {
   QJsonObject getJsonInfo();
 
  signals:
+  /**
+   * @brief rebootClients singal emitted to tell all clients to reboot
+   */
   void rebootClients();
 
  public slots:
+  /**
+   * @brief exporterProgressChange is used to update the progress on an active
+   * export
+   * @param value the current progress in percent
+   */
   void exporterProgressChange(float value);
+
+  /**
+   * @brief exportIsFinished is used when a export is finished (with or without
+   * error)
+   * @param withoutError true, when the export finished without a error,
+   * otherwise false
+   */
   void exportIsFinished(bool withoutError);
  private slots:
 
@@ -70,6 +88,10 @@ class ServerInterface : public QTcpServer {
    */
   void receiveData();
 
+  /**
+   * @brief putFilesToGui tells the ServerInterface to send the recording files
+   * to the GUI
+   */
   void putFilesToGui();
 
  private:
@@ -80,8 +102,14 @@ class ServerInterface : public QTcpServer {
    */
   void incomingConnection(qintptr handle);
 
+  /**
+   * @brief exportFinished true, when a export has finished
+   */
   bool exportFinished = false;
 
+  /**
+   * @brief exportError true, when a export has encountered an error
+   */
   bool exportError = false;
 
   /**

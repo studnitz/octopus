@@ -75,7 +75,7 @@ void Client::getCommand() {
 
 bool Client::deleteLastRecording()
 {
-  return QFile::remove(lastRecording);
+  return QFile::remove(lastRecordingPath);
 }
 
 void Client::sendData(QString cmd, QJsonObject &str) {
@@ -113,7 +113,7 @@ void Client::executeCommand(QJsonObject json) {
       return;
     } else if (command == "recordLocally") {
       QString filename = recorder.recordLocally();
-      lastRecording = filename;
+      lastRecordingPath = filename;
       QJsonObject data;
       data["Filename"] = filename;
       sendData(json["cmd"].toString(), data);

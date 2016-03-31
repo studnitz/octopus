@@ -94,6 +94,10 @@ class Grid {
    */
   VideoFile& getVideoFileById(quint32 id);
 
+  /**
+   * @brief size the current amount of elements in the grid
+   * @return the amount of elements
+   */
   qint16 size();
 
   /**
