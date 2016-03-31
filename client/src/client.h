@@ -171,7 +171,7 @@ class Client : public QObject {
    * the Video-Operations like recording, cutting, manipulating etc are made
    * with Gstreamer in octopus.
    */
-  GstRecorder recorder;
+  GstRecorder* recorder;
 
   /**
    * @brief socket holds the client's TCP-Socket for the

@@ -97,7 +97,7 @@ class Server : public QTcpServer {
    * broadcastCommand to the clients, making them start a recording and save it
    * locally on their hard drive.
    */
-  void recordLocally();
+  void recordLocally(QJsonObject &settings);
 
  signals:
 

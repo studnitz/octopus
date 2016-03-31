@@ -104,7 +104,7 @@ QGst::ElementPtr GstExporter::createCapsFilter(const quint16 width,
 }
 
 void GstExporter::exportVideo() {
-  qInfo() << "Starting Videoexport...";
+  qDebug() << "Starting Videoexport...";
   QGst::BinPtr mixer = createVideoMixer();
   QGst::BinPtr encoder = createEncoder();
   QGst::ElementPtr scale = QGst::ElementFactory::make("videoscale");
@@ -184,7 +184,7 @@ void GstExporter::stop(bool withoutError) {
 
   emit exportFinished(withoutError);
 
-  qInfo() << "Videoexport finished!";
+  qDebug() << "Videoexport finished!";
 }
 
 void GstExporter::progressPercent() {

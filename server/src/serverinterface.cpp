@@ -93,7 +93,11 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       QJsonObject obj = json["data"].toObject();
       server->rec = new Recording();
       server->rec->read(obj);
-      server->recordLocally();
+      QJsonObject settings;
+      settings["height"] = obj["height"];
+      settings["width"] = obj["width"];
+      settings["fps"] = obj["fps"];
+      server->recordLocally(settings);
       server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
       server->updateRecording();

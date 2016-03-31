@@ -9,16 +9,20 @@
 #include <QGst/ChildProxy>
 #include <QGst/Pipeline>
 #include <QGst/Pad>
+#include <QGst/GhostPad>
 #include <QGst/Event>
 #include <QGst/Message>
 #include <QGst/Bus>
+#include <QGst/Caps>
+#include <QGst/Fraction>
 #include <QHostAddress>
 #include <QDir>
 
 class GstRecorder : public QObject {
   Q_OBJECT
  public:
-  GstRecorder(QObject *parent = 0);
+  GstRecorder(quint16 width = 640, quint16 height = 480, quint16 fps = 30, QString device = "/dev/video0",
+              QObject *parent = 0);
   ~GstRecorder();
 
   /**
@@ -43,7 +47,7 @@ class GstRecorder : public QObject {
    * lot. Between 2 and 30 recordings were needed. No clear pattern recognizable
    * to me. Waiting for a gstreamer update seems best to me.
    */
-  QString recordLocally();
+  const QString recordLocally();
 
   /**
    * @brief stopRecording
@@ -73,12 +77,28 @@ class GstRecorder : public QObject {
    */
   void createRtpSink(quint16 port = 1337, QString address = "127.0.0.1");
 
+ signals:
+
+  void pipelineCleared();
+
  private:
   /**
    * @brief createVideoSrcBin is used to create a video source (usually v4l2)
    * @return a pointer to the created video source
    */
   QGst::BinPtr createVideoSrcBin();
+
+  quint16 videoWitdhPx;
+
+  quint16 videoHeightPx;
+
+  quint16 framerate;
+
+  QString devicepath;
+
+  quint16 deviceNumber;
+
+  bool usesOmx = false;
 
   /**
    * @brief onBusMessage Event handler for bus messages
@@ -97,6 +117,8 @@ class GstRecorder : public QObject {
    * @return a pointer to the created video muxer
    */
   QGst::BinPtr createVideoMuxBin();
+  QGst::ElementPtr createCapsFilter(const quint16 width, const quint16 height, const quint16 fps);
+  quint16 getDeviceNumber(QString path);
 };
 
 #endif  // GST_RECORDER_h

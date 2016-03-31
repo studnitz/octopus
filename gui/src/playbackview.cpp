@@ -1,5 +1,7 @@
 #include "playbackview.h"
 #include "mainwindow.h"
+#include <QStyle>
+#include <QToolButton>
 
 PlaybackView::PlaybackView(QObject *parent) : QObject(parent) {}
 

@@ -32,8 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
   QAction *exportieren = new QAction(tr("Exportieren"), this);
   menuFile->addAction(exportieren);
   QMenu *menuEdit = ui->menuBar->addMenu(tr("Bearbeiten"));
-  QAction *settings = new QAction(tr("Einstellungen"), this);
-  menuEdit->addAction(settings);
+  QAction *settingsAction = new QAction(tr("Einstellungen"), this);
+  menuEdit->addAction(settingsAction);
   QMenu *menuExtras = ui->menuBar->addMenu(tr("Extras"));
   QAction *about = new QAction(tr("Über"), this);
   menuExtras->addAction(about);
@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
   menuFile->addAction(close);
   updateRecordingList();
   connect(speichern, SIGNAL(triggered()), this, SLOT(saveFile()));
-  connect(settings, SIGNAL(triggered()), this, SLOT(settingsDialogButton()));
+  connect(settingsAction, SIGNAL(triggered()), this, SLOT(settingsDialogButton()));
   connect(exportieren, SIGNAL(triggered()), this,
           SLOT(exportierenDialogButton()));
   connect(about, SIGNAL(triggered()), this, SLOT(about()));
