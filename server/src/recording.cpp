@@ -6,7 +6,7 @@ Recording::Recording(QDateTime datetime, Grid& grid)
     : datetime(datetime), grid(grid) {}
 
 void Recording::read(const QJsonObject &json) {
-  datetime = QDateTime::fromString(json["datetime"].toString(Qt::ISODate));
+  datetime = QDateTime::fromString(json["datetime"].toString(), Qt::ISODate);
   grid.read(json["grid"].toObject());
 }
 
