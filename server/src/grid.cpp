@@ -76,7 +76,7 @@ qint16 Grid::size()
   qint16 count = 0;
 
   for (int i = 0; i < height; ++i) {
-      for (int j = 0; i < width; ++j) {
+      for (int j = 0; j < width; ++j) {
           if (grid[i][j].id != 0) {
               count++;
             }

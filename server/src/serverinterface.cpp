@@ -16,7 +16,7 @@ void ServerInterface::incomingConnection(qintptr handle) {
   socket = new QTcpSocket(this);
   if (!socket->setSocketDescriptor(handle))
     qDebug() << "Fatal error with socket in ServerInterface";
-
+  qDebug() << "GUI connected";
   connect(socket, &QTcpSocket::readyRead, this, &ServerInterface::receiveData);
 }
 

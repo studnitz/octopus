@@ -102,8 +102,8 @@ void PlaybackView::connectSourceToNewVideo(const VideoFile &source,
   // -------------------------------
 
   quint16 playerWidth, playerHeight;
-  quint16 playerGridPosX = i;
-  quint16 playerGridPosY = j;
+  quint16 playerGridPosX = j;
+  quint16 playerGridPosY = i;
   quint8 playerIndex = getFreePlayerId(videoPlayer);
   MainWindow *parent = qobject_cast<MainWindow *>(this->parent());
 
