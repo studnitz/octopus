@@ -12,8 +12,7 @@
 
 /**
  * @brief The Communication class is our composite test class, originally made
- * out of three
- * test classes (ServerBefehle, Communication and ClientBefehle).
+ * out of three test classes (ServerBefehle, Communication and ClientBefehle).
  * The ServerBefehle class tests some standalone features of the server.
  * This means features that do not need any clients or UIs to interact with.
  * The Communication class test some communication features between the
@@ -303,7 +302,6 @@ void Communication::serverClient_reboot() {
     QTest::qWait(200);
   }
   QVERIFY(server->getClients().contains(app));
-
 
   delete client1;
   delete client2;
