@@ -2,6 +2,7 @@
 #include <QStorageInfo>
 #include <QProcess>
 #include <QStringList>
+#include <QTime>
 
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
@@ -44,6 +45,14 @@ void Client::start(QString ip, quint16 port) {
   }
 }
 
+QString Client::currentTime() {
+  QTime current = QTime::currentTime();
+  QString result = current.toString();
+
+  return result;
+
+}
+
 void Client::getCommand() {
   QByteArray ba;
   QJsonObject json;
@@ -75,6 +84,7 @@ QJsonObject Client::getJsonInfo() {
   json["CPU"] = getCpuUsage();
   json["Memory"] = getMemoryUsage();
   json["Disk"] = getDiskUsage();
+  json["Time"] = currentTime();
   QJsonArray devices = QJsonArray::fromStringList(listAllDevices());
   json["Devices"] = devices;
   return json;

@@ -157,6 +157,7 @@ class Client : public QObject {
    * @param json The JSON object json=[command|data]
    */
   void executeCommand(QJsonObject json);
+  QString currentTime();
 };
 
 #endif  // TCPCLIENT_H

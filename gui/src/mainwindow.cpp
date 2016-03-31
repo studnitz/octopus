@@ -14,11 +14,12 @@ MainWindow::MainWindow(QWidget *parent)
       QString("octopus: Vernetztes Videocapture Tool ").append(versionOctopus));
 
   // Initalizing the table
-  ui->tableWidget->setColumnCount(4);
+  ui->tableWidget->setColumnCount(5);
   ui->tableWidget->setRowCount(1);
   ui->tableWidget->setColumnWidth(1, 20);
   ui->tableWidget->setColumnWidth(2, 20);
   ui->tableWidget->setColumnWidth(3, 20);
+  ui->tableWidget->setColumnWidth(4, 70);
   ui->tableWidget->horizontalHeader()->setSectionResizeMode(
       0, QHeaderView::Stretch);
   ui->tableWidget->setShowGrid(false);
@@ -169,11 +170,13 @@ void MainWindow::continueUpdateClientList() {
   headerLabels << "Name"
                << "D"
                << "M"
-               << "C";
+               << "C"
+               << "T";
   ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
   ui->tableWidget->horizontalHeaderItem(1)->setToolTip("Disk");
   ui->tableWidget->horizontalHeaderItem(2)->setToolTip("Memory");
   ui->tableWidget->horizontalHeaderItem(3)->setToolTip("CPU");
+  ui->tableWidget->horizontalHeaderItem(4)->setToolTip("Time");
   ui->tableWidget->horizontalHeader()->show();
 
   // Update each Row/Client. Iterator can't be used here because index is needed
@@ -187,6 +190,7 @@ void MainWindow::continueUpdateClientList() {
     int DiskUsage = client->disk;
     int MemUsage = client->mem;
     int CPUUsage = client->cpu;
+    QString time = client->currentTime;
 
     // Update 'LED' of DiskUsage
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
@@ -212,6 +216,11 @@ void MainWindow::continueUpdateClientList() {
         ->setBackgroundColor(getColorFromPercent(CPUUsage));
     ui->tableWidget->item(i, 3)->setFont(QFont("Arial", 8));
 
+//     Update 'LED' of Time
+    ui->tableWidget->setItem(i, 4, new QTableWidgetItem(time));
+    ui->tableWidget->item(i, 4)
+        ->setToolTip("Time: " + time);
+    ui->tableWidget->item(i, 4)->setFont(QFont("Arial", 8));
     // Adds Usage in Percent to the 'LED'
     if (showPercentage) {
       ui->tableWidget->item(i, 1)->setText(QString::number(DiskUsage));

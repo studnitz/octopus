@@ -19,7 +19,7 @@ class ClientGui {
    * @param mem
    * @param disk
    */
-  ClientGui(QString ip, QString name, float cpu, float mem, float disk, QStringList devices);
+  ClientGui(QString ip, QString name, float cpu, float mem, float disk, QStringList devices, QString currentTime);
   /**
    * @brief ip
    * Stores the IP-Address of a client
@@ -46,6 +46,7 @@ class ClientGui {
    */
   float disk;
   QStringList devices;
+  QString currentTime;
 };
 
 #endif  // CLIENTGUI_H

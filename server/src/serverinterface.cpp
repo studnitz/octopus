@@ -60,6 +60,7 @@ QJsonObject ServerInterface::getJsonInfo() {
     jO["Disk"] = serverThread->clientDiskUsage;
     jO["Filename"] = serverThread->clientFilePath;
     jO["Devices"] = QJsonArray::fromStringList(serverThread->clientDevices);
+    jO["Time"] = serverThread->clientTime;
     clientArray.append(jO);
   }
   QJsonObject json;

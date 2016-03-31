@@ -47,6 +47,7 @@ void GUIInterface::readData(QJsonObject json) {
           float mem = o["Memory"].toDouble();
           float disk = o["Disk"].toDouble();
           QString name = o["Name"].toString();
+          QString currentTime = o["Time"].toString();
           QJsonArray deviceArray = o["Devices"].toArray();
           QStringList devices = QStringList();
           bool changed = false;
@@ -63,7 +64,7 @@ void GUIInterface::readData(QJsonObject json) {
           if (changed) {
             emit deviceListUpdated(*deviceList_);
           }
-          ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk, devices);
+          ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk, devices, currentTime);
           clients->append(Client);
         }
       }
