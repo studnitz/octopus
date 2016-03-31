@@ -27,7 +27,8 @@ class ExportierenDialog : public QDialog {
  public slots:
   void exportFinished();
 
- private slots:
+  void exportErrored();
+private slots:
   void on_startButton_clicked();
   void new_progress();
 

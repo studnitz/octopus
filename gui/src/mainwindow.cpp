@@ -130,6 +130,8 @@ void MainWindow::exportierenDialogButton() {
   ExportierenDialog *eD = new ExportierenDialog(this);
   connect(guiInterface, &GUIInterface::exportIsFinished, eD,
           &ExportierenDialog::exportFinished);
+  connect(guiInterface, &GUIInterface::exportErrored, eD,
+          &ExportierenDialog::exportErrored);
   eD->show();
 }
 

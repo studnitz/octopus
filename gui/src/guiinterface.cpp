@@ -72,7 +72,9 @@ void GUIInterface::readData(QJsonObject json) {
   } else if (json["cmd"] == "getExportStatus") {
     exportStatus = json["data"].toObject()["exportStatus"].toDouble();
     exportFinished = json["data"].toObject()["exportFinished"].toBool();
+    exportError = json["data"].toObject()["exportError"].toBool();
     if (exportFinished) emit exportIsFinished();
+    if (exportError) emit exportErrored();
     qDebug() << "JSON receiveData, exportStatus: " << exportStatus;
   }
 }

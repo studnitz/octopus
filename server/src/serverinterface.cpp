@@ -73,9 +73,14 @@ void ServerInterface::exporterProgressChange(float value) {
   qDebug() << "exporterProgresChange: " << value;
 }
 
-void ServerInterface::exportIsFinished() {
-  exportFinished = true;
-  qDebug() << "exportFinished!";
+void ServerInterface::exportIsFinished(bool withoutError) {
+  if (withoutError) {
+    exportFinished = true;
+    qDebug() << "exportFinished wihtout Errors!";
+  } else {
+    exportError = true;
+    qDebug() << "exportFinished with Errors!";
+  }
 }
 
 void ServerInterface::executeCommand(const QJsonObject &json) {
@@ -102,10 +107,9 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       QJsonObject data = QJsonObject();
       data["exportStatus"] = exportStatus;
       data["exportFinished"] = exportFinished;
+      data["exportError"] = exportError;
       sendData(json["cmd"].toString(), data);
     } else if (json["cmd"].toString().compare("startExport") == 0) {
-      // TODO Start Export
-
       exportStatus = 0;
       Recording *rec = new Recording();
       rec->loadRecording("recordings/2016_03_29_15_53_32.off");
@@ -116,7 +120,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
               &ServerInterface::exportIsFinished);
       exporter->exportVideo();
     } else if (json["cmd"].toString().compare("reboot") == 0) {
-        server->rebootClients();
+      server->rebootClients();
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();

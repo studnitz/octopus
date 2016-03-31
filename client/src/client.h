@@ -142,6 +142,8 @@ private slots:
    */
   void getCommand();
 
+  bool deleteLastRecording();
+
  private:
   /**
    * @brief recorder holds the GstRecorder, that is our Gstreamer backend. All
@@ -162,6 +164,7 @@ private slots:
    */
   void executeCommand(QJsonObject json);
   QString currentTime();
+  QString lastRecording = "";
 };
 
 #endif  // TCPCLIENT_H

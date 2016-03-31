@@ -15,6 +15,15 @@ ExportierenDialog::ExportierenDialog(QWidget *parent)
 
 ExportierenDialog::~ExportierenDialog() { delete ui; }
 
+void ExportierenDialog::exportErrored() {
+  MainWindow *p = qobject_cast<MainWindow *>(this->parent());
+  ui->statusLabel->setText(tr("Status: Fehler beim Konvertieren. Bitte erneut starten!"));
+  timer->stop();
+  timer->disconnect();
+  ui->startButton->setEnabled(true);
+  p->guiInterface->exportStatus = 0;
+}
+
 void ExportierenDialog::exportFinished()
 {
   ui->statusLabel->setText(tr("Status: Video erfolgreich erstellt!"));

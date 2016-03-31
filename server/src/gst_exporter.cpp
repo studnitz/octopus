@@ -143,7 +143,7 @@ void GstExporter::onBusMessage(const QGst::MessagePtr& message) {
       // check if the pipeline exists before destroying it,
       // as we might get multiple error messages
       if (m_pipeline) {
-        stop();
+        stop(false);
       }
       qCritical()
           << message.staticCast<QGst::ErrorMessage>()->error().message();
@@ -172,13 +172,13 @@ void GstExporter::callbackNewPad(const QGst::ElementPtr& sender,
   pad->link(decoder->getStaticPad("sink"));
 }
 
-void GstExporter::stop() {
+void GstExporter::stop(bool withoutError) {
   m_pipeline->setState(QGst::StateNull);
   m_pipeline.clear();
   timer->stop();
   timer->disconnect();
 
-  emit exportFinished();
+  emit exportFinished(withoutError);
 
   qInfo() << "Videoexport finished!";
 }

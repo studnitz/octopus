@@ -49,7 +49,7 @@ void Client::start(QString ip, quint16 port) {
 }
 
 void Client::reboot() {
-  QCoreApplication *app = qobject_cast<QCoreApplication* >(this->parent());
+  QCoreApplication *app = qobject_cast<QCoreApplication *>(this->parent());
   qInfo() << "Rebooting now...";
   app->exit(EXIT_CODE_REBOOT);
 }
@@ -70,7 +70,12 @@ void Client::getCommand() {
     json = QJsonDocument::fromJson(ba).object();
 
     executeCommand(json);
-  }
+    }
+}
+
+bool Client::deleteLastRecording()
+{
+  return QFile::remove(lastRecording);
 }
 
 void Client::sendData(QString cmd, QJsonObject &str) {
@@ -100,20 +105,29 @@ QJsonObject Client::getJsonInfo() {
 
 void Client::executeCommand(QJsonObject json) {
   if (!json.isEmpty()) {
-    if (json["cmd"].toString().compare("getInfo") == 0) {
+      QString command = json["cmd"].toString();
+    if (command == "getInfo") {
       // do getInfo
       QJsonObject data = getJsonInfo();
       sendData(json["cmd"].toString(), data);
       return;
-    } else if (json["cmd"].toString().compare("recordLocally") == 0) {
+    } else if (command == "recordLocally") {
       QString filename = recorder.recordLocally();
+      lastRecording = filename;
       QJsonObject data;
       data["Filename"] = filename;
       sendData(json["cmd"].toString(), data);
-    } else if (json["cmd"].toString().compare("stopCameras") == 0) {
+    } else if (command == "stopCameras") {
       recorder.stopRecording();
-    } else if (json["cmd"].toString().compare("reboot") == 0) {
+    } else if (command == "reboot") {
       reboot();
+    } else if (command == "removeLastRecording") {
+      QJsonObject data;
+      data["fileRemoved"] = false;
+      if (deleteLastRecording()) {
+        data["fileRemoved"] = true;
+        sendData(json["cmd"].toString(), data);
+      }
     }
   }
 }

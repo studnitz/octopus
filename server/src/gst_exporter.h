@@ -31,7 +31,7 @@ class GstExporter : public QObject {
  signals:
 
   void progressChanged(float value);
-  void exportFinished();
+  void exportFinished(bool withoutError);
 
  public slots:
 
@@ -56,7 +56,7 @@ class GstExporter : public QObject {
 
   void onBusMessage(const QGst::MessagePtr& message);
 
-  void stop();
+  void stop(bool withoutError = true);
   QGst::BinPtr createEncoder();
   QGst::BinPtr createDecoder(const int i);
   void callbackNewPad(const QGst::ElementPtr& sender, const QGst::PadPtr& pad);

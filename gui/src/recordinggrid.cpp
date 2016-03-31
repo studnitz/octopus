@@ -9,7 +9,6 @@ RecordingGrid::RecordingGrid(quint8 width, quint8 height, QObject* parent)
   for (int i = 0; i < height; ++i) {
     GridRow row;
     for (int j = 0; j < width; ++j) {
-        qDebug() << "f0rf0r";
       GridElement entry;
       entry.id = 0;
       entry.hostname = "";
