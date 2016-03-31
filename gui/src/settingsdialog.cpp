@@ -8,14 +8,21 @@ SettingsDialog::SettingsDialog(QWidget *parent)
   int settingGridWidth = settings->value("octopus/GridWidth").toInt();
   int settingGridHeigth = settings->value("octopus/GridHeigth").toInt();
   int settingLocation = settings->value("octopus/Location").toInt();
+  int settingFps = settings->value("octopus/Fps").toInt();
   QString settingLocationData;
   QString Ip = settings->value("octopus/ServerIP").toString();
 
 
+  ui->recordQuality->addItem(tr("320x240"));
   ui->recordQuality->addItem(tr("640x480"));
-  ui->recordQuality->addItem(tr("800x600"));
   ui->recordQuality->addItem(tr("1280x960"));
   ui->recordQuality->setCurrentIndex(settingQuality);
+
+  ui->recordFps->addItem(tr("30"));
+  ui->recordFps->addItem(tr("15"));
+
+  int recordindex = settingFps == 30 ? 0 : 1;
+  ui->recordFps->setCurrentIndex(recordindex);
 
   ui->recordStorage->addItem(tr("Nur auf dem Server"));
   ui->recordStorage->addItem(
@@ -27,11 +34,6 @@ SettingsDialog::SettingsDialog(QWidget *parent)
         QString("Server, dann holen nach " + settingLocationData));
   }
   ui->recordStorage->setCurrentIndex(settingLocation);
-
-  ui->settingsOther->addItem("Platzhalter");
-  ui->settingsOther->addItem("für");
-  ui->settingsOther->addItem("andere");
-  ui->settingsOther->addItem("Optionen");
 
   if (Ip.compare("") == 0) {
     ui->lineEditIP->setText("192.168.1.1");
@@ -49,6 +51,7 @@ SettingsDialog::~SettingsDialog() { delete ui; }
 void SettingsDialog::on_buttonBox_accepted() {
   settings->setValue("octopus/Quality", ui->recordQuality->currentIndex());
   settings->setValue("octopus/Location", ui->recordStorage->currentIndex());
+  settings->setValue("octopus/Fps", ui->recordFps->currentText().toInt());
   settings->setValue("octopus/GridWidth", ui->gridWidth->value());
   settings->setValue("octopus/GridHeigth", ui->gridHeigth->value());
   settings->setValue("octopus/ServerIP", ui->lineEditIP->text());

@@ -41,17 +41,18 @@ void RecordingView::createAndStartRecording() {
   QJsonObject data1, data;
   rec->write(data1);
   quint16 resolution = p->settings->value("octopus/Quality").toInt();
-  quint16 height, width;
+  quint16 fps, height, width;
+  fps = p->settings->value("octopus/Fps").toInt();
 
   switch (resolution) {
     case 0: {
-      width = 640;
-      height = 480;
+      width = 320;
+      height = 240;
       break;
     }
     case 1:
-      width = 800;
-      height = 640;
+      width = 640;
+      height = 480;
       break;
     case 2:
       width = 1280;
@@ -65,7 +66,7 @@ void RecordingView::createAndStartRecording() {
 
   data1["width"] = width;
   data1["height"] = height;
-  data1["fps"] = 30;
+  data1["fps"] = fps;
   data["data"] = data1;
   qDebug() << "JSONREC:" << data;
   p->guiInterface->sendData("recordLocally", data);

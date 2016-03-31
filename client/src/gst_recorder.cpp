@@ -9,7 +9,7 @@ GstRecorder::GstRecorder(quint16 width, quint16 height, quint16 fps,
       devicepath(device) {
   QGst::init();
   deviceNumber = getDeviceNumber(devicepath);
-  qInfo() << "GstRecoder: Initilaizing...";
+  qDebug() << "GstRecoder: Initilaizing...";
   if (QGst::ElementFactory::find("omxh264enc")) {
     usesOmx = true;
     qDebug() << "GstRecoder: using OpenMAX";
@@ -192,6 +192,7 @@ void GstRecorder::stop() {
   m_pipeline->setState(QGst::StateNull);
 
   m_pipeline.clear();
+  emit pipelineCleared();
   qDebug() << "recording stopped";
 }
 

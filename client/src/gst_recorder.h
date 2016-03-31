@@ -77,6 +77,10 @@ class GstRecorder : public QObject {
    */
   void createRtpSink(quint16 port = 1337, QString address = "127.0.0.1");
 
+ signals:
+
+  void pipelineCleared();
+
  private:
   /**
    * @brief createVideoSrcBin is used to create a video source (usually v4l2)

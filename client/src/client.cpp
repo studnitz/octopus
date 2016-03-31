@@ -18,7 +18,6 @@ int const Client::EXIT_CODE_REBOOT = 1337;
 
 Client::~Client() {
   qDebug() << "Destroy Client";
-  delete recorder;
   socket.close();
 }
 QStringList Client::listAllDevices() {
@@ -51,7 +50,7 @@ void Client::start(QString ip, quint16 port) {
 
 void Client::reboot() {
   QCoreApplication *app = qobject_cast<QCoreApplication *>(this->parent());
-  qInfo() << "Rebooting now...";
+  qDebug() << "Rebooting now...";
   app->exit(EXIT_CODE_REBOOT);
 }
 
@@ -132,6 +131,7 @@ void Client::executeCommand(QJsonObject json) {
     } else if (command == "stopCameras") {
       qDebug() << "Client executeCommand(): stopRecording";
       recorder->stopRecording();
+      connect(recorder, &GstRecorder::pipelineCleared, &GstRecorder::deleteLater);
     } else if (command == "reboot") {
       reboot();
     } else if (command == "removeLastRecording") {
