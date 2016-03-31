@@ -15,10 +15,10 @@ PlayerSettingsDialog::PlayerSettingsDialog(quint8 index, QWidget *parent)
   QPair<int, int> posPair = p->recording->grid.getVideoFilePositionById(
       p->videoPlayer->at(index)->videoFileId);
 
-  ui->spinBox_2->setValue(posPair.first);
-  ui->spinBox_2->setMaximum(p->recording->grid.width - 1);
-  ui->spinBox_4->setValue(posPair.second);
-  ui->spinBox_4->setMaximum(p->recording->grid.height - 1);
+  ui->spinBox_4->setValue(posPair.first);
+  ui->spinBox_4->setMaximum(p->recording->grid.width - 1);
+  ui->spinBox_2->setValue(posPair.second);
+  ui->spinBox_2->setMaximum(p->recording->grid.height - 1);
 
   ui->spinBox->setValue(1);
   ui->spinBox_3->setValue(1);
@@ -33,8 +33,8 @@ void PlayerSettingsDialog::on_buttonBox_accepted() {
   QPair<int, int> pos = parent->recording->grid.getVideoFilePositionById(
       parent->videoPlayer->at(playerIndex)->videoFileId);
 
-  if (pos.first != ui->spinBox_2->value() ||
-      pos.second != ui->spinBox_4->value())
+  if (pos.first != ui->spinBox_4->value() ||
+      pos.second != ui->spinBox_2->value())
     changesDone = true;
 
   if (changesDone) {
@@ -43,13 +43,13 @@ void PlayerSettingsDialog::on_buttonBox_accepted() {
         parent->videoPlayer->at(playerIndex)->videoFileId);
     parent->recording->grid.deleteSource(pos.second, pos.first);
     if (parent->recording->grid
-            .grid[ui->spinBox_2->value()][ui->spinBox_4->value()]
+            .grid[ui->spinBox_4->value()][ui->spinBox_2->value()]
             .id != 0) {
-      parent->recording->grid.deleteSource(ui->spinBox_4->value(),
-                                           ui->spinBox_2->value());
+      parent->recording->grid.deleteSource(ui->spinBox_2->value(),
+                                           ui->spinBox_4->value());
     }
-    parent->recording->grid.addSource(vid, ui->spinBox_4->value(),
-                                      ui->spinBox_2->value());
+    parent->recording->grid.addSource(vid, ui->spinBox_2->value(),
+                                      ui->spinBox_4->value());
 
     // Delete all existing players
     for (int i = parent->videoPlayer->length() - 1; i >= 0; i--)

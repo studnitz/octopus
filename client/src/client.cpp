@@ -18,6 +18,7 @@ int const Client::EXIT_CODE_REBOOT = 1337;
 
 Client::~Client() {
   qDebug() << "Destroy Client";
+  recorder.deleteLater();
   socket.close();
 }
 QStringList Client::listAllDevices() {
