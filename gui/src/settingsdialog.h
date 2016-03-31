@@ -3,6 +3,10 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <QMessageBox>
+#include <QFileDialog>
+
+#include "ui_settingsdialog.h"
 
 namespace Ui {
 class SettingsDialog;

@@ -2,6 +2,9 @@
 #define VIDEOPLAYER_H
 
 #include <QVideoWidget>
+#include <QMouseEvent>
+#include <QMenu>
+#include <QMessageBox>
 
 /**
  * @brief The VideoPlayer class inherits from QVideoWidget and is a display

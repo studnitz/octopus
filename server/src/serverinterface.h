@@ -6,7 +6,10 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <src/server.h>
+#include <QThread>
+
+#include "server.h"
+#include "ftpdownloader.h"
 #include "gst_exporter.h"
 
 /**
@@ -16,7 +19,7 @@
  * wasn't my idea.) Anyway, in this relationship the Server is the slave as all
  * the requests come from the GUI and the server simply answers them. The
  * ServerInterface has a reference to the Server, but not the other way round.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016
@@ -66,6 +69,8 @@ class ServerInterface : public QTcpServer {
    * executes executeCommand on it.
    */
   void receiveData();
+
+  void putFilesToGui();
 
  private:
   /**

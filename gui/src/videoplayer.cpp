@@ -1,7 +1,4 @@
 #include "videoplayer.h"
-#include <QMouseEvent>
-#include <QMenu>
-#include <QMessageBox>
 
 VideoPlayer::VideoPlayer(quint8 index, quint32 videoFileId, QWidget *parent)
     : QVideoWidget(parent) {

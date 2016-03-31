@@ -1,7 +1,5 @@
 #include "grid.h"
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QDebug>
+
 Grid::Grid(quint8 width, quint8 height) : width(width), height(height) {
   grid = QList<QList<VideoFile> >();
   for (int i = 0; i < height; i++) {

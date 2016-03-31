@@ -1,8 +1,5 @@
 #include "recordingview.h"
-
 #include "mainwindow.h"
-
-#include <QLabel>
 
 RecordingView::RecordingView(QObject *parent, QWidget *tab) : QObject(parent) {
   this->tab = tab;

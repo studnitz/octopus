@@ -4,6 +4,9 @@
 #include <QDialog>
 #include <QTimer>
 
+#include "ui_exportierendialog.h"
+#include "mainwindow.h"
+
 namespace Ui {
 class ExportierenDialog;
 }

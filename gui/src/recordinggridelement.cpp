@@ -1,8 +1,5 @@
 #include "recordinggridelement.h"
 
-#include <QMouseEvent>
-#include <QMenu>
-
 RecordingGridElement::RecordingGridElement(QWidget *parent) : QLabel(parent)
 {
 

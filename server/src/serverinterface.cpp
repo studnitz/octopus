@@ -1,7 +1,5 @@
 #include "serverinterface.h"
 
-#include <QThread>
-
 ServerInterface::ServerInterface(QObject *parent) : QTcpServer(parent) {}
 
 void ServerInterface::start(quint16 port) {
@@ -103,6 +101,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       QThread::msleep(100);
       server->downloadFiles();
       server->rec->saveRecording();
+      putFilesToGui();
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
       QJsonObject data = QJsonObject();
       data["exportStatus"] = exportStatus;
@@ -126,4 +125,17 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       qDebug() << "data: " << json["data"].toString();
     }
   }
+}
+
+void ServerInterface::putFilesToGui() {
+  QThread::sleep(10);
+  qDebug() << "fire";
+  QString cmd = "getFilesfromServer";
+  QJsonObject recordingObject;
+  server->rec->write(recordingObject);
+  QJsonObject data;
+  data["timename"] = server->rec->datetime.toString("yyyy_MM_dd_hh_mm_ss");
+  data["recording"] = recordingObject;
+  sendData(cmd, data);
+  return;
 }

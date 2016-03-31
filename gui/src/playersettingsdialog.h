@@ -2,6 +2,10 @@
 #define PLAYERSETTINGSDIALOG_H
 
 #include <QDialog>
+#include <QMessageBox>
+
+#include "ui_playersettingsdialog.h"
+#include "mainwindow.h"
 
 namespace Ui {
 class PlayerSettingsDialog;

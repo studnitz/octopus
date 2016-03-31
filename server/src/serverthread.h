@@ -7,10 +7,8 @@
 #include <QVector>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
 
 /**
  * @brief The ServerThread class represents a client inside of the Server. Every

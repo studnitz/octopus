@@ -3,6 +3,10 @@
 
 #include <QObject>
 #include <QPair>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QDebug>
+
 #include "videofile.h"
 
 /**

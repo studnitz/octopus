@@ -5,8 +5,11 @@
 #include <QDir>
 #include <QListWidget>
 #include <QMediaPlayer>
-#include <../server/src/recording.h>
+
 #include "videoplayer.h"
+#include "recordingview.h"
+
+#include <../server/src/recording.h>
 
 /**
  * @brief The PlaybackView class stores the functionality from MainWindow that

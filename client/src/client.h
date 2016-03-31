@@ -9,6 +9,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QStorageInfo>
+#include <QProcess>
+#include <QStringList>
 
 #include "gst_recorder.h"
 
@@ -17,7 +20,7 @@
  * stopping and manipulating recordings using the GstRecorder class. If a client
  * is not connected yet, it tries to connect to the Server that has a fixed IP
  * inside the local network.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

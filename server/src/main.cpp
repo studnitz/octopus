@@ -1,7 +1,7 @@
 #include <QCoreApplication>
+
 #include "server.h"
-#include "src/serverinterface.h"
-#include "gst_exporter.h"
+#include "serverinterface.h"
 
 /**
  * @brief main starts the server.
@@ -12,17 +12,10 @@
  */
 int main(int argc, char* argv[]) {
   QCoreApplication a(argc, argv);
-
-  //Recording* rec = new Recording();
-  //rec->loadRecording("recordings/2016_03_29_15_53_32.off");
   Server server;
   server.startServer();
   ServerInterface serverInterface;
   serverInterface.setServer(&server);
   serverInterface.start();
-
-//  GstExporter* exporter = new GstExporter(rec, 1280, 960);
-//  exporter->exportVideo();
-
   return a.exec();
 }
