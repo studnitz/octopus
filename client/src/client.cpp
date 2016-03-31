@@ -3,6 +3,7 @@
 #include <QProcess>
 #include <QStringList>
 #include <QTime>
+#include <QCoreApplication>
 
 Client::Client(QObject *parent) : QObject(parent) {
   if (!this->connect(&socket, SIGNAL(connected()), this, SLOT(getState()))) {
@@ -12,6 +13,8 @@ Client::Client(QObject *parent) : QObject(parent) {
   }
   connect(&socket, SIGNAL(readyRead()), this, SLOT(getCommand()));
 }
+
+int const Client::EXIT_CODE_REBOOT = 1337;
 
 Client::~Client() {
   qDebug() << "Destroy Client";
@@ -41,8 +44,14 @@ void Client::start(QString ip, quint16 port) {
   if (socket.waitForConnected()) {  // Timeout included in waitfor
     qDebug() << "Client connected";
   } else {
-    //qDebug() << "Client not connected";
+    // qDebug() << "Client not connected";
   }
+}
+
+void Client::reboot() {
+  QCoreApplication *app = qobject_cast<QCoreApplication* >(this->parent());
+  qInfo() << "Rebooting now...";
+  app->exit(EXIT_CODE_REBOOT);
 }
 
 QString Client::currentTime() {
@@ -50,7 +59,6 @@ QString Client::currentTime() {
   QString result = current.toString();
 
   return result;
-
 }
 
 void Client::getCommand() {
@@ -104,6 +112,8 @@ void Client::executeCommand(QJsonObject json) {
       sendData(json["cmd"].toString(), data);
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
       recorder.stopRecording();
+    } else if (json["cmd"].toString().compare("reboot") == 0) {
+      reboot();
     }
   }
 }

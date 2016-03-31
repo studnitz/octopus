@@ -32,6 +32,8 @@ class Client : public QObject {
 
   ~Client();
 
+  static int const EXIT_CODE_REBOOT;
+
   /**
    * @brief start tries to connect to a given IP on a given port through socket
    * @param serverIp The IP to connect to. When no parameters are specified, the
@@ -129,7 +131,9 @@ class Client : public QObject {
    */
   QTcpSocket::SocketState getState() const;
 
- private slots:
+protected slots:
+  void reboot();
+private slots:
 
   /**
    * @brief getCommand is started every time when readyRead is emmited.

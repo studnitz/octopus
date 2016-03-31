@@ -6,6 +6,7 @@
 #include <QtWidgets/QLabel>
 #include <QDialog>
 #include <QInputDialog>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -51,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::saveRecording);
   connect(ui->reloadButton, &QPushButton::clicked, this,
           &MainWindow::updateRecordingList);
+  connect(ui->rebootClientsButton, &QPushButton::clicked, this,
+          &MainWindow::rebootAllClients);
   QTimer *timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &MainWindow::continueUpdateClientList);
   timer->start(50);
@@ -112,9 +115,21 @@ void MainWindow::settingsDialogButton() {
   sD->show();
 }
 
+void MainWindow::rebootAllClients() {
+  QMessageBox::StandardButtons buttons = QMessageBox::Ok | QMessageBox::Cancel;
+  QMessageBox::StandardButton answer = QMessageBox::question(
+      this, "Confirmation", "Wollen Sie wirklich alle Clients neustarten?", buttons);
+  if (answer == QMessageBox::Ok) {
+      QJsonObject data;
+      guiInterface->sendData("reboot", data);
+      qDebug() << "Rebooting all Clients!";
+  }
+}
+
 void MainWindow::exportierenDialogButton() {
   ExportierenDialog *eD = new ExportierenDialog(this);
-  connect(guiInterface, &GUIInterface::exportIsFinished, eD, &ExportierenDialog::exportFinished);
+  connect(guiInterface, &GUIInterface::exportIsFinished, eD,
+          &ExportierenDialog::exportFinished);
   eD->show();
 }
 
@@ -216,10 +231,9 @@ void MainWindow::continueUpdateClientList() {
         ->setBackgroundColor(getColorFromPercent(CPUUsage));
     ui->tableWidget->item(i, 3)->setFont(QFont("Arial", 8));
 
-//     Update 'LED' of Time
+    //     Update 'LED' of Time
     ui->tableWidget->setItem(i, 4, new QTableWidgetItem(time));
-    ui->tableWidget->item(i, 4)
-        ->setToolTip("Time: " + time);
+    ui->tableWidget->item(i, 4)->setToolTip("Time: " + time);
     ui->tableWidget->item(i, 4)->setFont(QFont("Arial", 8));
     // Adds Usage in Percent to the 'LED'
     if (showPercentage) {

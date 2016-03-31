@@ -188,6 +188,13 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="rebootClientsButton">
+                  <property name="text">
+                   <string>Alle Clients neustarten</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QGroupBox" name="deviceBox">
                   <property name="title">
                    <string>Video Devices</string>

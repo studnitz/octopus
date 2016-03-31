@@ -115,7 +115,8 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       connect(exporter, &GstExporter::exportFinished, this,
               &ServerInterface::exportIsFinished);
       exporter->exportVideo();
-
+    } else if (json["cmd"].toString().compare("reboot") == 0) {
+        server->rebootClients();
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();

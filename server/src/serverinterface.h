@@ -23,7 +23,7 @@
  */
 class ServerInterface : public QTcpServer {
  public:
-   double exportStatus = 0;
+  double exportStatus = 0;
 
   /**
    * @brief ServerInterface is the standard constructor. ServerInterface is
@@ -52,10 +52,13 @@ class ServerInterface : public QTcpServer {
    */
   QJsonObject getJsonInfo();
 
-public slots:
+ signals:
+  void rebootClients();
+
+ public slots:
   void exporterProgressChange(float value);
   void exportIsFinished();
-private slots:
+ private slots:
 
   /**
    * @brief receiveData is called when new data comes in through the socket.
