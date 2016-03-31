@@ -96,10 +96,6 @@ void MainWindow::setPosition(int m) {
 
 void MainWindow::positionChanged(qint64 m) {
   ui->videoSeeker->setValue(m);
-  // ui->labelTime->setText(QString::number(m));
-
-  ui->labelNowTime->setText(
-      QDateTime::fromTime_t(m / 1000).toUTC().toString("hh:mm:ss"));
 }
 
 void MainWindow::durationChanged(qint64 m) {
