@@ -367,13 +367,6 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
-             <widget class="QLabel" name="labelNowTime">
-              <property name="text">
-               <string>--:--:--</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QSlider" name="videoSeeker">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -453,7 +446,7 @@
      <x>0</x>
      <y>0</y>
      <width>911</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
   </widget>

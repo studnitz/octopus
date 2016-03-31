@@ -1,6 +1,20 @@
 #include "gst_recorder.h"
 
-GstRecorder::GstRecorder(QObject *parent) : QObject(parent) { QGst::init(); }
+GstRecorder::GstRecorder(quint16 width, quint16 height, quint16 fps,
+                         QString device, QObject *parent)
+    : QObject(parent),
+      videoWitdhPx(width),
+      videoHeightPx(height),
+      framerate(fps),
+      devicepath(device) {
+  QGst::init();
+  deviceNumber = getDeviceNumber(devicepath);
+  qInfo() << "GstRecoder: Initilaizing...";
+  if (QGst::ElementFactory::find("omxh264enc")) {
+    usesOmx = true;
+    qDebug() << "GstRecoder: using OpenMAX";
+  }
+}
 
 GstRecorder::~GstRecorder() {}
 
@@ -8,24 +22,65 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
   QGst::BinPtr videoBin;
 
   try {
-    QGst::ElementFactoryPtr encoder = QGst::ElementFactory::find("omxh264enc");
-    if (!encoder) {
-      // if we don't have omx (when we're not on a RPI), use x264enc instead
-      videoBin = QGst::Bin::fromDescription(
-          "v4l2src device=/dev/video0 ! x264enc tune=zerolatency "
-          "byte-stream=true ");
-      qDebug() << "Using x264enc on device /dev/video0";
+    videoBin = QGst::Bin::create();
+    QGst::ElementPtr src = QGst::ElementFactory::make("v4l2src");
+    src->setProperty("device", devicepath);
+
+    qDebug() << "GstRecorder: v4l2src with device: " << devicepath;
+
+    QGst::ElementPtr encoder;
+    QGst::ElementPtr capsfilter =
+        createCapsFilter(videoWitdhPx, videoHeightPx, framerate);
+
+    if (usesOmx) {
+      encoder = QGst::ElementFactory::make("omxh264enc");
     } else {
-      videoBin = QGst::Bin::fromDescription("v4l2src ! omxh264enc ");
-      qDebug() << "Using omxh264enc";
+      encoder = QGst::ElementFactory::make("x264enc");
+      qDebug() << "GstRecoder: created x264enc";
     }
 
-    return videoBin;
+    videoBin->add(src, capsfilter, encoder);
+    videoBin->linkMany(src, capsfilter, encoder);
+
+    qDebug() << "GstRecorder: createVideoSrcBin: added and linked the elements";
+
+    QGst::PadPtr encoderSrcPad = encoder->getStaticPad("src");
+    videoBin->addPad(QGst::GhostPad::create(encoderSrcPad, "src"));
 
   } catch (const QGlib::Error &error) {
     qDebug() << "Failed to create video source bin:" << error;
     return QGst::BinPtr();
   }
+  return videoBin;
+}
+
+QGst::ElementPtr GstRecorder::createCapsFilter(const quint16 width,
+                                               const quint16 height,
+                                               const quint16 fps) {
+  qDebug() << "creating capsfilter with width: " << width
+           << ", height: " << height << ", fps: " << fps;
+  QGst::ElementPtr capsfilter;
+  try {
+    capsfilter = QGst::ElementFactory::make("capsfilter");
+
+    const QGst::CapsPtr caps = QGst::Caps::createSimple("video/x-raw");
+    caps->setValue("width", (int)width);
+    caps->setValue("height", (int)height);
+    caps->setValue("framerate", QGst::Fraction((int)fps, 1));
+
+    capsfilter->setProperty("caps", caps);
+  } catch (const QGlib::Error &error) {
+    qCritical() << "Failed to create a capsfilter: " << error;
+    return QGst::ElementPtr();
+  }
+  return capsfilter;
+}
+
+quint16 GstRecorder::getDeviceNumber(QString path) {
+  QRegExp rx("(\\d+)");
+  rx.indexIn(path);
+
+  return rx.cap(1).toInt();
 }
 
 QGst::BinPtr GstRecorder::createVideoMuxBin() {
@@ -42,7 +97,7 @@ QGst::BinPtr GstRecorder::createVideoMuxBin() {
   }
 }
 
-QString GstRecorder::recordLocally() {
+const QString GstRecorder::recordLocally() {
   QGst::BinPtr videoSrcBin = createVideoSrcBin();
   QGst::BinPtr videoMuxBin = createVideoMuxBin();
   QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
@@ -50,9 +105,9 @@ QString GstRecorder::recordLocally() {
   QString currentTime =
       QDateTime::currentDateTime().toString("yyyy_MM_dd_hh_mm_ss");
 
-  QString filename =
-      QDir::current().absoluteFilePath(currentTime + ".mp4");
-  qDebug() << "writing to:" << filename;
+  const QString filename = QDir::current().absoluteFilePath(
+      currentTime + "-device-" + QString::number(deviceNumber) + ".mp4");
+  qDebug() << "GstRecorder: writing to:" << filename;
   sink->setProperty("location", filename);
 
   if (!videoSrcBin || !sink) {

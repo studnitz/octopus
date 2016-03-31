@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>338</height>
+    <width>430</width>
+    <height>296</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,33 +47,23 @@
          </property>
          <layout class="QFormLayout" name="formLayout">
           <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Intervall für das Erneuern der Client-Status-LEDs:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="updateIntervall"/>
-          </item>
-          <item row="2" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Qualität der Aufnahmen:</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="1">
            <widget class="QComboBox" name="recordQuality"/>
           </item>
-          <item row="3" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Speichderort für die Aufnahmen:</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="2" column="1">
            <widget class="QComboBox" name="recordStorage"/>
           </item>
          </layout>

@@ -4,27 +4,17 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     : QDialog(parent), ui(new Ui::SettingsDialog) {
   ui->setupUi(this);
 
-  int settingIntervall = settings->value("octopus/Intervall").toInt();
-  int settingQuality = settings->value("octopus/Quality").toInt();
+  int settingQuality = settings->value(("octopus/Quality")).toInt();
   int settingGridWidth = settings->value("octopus/GridWidth").toInt();
   int settingGridHeigth = settings->value("octopus/GridHeigth").toInt();
   int settingLocation = settings->value("octopus/Location").toInt();
   QString settingLocationData;
   QString Ip = settings->value("octopus/ServerIP").toString();
 
-  ui->updateIntervall->addItem(tr("0.5 Sekunden"));
-  ui->updateIntervall->addItem(tr("1 Sekunde"));
-  ui->updateIntervall->addItem(tr("2 Sekunden"));
-  ui->updateIntervall->addItem(tr("5 Sekunden"));
-  ui->updateIntervall->addItem(tr("10 Sekunden"));
-  ui->updateIntervall->addItem(tr("20 Sekunden"));
-  ui->updateIntervall->setCurrentIndex(settingIntervall);
 
-  ui->recordQuality->addItem(tr("144p"));
-  ui->recordQuality->addItem(tr("240p"));
-  ui->recordQuality->addItem(tr("360p"));
-  ui->recordQuality->addItem(tr("720p"));
-  ui->recordQuality->addItem(tr("1080p"));
+  ui->recordQuality->addItem(tr("640x480"));
+  ui->recordQuality->addItem(tr("800x600"));
+  ui->recordQuality->addItem(tr("1280x960"));
   ui->recordQuality->setCurrentIndex(settingQuality);
 
   ui->recordStorage->addItem(tr("Nur auf dem Server"));
@@ -48,16 +38,15 @@ SettingsDialog::SettingsDialog(QWidget *parent)
   } else {
     ui->lineEditIP->setText(Ip);
   }
-  ui->gridWidth->setMaximum(9999);
+  ui->gridWidth->setMaximum(20);
   ui->gridWidth->setValue(settingGridWidth);
-  ui->gridHeigth->setMaximum(9999);
+  ui->gridHeigth->setMaximum(20);
   ui->gridHeigth->setValue(settingGridHeigth);
 }
 
 SettingsDialog::~SettingsDialog() { delete ui; }
 
 void SettingsDialog::on_buttonBox_accepted() {
-  settings->setValue("octopus/Intervall", ui->updateIntervall->currentIndex());
   settings->setValue("octopus/Quality", ui->recordQuality->currentIndex());
   settings->setValue("octopus/Location", ui->recordStorage->currentIndex());
   settings->setValue("octopus/GridWidth", ui->gridWidth->value());

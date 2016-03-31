@@ -29,9 +29,10 @@ void Server::getInfo() {
   broadcastCommand(json);
 }
 
-void Server::recordLocally() {
+void Server::recordLocally(QJsonObject& settings) {
   QJsonObject json;
   json["cmd"] = "recordLocally";
+  json["data"] = settings;
   broadcastCommand(json);
 }
 

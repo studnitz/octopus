@@ -18,6 +18,7 @@ int const Client::EXIT_CODE_REBOOT = 1337;
 
 Client::~Client() {
   qDebug() << "Destroy Client";
+  delete recorder;
   socket.close();
 }
 QStringList Client::listAllDevices() {
@@ -112,13 +113,25 @@ void Client::executeCommand(QJsonObject json) {
       sendData(json["cmd"].toString(), data);
       return;
     } else if (command == "recordLocally") {
-      QString filename = recorder.recordLocally();
+
+      quint16 height, width, fps;
+
+      QJsonObject settings = json["data"].toObject();
+      height = settings["height"].toInt();
+      width = settings["width"].toInt();
+      fps = settings["fps"].toInt();
+
+      recorder = new GstRecorder(width, height, fps);
+
+      QString filename = recorder->recordLocally();
+
       lastRecordingPath = filename;
       QJsonObject data;
       data["Filename"] = filename;
       sendData(json["cmd"].toString(), data);
     } else if (command == "stopCameras") {
-      recorder.stopRecording();
+      qDebug() << "Client executeCommand(): stopRecording";
+      recorder->stopRecording();
     } else if (command == "reboot") {
       reboot();
     } else if (command == "removeLastRecording") {

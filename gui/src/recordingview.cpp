@@ -40,6 +40,32 @@ void RecordingView::createAndStartRecording() {
   rec->saveRecording();
   QJsonObject data1, data;
   rec->write(data1);
+  quint16 resolution = p->settings->value("octopus/Quality").toInt();
+  quint16 height, width;
+
+  switch (resolution) {
+    case 0: {
+      width = 640;
+      height = 480;
+      break;
+    }
+    case 1:
+      width = 800;
+      height = 640;
+      break;
+    case 2:
+      width = 1280;
+      height = 960;
+      break;
+    default:
+      width = 640;
+      height = 480;
+      break;
+  }
+
+  data1["width"] = width;
+  data1["height"] = height;
+  data1["fps"] = 30;
   data["data"] = data1;
   qDebug() << "JSONREC:" << data;
   p->guiInterface->sendData("recordLocally", data);
@@ -67,7 +93,8 @@ void RecordingView::updateGrid() {
         emptyLabel->setFont(currentFont);
         gridLayout->addWidget(emptyLabel, j, k);
       } else {
-        QLabel *frameLabel = new QLabel(videoDeviceListModel->stringList().at(count));
+        QLabel *frameLabel =
+            new QLabel(videoDeviceListModel->stringList().at(count));
         frameLabel->setFrameStyle(QFrame::Panel);
         frameLabel->setAlignment(Qt::AlignCenter);
         QFont currentFont = frameLabel->font();
@@ -81,7 +108,6 @@ void RecordingView::updateGrid() {
 }
 
 void RecordingView::updateGrid2() {
-
   gridLayout = tab->findChild<QGridLayout *>("recordingGrid");
   for (int i = 0; i < recGrid->height(); ++i) {
     for (int j = 0; j < recGrid->width(); ++j) {
@@ -112,7 +138,6 @@ QLabel *RecordingView::createEntry(RecordingGrid::GridElement *entry) const {
 
   return result;
 }
-
 
 void RecordingView::recordStart() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
