@@ -94,6 +94,8 @@ class Grid {
    */
   VideoFile& getVideoFileById(quint32 id);
 
+  qint16 size();
+
   /**
    * @brief grid is a 2-dimensinal list of VideoFiles. Pretty straightforward.
    */

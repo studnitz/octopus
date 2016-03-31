@@ -50,6 +50,7 @@ void GUIInterface::readData(QJsonObject json) {
           float mem = o["Memory"].toDouble();
           float disk = o["Disk"].toDouble();
           QString name = o["Name"].toString();
+          QString currentTime = o["Time"].toString();
           QJsonArray deviceArray = o["Devices"].toArray();
           QStringList devices = QStringList();
           bool changed = false;
@@ -66,13 +67,18 @@ void GUIInterface::readData(QJsonObject json) {
           if (changed) {
             emit deviceListUpdated(*deviceList_);
           }
-          ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk, devices);
+          ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk, devices, currentTime);
           clients->append(Client);
         }
       }
     }
   } else if (json["cmd"] == "getExportStatus") {
-    exportStatus = json["data"].toObject()["exportStatus"].toInt();
+    exportStatus = json["data"].toObject()["exportStatus"].toDouble();
+    exportFinished = json["data"].toObject()["exportFinished"].toBool();
+    exportError = json["data"].toObject()["exportError"].toBool();
+    if (exportFinished) emit exportIsFinished();
+    if (exportError) emit exportErrored();
+    qDebug() << "JSON receiveData, exportStatus: " << exportStatus;
   } else if (json["cmd"] == "getFilesfromServer") {
     QJsonObject recording = json["data"].toObject()["recording"].toObject();
     QString dirName = json["data"].toObject()["timename"].toString();

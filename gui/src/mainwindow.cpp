@@ -1,4 +1,12 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+#include <QHostInfo>
+#include <QDir>
+#include <QLabel>
+#include <QDialog>
+#include <QInputDialog>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -7,11 +15,12 @@ MainWindow::MainWindow(QWidget *parent)
       QString("octopus: Vernetztes Videocapture Tool ").append(versionOctopus));
 
   // Initalizing the table
-  ui->tableWidget->setColumnCount(4);
+  ui->tableWidget->setColumnCount(5);
   ui->tableWidget->setRowCount(1);
   ui->tableWidget->setColumnWidth(1, 20);
   ui->tableWidget->setColumnWidth(2, 20);
   ui->tableWidget->setColumnWidth(3, 20);
+  ui->tableWidget->setColumnWidth(4, 65);
   ui->tableWidget->horizontalHeader()->setSectionResizeMode(
       0, QHeaderView::Stretch);
   ui->tableWidget->setShowGrid(false);
@@ -43,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
           &MainWindow::saveRecording);
   connect(ui->reloadButton, &QPushButton::clicked, this,
           &MainWindow::updateRecordingList);
+  connect(ui->rebootClientsButton, &QPushButton::clicked, this,
+          &MainWindow::rebootAllClients);
   QTimer *timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &MainWindow::continueUpdateClientList);
   timer->start(1000);
@@ -127,8 +138,23 @@ void MainWindow::settingsDialogButton() {
   sD->show();
 }
 
+void MainWindow::rebootAllClients() {
+  QMessageBox::StandardButtons buttons = QMessageBox::Ok | QMessageBox::Cancel;
+  QMessageBox::StandardButton answer = QMessageBox::question(
+      this, "Confirmation", "Wollen Sie wirklich alle Clients neustarten?", buttons);
+  if (answer == QMessageBox::Ok) {
+      QJsonObject data;
+      guiInterface->sendData("reboot", data);
+      qDebug() << "Rebooting all Clients!";
+  }
+}
+
 void MainWindow::exportierenDialogButton() {
   ExportierenDialog *eD = new ExportierenDialog(this);
+  connect(guiInterface, &GUIInterface::exportIsFinished, eD,
+          &ExportierenDialog::exportFinished);
+  connect(guiInterface, &GUIInterface::exportErrored, eD,
+          &ExportierenDialog::exportErrored);
   eD->show();
 }
 
@@ -185,11 +211,13 @@ void MainWindow::continueUpdateClientList() {
   headerLabels << "Name"
                << "D"
                << "M"
-               << "C";
+               << "C"
+               << "T";
   ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
   ui->tableWidget->horizontalHeaderItem(1)->setToolTip("Disk");
   ui->tableWidget->horizontalHeaderItem(2)->setToolTip("Memory");
   ui->tableWidget->horizontalHeaderItem(3)->setToolTip("CPU");
+  ui->tableWidget->horizontalHeaderItem(4)->setToolTip("Time");
   ui->tableWidget->horizontalHeader()->show();
 
   // Update each Row/Client. Iterator can't be used here because index is needed
@@ -203,6 +231,7 @@ void MainWindow::continueUpdateClientList() {
     int DiskUsage = client->disk;
     int MemUsage = client->mem;
     int CPUUsage = client->cpu;
+    QString time = client->currentTime;
 
     // Update 'LED' of DiskUsage
     ui->tableWidget->setItem(i, 1, new QTableWidgetItem(""));
@@ -228,6 +257,10 @@ void MainWindow::continueUpdateClientList() {
         ->setBackgroundColor(getColorFromPercent(CPUUsage));
     ui->tableWidget->item(i, 3)->setFont(QFont("Arial", 8));
 
+    //     Update 'LED' of Time
+    ui->tableWidget->setItem(i, 4, new QTableWidgetItem(time));
+    ui->tableWidget->item(i, 4)->setToolTip("Time: " + time);
+    ui->tableWidget->item(i, 4)->setFont(QFont("Arial", 8));
     // Adds Usage in Percent to the 'LED'
     if (showPercentage) {
       ui->tableWidget->item(i, 1)->setText(QString::number(DiskUsage));

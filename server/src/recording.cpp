@@ -6,12 +6,12 @@ Recording::Recording(QDateTime datetime, Grid& grid)
     : datetime(datetime), grid(grid) {}
 
 void Recording::read(const QJsonObject &json) {
-  datetime = QDateTime::fromString(json["datetime"].toString());
+  datetime = QDateTime::fromString(json["datetime"].toString(), Qt::ISODate);
   grid.read(json["grid"].toObject());
 }
 
 void Recording::write(QJsonObject &json) const {
-  json["datetime"] = datetime.toString();
+  json["datetime"] = datetime.toString(Qt::ISODate);
   QJsonObject gridObject;
   grid.write(gridObject);
   json["grid"] = gridObject;
@@ -24,7 +24,7 @@ bool Recording::saveRecording() const {
   saveDir.cd("recordings");
   saveDir.mkdir(recordingTime);
   QFile saveFile(saveDir.absoluteFilePath(recordingTime.append(".off")));
-  qDebug() << saveDir.absolutePath();
+  qDebug() << "saveRecodring: absolutePath: " << saveDir.absolutePath();
   if (!saveFile.open(QIODevice::WriteOnly)) {
     qWarning("Couldn't open save file.");
     return false;

@@ -41,6 +41,12 @@ void Server::stopCameras() {
   broadcastCommand(json);
 }
 
+void Server::rebootClients() {
+  QJsonObject json;
+  json["cmd"] = "reboot";
+  broadcastCommand(json);
+}
+
 void Server::downloadFiles() {
   for (int i = 0; i < rec->grid.height; ++i) {
     for (int j = 0; j < rec->grid.width; ++j) {

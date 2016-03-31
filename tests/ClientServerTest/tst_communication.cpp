@@ -286,7 +286,7 @@ void Communication::MemUsageBorders() {
 }
 
 void Communication::CPUUsageBorders() {
-  Client *client = new Client();
+  client1 = new Client();
   QVERIFY(client1->getCpuUsage() > 0 && client1->getCpuUsage() < 100);
   delete client1;
 }

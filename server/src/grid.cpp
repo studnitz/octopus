@@ -55,18 +55,32 @@ void Grid::write(QJsonObject &json) const {
 }
 
 QPair<int, int> Grid::getVideoFilePositionById(quint32 id) {
-  for (int i = 0; i < width; ++i)
-    for (int j = 0; j < height; ++j)
+  for (int i = 0; i < height; ++i)
+    for (int j = 0; j < width; ++j)
       if (grid[i][j].id == id) return QPair<int, int>(i, j);
 
   return QPair<int, int>(-1, -1);
 }
 
 VideoFile& Grid::getVideoFileById(quint32 id) {
-  for (int i = 0; i < width; ++i)
-    for (int j = 0; j < height; ++j)
+  for (int i = 0; i < height; ++i)
+    for (int j = 0; j < width; ++j)
       if (grid[i][j].id == id) return grid[i][j];
 
   VideoFile vid1 = VideoFile(0);
   return vid1;
+}
+
+qint16 Grid::size()
+{
+  qint16 count = 0;
+
+  for (int i = 0; i < height; ++i) {
+      for (int j = 0; i < width; ++j) {
+          if (grid[i][j].id != 0) {
+              count++;
+            }
+        }
+    }
+  return count;
 }

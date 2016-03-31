@@ -5,7 +5,7 @@
 
 /**
  * @brief main starts the server.
- * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

@@ -10,6 +10,7 @@
 
 #include "server.h"
 #include "ftpdownloader.h"
+#include "gst_exporter.h"
 
 /**
  * @brief The ServerInterface class is stored on the same physical device as the
@@ -25,7 +26,7 @@
  */
 class ServerInterface : public QTcpServer {
  public:
-   int exportStatus = 0;
+  double exportStatus = 0;
 
   /**
    * @brief ServerInterface is the standard constructor. ServerInterface is
@@ -54,6 +55,12 @@ class ServerInterface : public QTcpServer {
    */
   QJsonObject getJsonInfo();
 
+ signals:
+  void rebootClients();
+
+ public slots:
+  void exporterProgressChange(float value);
+  void exportIsFinished(bool withoutError);
  private slots:
 
   /**
@@ -72,6 +79,10 @@ class ServerInterface : public QTcpServer {
    * @param handle the socket descriptor
    */
   void incomingConnection(qintptr handle);
+
+  bool exportFinished = false;
+
+  bool exportError = false;
 
   /**
    * @brief sendData sends information to GUI as JSON-Object. cmd represents the

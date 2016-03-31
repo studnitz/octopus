@@ -58,11 +58,27 @@ QJsonObject ServerInterface::getJsonInfo() {
     jO["Disk"] = serverThread->clientDiskUsage;
     jO["Filename"] = serverThread->clientFilePath;
     jO["Devices"] = QJsonArray::fromStringList(serverThread->clientDevices);
+    jO["Time"] = serverThread->clientTime;
     clientArray.append(jO);
   }
   QJsonObject json;
   json["clients"] = clientArray;
   return json;
+}
+
+void ServerInterface::exporterProgressChange(float value) {
+  exportStatus = value;
+  qDebug() << "exporterProgresChange: " << value;
+}
+
+void ServerInterface::exportIsFinished(bool withoutError) {
+  if (withoutError) {
+    exportFinished = true;
+    qDebug() << "exportFinished wihtout Errors!";
+  } else {
+    exportError = true;
+    qDebug() << "exportFinished with Errors!";
+  }
 }
 
 void ServerInterface::executeCommand(const QJsonObject &json) {
@@ -87,13 +103,23 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       server->rec->saveRecording();
       putFilesToGui();
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
-      exportStatus = (exportStatus + 1) % 100;
       QJsonObject data = QJsonObject();
       data["exportStatus"] = exportStatus;
+      data["exportFinished"] = exportFinished;
+      data["exportError"] = exportError;
       sendData(json["cmd"].toString(), data);
     } else if (json["cmd"].toString().compare("startExport") == 0) {
-      // TODO Start Export
       exportStatus = 0;
+      Recording *rec = new Recording();
+      rec->loadRecording("recordings/2016_03_29_15_53_32.off");
+      GstExporter *exporter = new GstExporter(rec, 1280, 960);
+      connect(exporter, &GstExporter::progressChanged, this,
+              &ServerInterface::exporterProgressChange);
+      connect(exporter, &GstExporter::exportFinished, this,
+              &ServerInterface::exportIsFinished);
+      exporter->exportVideo();
+    } else if (json["cmd"].toString().compare("reboot") == 0) {
+      server->rebootClients();
     } else {
       qDebug() << "cmd:  " << json["cmd"].toString();
       qDebug() << "data: " << json["data"].toString();

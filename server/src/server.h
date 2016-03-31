@@ -100,8 +100,8 @@ class Server : public QTcpServer {
    */
   void getInfo();
 
-
- protected:
+  void rebootClients();
+protected:
   /**
    * @brief incomingConnection overrides QTcpServer's incomingConnection method
    * that is called every time a client wants to connect to the server (but

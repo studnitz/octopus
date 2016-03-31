@@ -275,7 +275,8 @@ class MainWindow : public QMainWindow {
    */
   void saveRecording();
 
- private slots:
+  void rebootAllClients();
+private slots:
 
   /**
    * @brief on_pushButton_Percent_clicked Make the GUI show the percentage in

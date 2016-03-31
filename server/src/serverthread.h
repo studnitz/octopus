@@ -62,6 +62,7 @@ class ServerThread : public QThread {
    * @brief clientDiskUsage stores the client's current disk usage.
    */
   float clientDiskUsage;
+  QString clientTime;
   QString clientFilePath;
   QStringList clientDevices;
   /**

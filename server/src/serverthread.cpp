@@ -47,6 +47,7 @@ void ServerThread::readData(QJsonObject json) {
     clientCpuUsage = o["CPU"].toDouble();
     clientMemUsage = o["Memory"].toDouble();
     clientDiskUsage = o["Disk"].toDouble();
+    clientTime = o["Time"].toString();
     QJsonArray clientDevicesArray = o["Devices"].toArray();
     clientDevices = QStringList();
     foreach (const QJsonValue &value, clientDevicesArray) {
