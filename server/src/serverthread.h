@@ -125,12 +125,18 @@ public:
 
   void downloadFinished(QString fullpath);
   void downloadFile();
+
 private slots:
 
   /**
    * @brief getData interprets the data sent from the client
    */
   void getData();
+
+private:
+
+  bool lastRecordingRemoved = false;
+
 };
 
 #endif  // SERVERTHREAD_H

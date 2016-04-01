@@ -45,6 +45,8 @@ void ServerThread::readData(QJsonObject json) {
     clientFilePath = o["Filename"].toString();
   } else if (json["cmd"] == "videoReady") {
     downloadFile();
+    } else if (json["cmd"] == "removeLastRecording") {
+      lastRecordingRemoved = o["fileRemoved"].toBool();
   } else {
     ClientIP = o["IP"].toString();
     clientName = o["Name"].toString();
@@ -79,6 +81,11 @@ void ServerThread::downloadFinished(QString fullpath) {
            << " downloadFinished: " << fullpath;
 
   emit downloadIsFinished(fullpath, currentId);
+  QJsonObject json;
+  json["cmd"] = "removeLastRecording";
+  QJsonObject data;
+  json["data"] = data;
+  sendCommand(json);
 }
 
 void ServerThread::downloadFile() {
