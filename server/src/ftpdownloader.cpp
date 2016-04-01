@@ -30,10 +30,11 @@ void FtpDownloader::updateDownloadProgress(qint64 const bytesRead,
                                            qint64 const totalBytes) {
   bytes = bytesRead;
   total = totalBytes;
+
 }
 
 double FtpDownloader::progress() const {
-  double result = bytes / total;
+  double result = 1.0 * bytes / total;
   return result * 100;
 }
 

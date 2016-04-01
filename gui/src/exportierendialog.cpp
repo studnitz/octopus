@@ -26,6 +26,7 @@ void ExportierenDialog::exportFinished()
   ui->statusLabel->setText(tr("Status: Video erfolgreich erstellt!"));
   timer->stop();
   timer->disconnect();
+  ui->progressBar->setValue(100);
 }
 
 void ExportierenDialog::on_startButton_clicked() {

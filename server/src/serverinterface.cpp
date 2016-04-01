@@ -115,6 +115,7 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       data["exportStatus"] = exportStatus;
       data["exportFinished"] = exportFinished;
       data["exportError"] = exportError;
+      exportError = false;
       data["exportPath"] = exportPath;
       sendData(json["cmd"].toString(), data);
     } else if (json["cmd"].toString().compare("startExport") == 0) {
