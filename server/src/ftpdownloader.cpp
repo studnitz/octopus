@@ -1,4 +1,5 @@
 #include "ftpdownloader.h"
+#include <QDir>
 
 FtpDownloader::FtpDownloader(QObject *parent, QUrl ftpUrl, QString path)
     : QObject(parent), ftpUrl(ftpUrl), path(path) {}
@@ -44,4 +45,11 @@ void FtpDownloader::finished() {
   reply = 0;
   bytes = 0;
   total = 0;
+
+  QDir currentDir = QDir::current();
+  currentDir.cd("recordings");
+  QString relativePath = currentDir.relativeFilePath(path);
+  qDebug() << "ftpDownloader relative path: " << relativePath;
+
+  emit isFinished(relativePath);
 }

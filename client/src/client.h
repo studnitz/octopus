@@ -143,6 +143,8 @@ class Client : public QObject {
    */
   QTcpSocket::SocketState getState() const;
 
+  void videoFinishedAndWritten();
+
  protected slots:
   /**
    * @brief reboot reboots the client, used to free stuck/bugged video devices

@@ -132,6 +132,7 @@ void Client::executeCommand(QJsonObject json) {
       qDebug() << "Client executeCommand(): stopRecording";
       recorder->stopRecording();
       connect(recorder, &GstRecorder::pipelineCleared, &GstRecorder::deleteLater);
+      connect(recorder, &GstRecorder::pipelineCleared, this, &Client::videoFinishedAndWritten);
     } else if (command == "reboot") {
       reboot();
     } else if (command == "removeLastRecording") {
@@ -146,6 +147,14 @@ void Client::executeCommand(QJsonObject json) {
 }
 
 QTcpSocket::SocketState Client::getState() const { return socket.state(); }
+
+void Client::videoFinishedAndWritten()
+{
+  QJsonObject data;
+  data["filename"] = lastRecordingPath;
+  qDebug() << "Client videoFinishedAndWritten(): " << lastRecordingPath;
+  sendData("videoReady", data);
+}
 
 QString Client::getHostname() {
   QFile file("/etc/hostname");

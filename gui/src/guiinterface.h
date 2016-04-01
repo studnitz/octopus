@@ -138,6 +138,8 @@ class GUIInterface : public QObject {
    */
   QStringList *deviceList_;
 
+  QString serverIp;
+
   /**
    * @brief exportFinished status variable if the export has finished
    */

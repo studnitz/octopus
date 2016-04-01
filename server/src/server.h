@@ -109,6 +109,8 @@ class Server : public QTcpServer {
    */
   void broadcastCommand(QJsonObject json);
 
+  void allDownloadsFinished();
+
  public slots:
   /**
    * @brief getInfo broadcasts the String "getInfo" via broadcastCommand to the
@@ -123,7 +125,9 @@ class Server : public QTcpServer {
    */
   void rebootClients();
 
- protected:
+  void updateEntryById(const QString fullpath, const quint16 id);
+  void onAllDownloadsFinished();
+protected:
   /**
    * @brief incomingConnection overrides QTcpServer's incomingConnection method
    * that is called every time a client wants to connect to the server (but
@@ -133,6 +137,9 @@ class Server : public QTcpServer {
    * with this one client
    */
   void incomingConnection(qintptr socketDescriptor);
+
+ private:
+  quint16 updatedCount = 0;
 };
 
 #endif  // SERVER_H

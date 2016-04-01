@@ -99,10 +99,13 @@ class Communication : public QObject {
    */
   void CPUUsageBorders();
 
+  void exportVideo();
+
  private:
   Server *server;
   ServerInterface *serverInterface;
   Client *client1, *client2;
+  GstExporter *exporter;
 };
 
 Communication::Communication() {}
@@ -322,6 +325,13 @@ void Communication::CPUUsageBorders() {
   client1 = new Client();
   QVERIFY(client1->getCpuUsage() > 0 && client1->getCpuUsage() < 100);
   delete client1;
+}
+
+void Communication::exportVideo() {
+  Recording* rec = new Recording();
+  rec->loadRecording("test.off");
+  exporter = new GstExporter(rec, 640, 480, this);
+  exporter->exportVideo();
 }
 
 QTEST_MAIN(Communication)

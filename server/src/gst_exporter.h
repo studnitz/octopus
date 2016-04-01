@@ -57,7 +57,7 @@ class GstExporter : public QObject {
    * @brief exportVideo starts exporting the video by starting the Gstreamer
    * pipeline
    */
-  void exportVideo();
+  QString exportVideo();
 
   /**
    * @brief progressPercent queries the current progress in the exporting

@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QDateTime>
 
 
 /**
@@ -23,7 +24,8 @@
 class ServerThread : public QThread {
   Q_OBJECT
 
- public:
+  quint16 getVideoId(QJsonObject grid);
+public:
   /**
    * @brief ServerThread is the standard constructor. It expects a
    * Socketdescriptor to identify a socket with which it should communicate with
@@ -65,6 +67,9 @@ class ServerThread : public QThread {
   QString clientTime;
   QString clientFilePath;
   QStringList clientDevices;
+  QDateTime recordingTime;
+
+  quint16 currentId = 0;
   /**
    * @brief socket stores a pointer, that points to the QTcpSocket that is used
    * for communication with the client.
@@ -84,6 +89,8 @@ class ServerThread : public QThread {
   void readData(QJsonObject json);
 
  signals:
+
+  void downloadIsFinished(QString path, quint16 id);
 
   /**
    * @brief error is the error-signal to be emmited when something bad happens
@@ -116,7 +123,9 @@ class ServerThread : public QThread {
    */
   void disconnected();
 
- private slots:
+  void downloadFinished(QString fullpath);
+  void downloadFile();
+private slots:
 
   /**
    * @brief getData interprets the data sent from the client

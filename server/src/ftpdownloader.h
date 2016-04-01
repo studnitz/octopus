@@ -38,6 +38,8 @@ class FtpDownloader : public QObject {
   void startDownload();
  signals:
 
+  void isFinished(QString fullPath);
+
  public slots:
 
  private slots:

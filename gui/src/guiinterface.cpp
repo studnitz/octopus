@@ -8,6 +8,8 @@ GUIInterface::GUIInterface(QHostAddress destAddr, quint16 port, QObject *parent)
   socket = new QTcpSocket(this);
   deviceList_ = new QStringList();
 
+  serverIp = destAddr.toString();
+
   tryConnect(destAddr, port);
 }
 
@@ -67,17 +69,35 @@ void GUIInterface::readData(QJsonObject json) {
           if (changed) {
             emit deviceListUpdated(*deviceList_);
           }
-          ClientGui *Client = new ClientGui(IP, name, cpu, mem, disk, devices, currentTime);
+          ClientGui *Client =
+              new ClientGui(IP, name, cpu, mem, disk, devices, currentTime);
           clients->append(Client);
         }
       }
     }
   } else if (json["cmd"] == "getExportStatus") {
-    exportStatus = json["data"].toObject()["exportStatus"].toDouble();
-    exportFinished = json["data"].toObject()["exportFinished"].toBool();
-    exportError = json["data"].toObject()["exportError"].toBool();
-    if (exportFinished) emit exportIsFinished();
-    if (exportError) emit exportErrored();
+    QJsonObject data = json["data"].toObject();
+    exportStatus = data["exportStatus"].toDouble();
+    exportFinished = data["exportFinished"].toBool();
+    exportError = data["exportError"].toBool();
+    if (exportFinished && !exportError) {
+      emit exportIsFinished();
+      QDir current = QDir::current();
+      current.mkdir("exports");
+      current.cd("exports");
+      QString exportPath = data["exportPath"].toString();
+      QString fullPath = current.absoluteFilePath(exportPath);
+
+      FtpDownloader *ftp = new FtpDownloader(
+          this, QUrl("ftp://" + serverIp + QDir::separator() + "exports" +
+                     QDir::separator() + exportPath),
+          fullPath);
+      ftp->startDownload();
+    }
+    if (exportError) {
+      emit exportErrored();
+      exportError = false;
+    }
     qDebug() << "JSON receiveData, exportStatus: " << exportStatus;
   } else if (json["cmd"] == "getFilesfromServer") {
     QJsonObject recording = json["data"].toObject()["recording"].toObject();

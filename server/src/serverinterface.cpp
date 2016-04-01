@@ -10,7 +10,11 @@ void ServerInterface::start(quint16 port) {
   }
 }
 
-void ServerInterface::setServer(Server *server) { this->server = server; }
+void ServerInterface::setServer(Server *server) {
+  this->server = server;
+  connect(server, &Server::allDownloadsFinished, this,
+          &ServerInterface::putFilesToGui);
+}
 
 void ServerInterface::incomingConnection(qintptr handle) {
   socket = new QTcpSocket(this);
@@ -97,31 +101,32 @@ void ServerInterface::executeCommand(const QJsonObject &json) {
       settings["height"] = obj["height"];
       settings["width"] = obj["width"];
       settings["fps"] = obj["fps"];
-      server->recordLocally(settings);
+      server->recordLocally(obj);
       server->rec->saveRecording();
     } else if (json["cmd"].toString().compare("stopCameras") == 0) {
       server->updateRecording();
       server->stopCameras();
-      QThread::msleep(100);
-      server->downloadFiles();
-      server->rec->saveRecording();
-      putFilesToGui();
+      // QThread::msleep(100);
+      // server->downloadFiles();
+      // server->rec->saveRecording();
+      // putFilesToGui();
     } else if (json["cmd"].toString().compare("getExportStatus") == 0) {
       QJsonObject data = QJsonObject();
       data["exportStatus"] = exportStatus;
       data["exportFinished"] = exportFinished;
       data["exportError"] = exportError;
+      data["exportPath"] = exportPath;
       sendData(json["cmd"].toString(), data);
     } else if (json["cmd"].toString().compare("startExport") == 0) {
       exportStatus = 0;
-      Recording *rec = new Recording();
-      rec->loadRecording("recordings/2016_03_29_15_53_32.off");
-      GstExporter *exporter = new GstExporter(rec, 1280, 960);
+      //Recording *rec = new Recording();
+      //rec->loadRecording("recordings/2016_03_29_15_53_32.off");
+      GstExporter *exporter = new GstExporter(server->rec, 1280, 960);
       connect(exporter, &GstExporter::progressChanged, this,
               &ServerInterface::exporterProgressChange);
       connect(exporter, &GstExporter::exportFinished, this,
               &ServerInterface::exportIsFinished);
-      exporter->exportVideo();
+      exportPath = exporter->exportVideo();
     } else if (json["cmd"].toString().compare("reboot") == 0) {
       server->rebootClients();
     } else {

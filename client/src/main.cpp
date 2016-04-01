@@ -14,7 +14,6 @@ int main(int argc, char *argv[]) {
     client.setParent(&a);
     while (client.getState() == QAbstractSocket::UnconnectedState) {
       client.start(ip);
-      qDebug() << "ExitCode: " << currentExitCode;
     }
     currentExitCode = a.exec();
   } while (currentExitCode == Client::EXIT_CODE_REBOOT);

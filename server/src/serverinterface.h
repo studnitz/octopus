@@ -79,6 +79,13 @@ class ServerInterface : public QTcpServer {
    * otherwise false
    */
   void exportIsFinished(bool withoutError);
+
+  /**
+   * @brief putFilesToGui tells the ServerInterface to send the recording files
+   * to the GUI
+   */
+  void putFilesToGui();
+
  private slots:
 
   /**
@@ -87,12 +94,6 @@ class ServerInterface : public QTcpServer {
    * executes executeCommand on it.
    */
   void receiveData();
-
-  /**
-   * @brief putFilesToGui tells the ServerInterface to send the recording files
-   * to the GUI
-   */
-  void putFilesToGui();
 
  private:
   /**
@@ -111,6 +112,8 @@ class ServerInterface : public QTcpServer {
    * @brief exportError true, when a export has encountered an error
    */
   bool exportError = false;
+
+  QString exportPath;
 
   /**
    * @brief sendData sends information to GUI as JSON-Object. cmd represents the

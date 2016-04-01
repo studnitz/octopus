@@ -2,6 +2,7 @@
 
 Server::Server(QObject* parent) : QTcpServer(parent) {
   qDebug() << "Server created";
+  connect(this, &Server::allDownloadsFinished, &Server::onAllDownloadsFinished);
 }
 
 void Server::startServer(int port) {
@@ -17,6 +18,8 @@ void Server::incomingConnection(qintptr socketDescriptor) {
   ServerThread* thread = new ServerThread(socketDescriptor, this);
   connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
   connect(this, &Server::broadcastCommand, thread, &ServerThread::sendCommand);
+  connect(thread, &ServerThread::downloadIsFinished, this,
+          &Server::updateEntryById);
   connect(thread, SIGNAL(ready()), this, SLOT(getInfo()));
   thread->start();
 
@@ -37,6 +40,7 @@ void Server::recordLocally(QJsonObject& settings) {
 }
 
 void Server::stopCameras() {
+  updatedCount = 0;
   QJsonObject json;
   json["cmd"] = "stopCameras";
   broadcastCommand(json);
@@ -46,6 +50,28 @@ void Server::rebootClients() {
   QJsonObject json;
   json["cmd"] = "reboot";
   broadcastCommand(json);
+}
+
+void Server::updateEntryById(const QString fullpath, const quint16 id) {
+  VideoFile* current = &rec->grid.getVideoFileById(id);
+  current->filepath = fullpath;
+  current->isRemote = false;
+  QPair<int, int> pos = rec->grid.getVideoFilePositionById(id);
+  rec->grid.grid[pos.first][pos.second];
+  qDebug() << "Server updateEntryById: id " << id << "path: " << fullpath;
+
+  updatedCount++;
+  qDebug() << "Server updated VideoFile count increased: " << updatedCount;
+
+  if (updatedCount == rec->grid.size()) {
+    emit allDownloadsFinished();
+      qDebug() << "Server allDownloadsFinished emitted";
+  }
+
+}
+
+void Server::onAllDownloadsFinished() {
+  rec->saveRecording();
 }
 
 void Server::downloadFiles() {
@@ -65,16 +91,18 @@ void Server::downloadFiles() {
         savedir.cd(recordingTime);
         QString finalPath = savedir.absoluteFilePath(filename);
         qDebug() << ip << "    " << currentVid->filepath;
-        FtpDownloader *download =  new FtpDownloader(this, QUrl(ftpurl), finalPath);
+        FtpDownloader* download =
+            new FtpDownloader(this, QUrl(ftpurl), finalPath);
         download->startDownload();
-        //Update recording-data
-        //.off-file now points to the videofiles on the server instead of the remote-files on the clients.
+        // Update recording-data
+        //.off-file now points to the videofiles on the server instead of the
+        //remote-files on the clients.
         currentVid->filepath = recordingTime + "/" + filename;
         currentVid->hostname = getHostname();
         currentVid->isRemote = false;
-        qDebug() << "filepath:" << currentVid->filepath << "   hostname:" << currentVid->hostname;
+        qDebug() << "filepath:" << currentVid->filepath
+                 << "   hostname:" << currentVid->hostname;
         rec->grid.grid[i][j] = *currentVid;
-
       }
     }
   }

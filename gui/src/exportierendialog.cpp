@@ -17,7 +17,6 @@ void ExportierenDialog::exportErrored() {
   MainWindow *p = qobject_cast<MainWindow *>(this->parent());
   ui->statusLabel->setText(tr("Status: Fehler beim Konvertieren. Bitte erneut starten!"));
   timer->stop();
-  timer->disconnect();
   ui->startButton->setEnabled(true);
   p->guiInterface->exportStatus = 0;
 }

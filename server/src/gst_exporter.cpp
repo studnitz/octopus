@@ -38,8 +38,8 @@ QGst::BinPtr GstExporter::createVideoMixer() {
                    << "] with id: " << current->id;
 
           QGst::PadPtr pad = videoMixer->getRequestPad("sink_%u");
-          pad->setProperty("xpos", i * elementWidthPx);
-          pad->setProperty("ypos", j * elementHeightPx);
+          pad->setProperty("ypos", i * elementHeightPx);
+          pad->setProperty("xpos", j * elementWidthPx);
           qDebug() << "Pad created with xpos: " << pad->property("xpos")
                    << ", ypos: " << pad->property("ypos");
           QGst::BinPtr filesrc = createFileSrcBin(current->filepath, count);
@@ -103,7 +103,7 @@ QGst::ElementPtr GstExporter::createCapsFilter(const quint16 width,
   return capsfilter;
 }
 
-void GstExporter::exportVideo() {
+QString GstExporter::exportVideo() {
   qDebug() << "Starting Videoexport...";
   QGst::BinPtr mixer = createVideoMixer();
   QGst::BinPtr encoder = createEncoder();
@@ -118,13 +118,14 @@ void GstExporter::exportVideo() {
   current.cd("exports");
 
   QString filename =
-      QDir::current().absoluteFilePath("export-" + recordingTime + ".mp4");
+      current.absoluteFilePath("export-" + recordingTime + ".mp4");
 
   sink->setProperty("location", filename);
 
   m_pipeline = QGst::Pipeline::create();
   m_pipeline->add(mixer, capsfilter, encoder, scale, sink);
   m_pipeline->linkMany(mixer, capsfilter, scale, encoder, sink);
+  qDebug() << "GstExporter: pipeline: Added and linked all elements";
 
   m_pipeline->bus()->addSignalWatch();
   QGlib::connect(m_pipeline->bus(), "message", this,
@@ -135,6 +136,8 @@ void GstExporter::exportVideo() {
   timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &GstExporter::progressPercent);
   timer->start(1000);
+
+  return current.relativeFilePath(filename);
 }
 
 void GstExporter::onBusMessage(const QGst::MessagePtr& message) {
