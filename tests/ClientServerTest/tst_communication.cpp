@@ -11,8 +11,8 @@
 #include "src/serverinterface.h"
 
 /**
- * @brief The Communication class is a composite test class made out of three
- * test classes (ServerBefehle, Communication and ClientBefehle).
+ * @brief The Communication class is our composite test class, originally made
+ * out of three test classes (ServerBefehle, Communication and ClientBefehle).
  * The ServerBefehle class tests some standalone features of the server.
  * This means features that do not need any clients or UIs to interact with.
  * The Communication class test some communication features between the
@@ -37,10 +37,12 @@ class Communication : public QObject {
   //----- START SERVER TESTS -----
 
   /**
-   * @brief testCase1 is a little-bit-too-big Test Case for pretty much
+   * @brief testCase1 is a little-bit-too-big test Case for pretty much
    * everything. It tests proper creation of VideFiles, their insertion to the
    * grid, the grids insertion into a recording, as well as the proper
-   * conversion of a recording to JSON and back to a recording again.
+   * conversion of a recording to JSON and back to a recording again. These are
+   * all standalone server features that do not require any interaction with the
+   * clients.
    */
   void serverTestCase();
 
@@ -50,13 +52,18 @@ class Communication : public QObject {
    * @brief
    * Checks if server can accept one client at a time.
    */
-  void oneClientConnected();
+  void serverClient_oneClientConnected();
 
   /**
    * @brief
    * Checks if server can handle multiple (2) connections at a time.
    */
-  void twoClientConnected();
+  void serverClient_twoClientConnected();
+
+  /**
+   * @brief serverClient_reboot Checks if the reboot of two clients works.
+   */
+  void serverClient_reboot();
 
   //----- START CLIENT TESTS -----
 
@@ -64,40 +71,40 @@ class Communication : public QObject {
    * @brief
    * Checks if the server gets any information about its connected clients.
    */
-  void serverGetInfo();
+  void client_serverGetInfo();
 
   /**
    * @brief
    * Check if the value of the disk usage is correct (recalculate the value
    * and compare it to the given value)
    */
-  void DiskUsageCorrectness();
+  void client_DiskUsageCorrectness();
 
   /**
    * @brief
    * Check that the disk usage never goes out of the range (0% <= range <= 100%)
    */
-  void DiskUsageBorders();
+  void client_DiskUsageBorders();
 
   /**
    * @brief
    * Check if the value of the memory usage is correct (recalculate the value
    * and compare it to the given value)
    */
-  void MemUsageCorrectness();
+  void client_MemUsageCorrectness();
 
   /**
    * @brief
    * Check that the memory usage never goes out of the range (0% <= range <=
    * 100%)
    */
-  void MemUsageBorders();
+  void client_MemUsageBorders();
 
   /**
    * @brief
    * Check that the CPU usage never goes out of the range (0% <= range <= 100%)
    */
-  void CPUUsageBorders();
+  void client_CPUUsageBorders();
 
   void exportVideo();
 
@@ -213,7 +220,7 @@ void Communication::serverTestCase() {
   QVERIFY(serverInterface == NULL);
 }
 
-void Communication::oneClientConnected() {
+void Communication::serverClient_oneClientConnected() {
   server = new Server();
   server->startServer();
 
@@ -233,7 +240,7 @@ void Communication::oneClientConnected() {
   delete server;
 }
 
-void Communication::twoClientConnected() {
+void Communication::serverClient_twoClientConnected() {
   server = new Server();
   server->startServer();
 
@@ -244,6 +251,7 @@ void Communication::twoClientConnected() {
     QTest::qWait(200);
   }
 
+  // First test if it's possible for on client to connect
   QVERIFY(QAbstractSocket::ConnectedState == client1->getState());
   QVERIFY(server->getNumClients() == 1);
 
@@ -253,6 +261,7 @@ void Communication::twoClientConnected() {
     QTest::qWait(200);
   }
 
+  // After that test if two clients are connected at the same time
   QVERIFY(QAbstractSocket::ConnectedState == client2->getState());
   QVERIFY(QAbstractSocket::ConnectedState == client1->getState());
   QVERIFY(server->getNumClients() == 2);
@@ -261,7 +270,48 @@ void Communication::twoClientConnected() {
   delete server;
 }
 
-void Communication::serverGetInfo() {
+void Communication::serverClient_reboot() {
+  server = new Server();
+  server->startServer();
+
+  client1 = new Client();
+  client1->start();
+
+  while (server->getNumClients() == 0) {
+    QTest::qWait(200);
+  }
+
+  // First test if it's possible for on client to connect
+  QVERIFY(QAbstractSocket::ConnectedState == client1->getState());
+  QVERIFY(server->getNumClients() == 1);
+
+  client2 = new Client();
+  client2->start();
+  while (server->getNumClients() == 1) {
+    QTest::qWait(200);
+  }
+
+  // After that test if two clients are connected at the same time
+  QVERIFY(QAbstractSocket::ConnectedState == client2->getState());
+  QVERIFY(QAbstractSocket::ConnectedState == client1->getState());
+  QVERIFY(server->getNumClients() == 2);
+
+  // Test reboot of the clients
+  ServerThread *app = server->getClients().at(0);
+  QVERIFY(server->getClients().contains(app));
+  server->rebootClients();
+  QTest::qWait(200);
+  while (server->getNumClients() != 2) {
+    QTest::qWait(200);
+  }
+  QVERIFY(server->getClients().contains(app));
+
+  delete client1;
+  delete client2;
+  delete server;
+}
+
+void Communication::client_serverGetInfo() {
   server = new Server();
   server->startServer();
 
@@ -290,7 +340,7 @@ void Communication::serverGetInfo() {
   delete server;
 }
 
-void Communication::DiskUsageCorrectness() {
+void Communication::client_DiskUsageCorrectness() {
   client1 = new Client();
   int Free = client1->getFreeDisk();
   int Total = client1->getTotalDisk();
@@ -300,13 +350,13 @@ void Communication::DiskUsageCorrectness() {
   delete client1;
 }
 
-void Communication::DiskUsageBorders() {
+void Communication::client_DiskUsageBorders() {
   client1 = new Client();
   QVERIFY(client1->getDiskUsage() > 0 && client1->getDiskUsage() < 100);
   delete client1;
 }
 
-void Communication::MemUsageCorrectness() {
+void Communication::client_MemUsageCorrectness() {
   client1 = new Client();
   int freeMem = client1->getFreeMemory();
   int totMem = client1->getAllMemory();
@@ -315,13 +365,13 @@ void Communication::MemUsageCorrectness() {
           Usage >= client1->getMemoryUsage() - 1);
   delete client1;
 }
-void Communication::MemUsageBorders() {
+void Communication::client_MemUsageBorders() {
   client1 = new Client();
   QVERIFY(client1->getMemoryUsage() > 0 && client1->getMemoryUsage() < 100);
   delete client1;
 }
 
-void Communication::CPUUsageBorders() {
+void Communication::client_CPUUsageBorders() {
   client1 = new Client();
   QVERIFY(client1->getCpuUsage() > 0 && client1->getCpuUsage() < 100);
   delete client1;
