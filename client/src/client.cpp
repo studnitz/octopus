@@ -75,6 +75,7 @@ void Client::getCommand() {
 
 bool Client::deleteLastRecording()
 {
+  qDebug() << "Client: removingLastRecording" << lastRecordingPath;
   return QFile::remove(lastRecordingPath);
 }
 
