@@ -1,0 +1,43 @@
+/**
+@page newfeaturespage List of possible features
+
+@brief This page is to list the possible features that could be implemented but aren't yet. All of them were proposed by the Product Owner.
+
+@tableofcontents
+
+    @section sec1 A changable savepath for .off files and their respective subfolder
+    This strongly depends on how flexible the choosing of the savepath has to be. The actual choosing of a directory using QFileDialog is already implemented (it's inside the Settings-Dialog). 
+        @subsection sub1 Path lies inside of system
+        If the savepath is a path that lies on the same system, it's no big deal. You would only have to save to that already mentioned chosen path and also read from it when looking for existing recordings. Right now new recordings are saved in a subfolder 'recordings' and that's of course also the place to look for new recordings.
+        @subsection sub2 Path lies outside of system
+        If the savepath is a path on another (physical or virtual) machine things get more complicated. The easiest way to implement this would probably be to first save it locally and after that to use FTPDownloader to transfer it onto the remote machine. That is indeed a little hackish. However the only way to make it 'real' would be using gstreamer directly. Gstreamer seems to have an option to save the files remotely using a UDP connection. We didn't read further into it because it seemed a too complicated feature to begin developing with.
+        
+   @section sec2 Connect more than one camera to one Raspberry PI
+   This one is possible. However it'll take some time. Conceptually it's adapting a few things. Currently every Client has one device, that would have to change to a list of devices. The changes would only lie below VideoFile within the abstraction layers. To me it seems they'd only lie within GstRecorder. As soon as the videos are created on the client you would also have to transfer multiple files instead of one only. But after that there'd be no more changes.
+   
+   @section sec3 Recording with audio
+   No big problem. Within Gstreamer it's supposed to be a oneliner. The playback works with audio by default, you would only have to decide which players to mute and from which to show the audio. Depending on how cool you wanna make this, it gets more or less complicated within the GUI. The .off files would have to be modificated as well. And so would have the read-to and read-from JSON methods.
+   
+   @section sec4 Rotating a VideoPlayer
+   Not that big of a deal. The rotation itself is easy (see QPainter and its rotate() method). However after the rotation, you'd have to recalculate the size of the VideoPlayer to still fit inside of the Grid. Also the described changes would only be done to the .off file on the GUI-machine. This contradicts with the model view controller pattern that we designed the Server and GUI under. So you'd also have to propagate the changes onto the server (either through messages, making the Server edit the .off file or by sending the complete .off file)
+   
+   @section sec5 Debug info files
+   This means basically redirecting all the qDebug() messages into individual files. Those files would have to be transmitted from Clients and Server to the GUI. There they could be opened and read (e.g. for problem diagnosis).
+   
+   @section sec6 Add a foreign source to the Grid
+   When you delete a VideoPlayer in the GUI and save the .off file, the source is gone and there is no way to get it back (except for manually editing the .off file, since deleting a source does not delete it from the filesystem yet). This would be the task here. Probably located somewhere in the menubar you'd have a "Add source..." option opening a QFileDialog, making the user choose a file. This file would be imported into the Recording. When saving the recording, it would be automatically saved into the .off file (that part would work already). What's still missing is the transfer of the .off file from GUI to Server.
+   
+   @section sec7 Add visible grid structure
+   Because of Qt the background-display from QVideoWidget (which is VideoPlayer's base class) is buggy. As a fix the product owner would like some kind of visible structure of the grid to know where one player stops and the other one starts. This should be viewable before clicking on Play. It's also possible to frame every VideoPlayer with a (thin), but visible border.
+   
+   @section sec8 Make the hostname changeable through the GUI
+   Using FTPDownloader you could replace the Client's file holding the Client-name. This would make it unnecessary for the user to change the names manually when installing the set-up.
+   
+   @section sec9 In exported files, replace transparent background through black background
+   This is just a little optical adjustment. The product owner would like gstreamer's 'transparent' background replaced by a black one. The transparent background is shown through a grid of white and black mixed. This is a little bit too distracting. Only changes in GstExporter needed.
+   
+   @section sec10 Adjustable export-file quality
+   The quality for export can be chosen already, however it's not transmitted yet and therefore also not considered by the Server when doing the export. So you would have to add another communication command holding the chosen quality. So no big deal at all.
+        
+    
+*/

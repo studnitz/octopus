@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   // Menubar init
   QMenu *menuFile = ui->menuBar->addMenu(tr("Datei"));
-  QAction *speichern = new QAction(tr("Speichern"), this);
+  QAction *speichern = new QAction(tr("Recording speichern"), this);
   menuFile->addAction(speichern);
   QAction *exportieren = new QAction(tr("Exportieren"), this);
   menuFile->addAction(exportieren);
@@ -48,8 +48,6 @@ MainWindow::MainWindow(QWidget *parent)
   connect(close, SIGNAL(triggered()), this, SLOT(close()));
   connect(ui->recordingList, &QListWidget::itemDoubleClicked, this,
           &MainWindow::openRecording);
-  connect(ui->saveRecordingButton, &QPushButton::clicked, this,
-          &MainWindow::saveRecording);
   connect(ui->reloadButton, &QPushButton::clicked, this,
           &MainWindow::updateRecordingList);
   connect(ui->rebootClientsButton, &QPushButton::clicked, this,
