@@ -345,13 +345,6 @@
               <item>
                <layout class="QHBoxLayout" name="recordingButtons">
                 <item>
-                 <widget class="QPushButton" name="saveRecordingButton">
-                  <property name="text">
-                   <string>Recording speichern</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QPushButton" name="reloadButton">
                   <property name="text">
                    <string>Liste neu laden</string>
@@ -446,7 +439,7 @@
      <x>0</x>
      <y>0</y>
      <width>911</width>
-     <height>19</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
