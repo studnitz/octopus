@@ -377,12 +377,12 @@ void Communication::client_CPUUsageBorders() {
   delete client1;
 }
 
-void Communication::exportVideo() {
+/*void Communication::exportVideo() {
   Recording* rec = new Recording();
   rec->loadRecording("test.off");
   exporter = new GstExporter(rec, 640, 480, this);
   exporter->exportVideo();
-}
+}*/
 
 QTEST_MAIN(Communication)
 
