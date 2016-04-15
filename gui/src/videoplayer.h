@@ -11,7 +11,7 @@
  * level class used for the playback of a VideoFile. Each VideoPlayer needs a
  * QMediaPlayer to store the video-stream and perform actions on it (like play,
  * pause etc). VideoPlayer is really only the display widget.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

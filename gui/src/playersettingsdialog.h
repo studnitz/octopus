@@ -15,7 +15,7 @@ class PlayerSettingsDialog;
  * @brief The PlayerSettingsDialog class is beeing used to display and change
  * the settings of the individual video players (at the moment only their
  * position in the display-grid)
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

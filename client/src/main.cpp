@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     Client client;
     client.setParent(&a);
     while (client.getState() == QAbstractSocket::UnconnectedState) {
-      client.start(ip);
+      client.start();
     }
     currentExitCode = a.exec();
   } while (currentExitCode == Client::EXIT_CODE_REBOOT);

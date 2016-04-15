@@ -13,7 +13,7 @@
  * @brief The Grid class represents a grid, consisting of a 2-dimensional QList
  * storing VideoFile objects, methods to add and delete from the grid, methods
  * for search in the grid and the height and width-attributes.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

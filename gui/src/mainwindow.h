@@ -53,7 +53,7 @@ class MainWindow;
  * A menu bar exists in the top of the window. The corresponding functionality
  * is beeing held by SettingsDialog.
  *
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

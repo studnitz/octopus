@@ -18,7 +18,7 @@
  * communicates via TCP with the ServerInterface object. The ServerInterface
  * object again has a reference to this class (Server), so it can pass the
  * information on again.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016
