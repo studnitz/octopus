@@ -88,7 +88,7 @@ void MainWindow::tryConnection(QString serverIP) {
     bool ok;
     QString text = QInputDialog::getText(
         this, tr("Connection Error, server adress not found"),
-        tr("IP des Servers:"), QLineEdit::Normal, "127.0.0.1", &ok);
+        tr("IP des Servers:"), QLineEdit::Normal, "192.168.1.1", &ok);
     if (ok && !text.isEmpty()) {
       tryConnection(text);
       this->settings->setValue("octopus/ServerIP", text);
