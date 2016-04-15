@@ -27,7 +27,7 @@ For the GUI and the Server we used Qt5, while the recording backend uses gstream
 
 Note that our focus here was to create a reliable, user-friendly apllication that works out-of-the box and gives effects quickly. Features like securtiy were not considered at all! Use this application in LAN only if you don't make any drastical adjustments to the application.
 
-@authors Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von Studnitz
+@authors Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von Studnitz
 @copyright GNU Public Licence
 @date 31.03.2016
 

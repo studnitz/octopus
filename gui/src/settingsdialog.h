@@ -16,7 +16,7 @@ class SettingsDialog;
  * @brief The SettingsDialog class is used for creating the SettingsDialog,
  * handling events occuring there as well as storing and retrieving settings
  * made there.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

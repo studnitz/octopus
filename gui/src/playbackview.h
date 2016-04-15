@@ -17,7 +17,7 @@
  * MainWindow handier and more overseeable. For a more detailed description of
  * the methods go to the MainWindow-class where a method with the same name for
  * each method of this class exists.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016

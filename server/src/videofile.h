@@ -9,7 +9,7 @@
  * of a container or not - inside the grid. Every VideoFile should have a unique
  * id (except for the case that the VideoFile is empty). Read and write are
  * methods for conversion to JSON. Orientation is currently not used yet.
- * @author Bartosz Milejski, Yannick Schädele, Nicolas Schickert, Alexander von
+ * @author Bartosz Milejski, Yannick Schädle, Nicolas Schickert, Alexander von
  * Studnitz
  * @copyright GNU Public Licence
  * @date 31.03.2016
