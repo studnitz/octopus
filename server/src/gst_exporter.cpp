@@ -27,6 +27,7 @@ QGst::BinPtr GstExporter::createVideoMixer() {
   try {
     QGst::ElementPtr videoMixer =
         QGst::ElementFactory::make("videomixer", "mix");
+    videoMixer->setProperty("background", (int) 1); //black background
     videoMixerBin->add(videoMixer);
     int count = 0;
     // go through every element in the grid
