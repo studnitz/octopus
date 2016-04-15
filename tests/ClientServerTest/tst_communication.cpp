@@ -106,7 +106,7 @@ class Communication : public QObject {
    */
   void client_CPUUsageBorders();
 
-  void exportVideo();
+  //void exportVideo();
 
  private:
   Server *server;

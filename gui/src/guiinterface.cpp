@@ -89,9 +89,7 @@ void GUIInterface::readData(QJsonObject json) {
       QString fullPath = current.absoluteFilePath(exportPath);
 
       FtpDownloader *ftp = new FtpDownloader(
-          this, QUrl("ftp://" + serverIp + QDir::separator() + "exports" +
-                     QDir::separator() + exportPath),
-          fullPath);
+          this, QUrl("ftp://" + serverIp + "/exports/" + exportPath), fullPath);
       ftp->startDownload();
     }
     if (exportError) {
