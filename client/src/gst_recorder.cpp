@@ -32,6 +32,9 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
     QGst::ElementPtr capsfilter =
         createCapsFilter(videoWitdhPx, videoHeightPx, framerate);
 
+    QGst::ElementPtr parse = QGst::ElementFactory::make("h264parse");
+    QGst::ElementPtr queue = QGst::ElementFactory::make("queue");
+
     if (usesOmx) {
       encoder = QGst::ElementFactory::make("omxh264enc");
     } else {
@@ -39,8 +42,8 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
       qDebug() << "GstRecoder: created x264enc";
     }
 
-    videoBin->add(src, capsfilter, encoder);
-    videoBin->linkMany(src, capsfilter, encoder);
+    videoBin->add(src, capsfilter, encoder, parse, queue);
+    videoBin->linkMany(src, capsfilter, encoder, parse, queue);
 
     qDebug() << "GstRecorder: createVideoSrcBin: added and linked the elements";
 
@@ -52,6 +55,26 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
     return QGst::BinPtr();
   }
   return videoBin;
+}
+
+QGst::BinPtr GstRecorder::createAudioSrcBin() {
+  QGst::BinPtr audioBin;
+  qDebug() << "creating Audio Source bin.";
+
+  try {
+    audioBin = QGst::Bin::fromDescription(
+        "autoaudiosrc name=\"audiosrc\" ! audioconvert ! "
+        "audioresample ! audiorate ! speexenc ! queue");
+  } catch (const QGlib::Error &error) {
+    qCritical() << "Failed to create audioSrcBin: " << error;
+    return QGst::BinPtr();
+  }
+
+  QGst::ElementPtr src = audioBin->getElementByName("audiosrc");
+  //autoaudiosrc creates the actual source in the READY state
+  src->setState(QGst::StateReady);
+
+  return audioBin;
 }
 
 QGst::ElementPtr GstRecorder::createCapsFilter(const quint16 width,
@@ -99,6 +122,8 @@ QGst::BinPtr GstRecorder::createVideoMuxBin() {
 
 const QString GstRecorder::recordLocally() {
   QGst::BinPtr videoSrcBin = createVideoSrcBin();
+  QGst::BinPtr audioSrcBin = createAudioSrcBin();
+  QGst::ElementPtr mux = QGst::ElementFactory::make("mp4mux");
   QGst::BinPtr videoMuxBin = createVideoMuxBin();
   QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
 
@@ -120,10 +145,15 @@ const QString GstRecorder::recordLocally() {
   }
 
   m_pipeline = QGst::Pipeline::create();
-  m_pipeline->add(videoSrcBin, videoMuxBin, sink);
+  m_pipeline->add(videoSrcBin, audioSrcBin, mux, sink);
 
-  videoSrcBin->link(videoMuxBin);
-  videoMuxBin->link(sink);
+  QGst::PadPtr videoPad = mux->getRequestPad("video_%u");
+  QGst::PadPtr audioPad = mux->getRequestPad("audio_%u");
+
+  videoSrcBin->getStaticPad("src")->link(videoPad);
+  audioSrcBin->getStaticPad("src")->link(audioPad);
+
+  mux->link(sink);
 
   m_pipeline->bus()->addSignalWatch();
   QGlib::connect(m_pipeline->bus(), "message", this,

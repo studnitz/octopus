@@ -88,6 +88,8 @@ class GstRecorder : public QObject {
    */
   QGst::BinPtr createVideoSrcBin();
 
+  QGst::BinPtr createAudioSrcBin();
+
   quint16 videoWitdhPx;
 
   quint16 videoHeightPx;
