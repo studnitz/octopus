@@ -32,8 +32,8 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
     QGst::ElementPtr capsfilter =
         createCapsFilter(videoWitdhPx, videoHeightPx, framerate);
 
-    QGst::ElementPtr parse = QGst::ElementFactory::make("h264parse");
-    QGst::ElementPtr queue = QGst::ElementFactory::make("queue");
+    //QGst::ElementPtr parse = QGst::ElementFactory::make("h264parse");
+    //QGst::ElementPtr queue = QGst::ElementFactory::make("queue");
 
     if (usesOmx) {
       encoder = QGst::ElementFactory::make("omxh264enc");
@@ -42,8 +42,8 @@ QGst::BinPtr GstRecorder::createVideoSrcBin() {
       qDebug() << "GstRecoder: created x264enc";
     }
 
-    videoBin->add(src, capsfilter, encoder, parse, queue);
-    videoBin->linkMany(src, capsfilter, encoder, parse, queue);
+    videoBin->add(src, capsfilter, encoder);
+    videoBin->linkMany(src, capsfilter, encoder);
 
     qDebug() << "GstRecorder: createVideoSrcBin: added and linked the elements";
 
@@ -122,9 +122,10 @@ QGst::BinPtr GstRecorder::createVideoMuxBin() {
 
 const QString GstRecorder::recordLocally() {
   QGst::BinPtr videoSrcBin = createVideoSrcBin();
-  QGst::BinPtr audioSrcBin = createAudioSrcBin();
-  QGst::ElementPtr mux = QGst::ElementFactory::make("mp4mux");
-  QGst::BinPtr videoMuxBin = createVideoMuxBin();
+  //QGst::BinPtr audioSrcBin = createAudioSrcBin();
+  //QGst::ElementPtr mux = QGst::ElementFactory::make("mp4mux");
+
+  QGst::BinPtr mux = createVideoMuxBin();
   QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
 
   QString currentTime =
@@ -145,14 +146,17 @@ const QString GstRecorder::recordLocally() {
   }
 
   m_pipeline = QGst::Pipeline::create();
-  m_pipeline->add(videoSrcBin, audioSrcBin, mux, sink);
+  //m_pipeline->add(videoSrcBin, audioSrcBin, mux, sink);
 
-  QGst::PadPtr videoPad = mux->getRequestPad("video_%u");
-  QGst::PadPtr audioPad = mux->getRequestPad("audio_%u");
+  m_pipeline->add(videoSrcBin, mux, sink);
 
-  videoSrcBin->getStaticPad("src")->link(videoPad);
-  audioSrcBin->getStaticPad("src")->link(audioPad);
+  //QGst::PadPtr videoPad = mux->getRequestPad("video_%u");
+  //QGst::PadPtr audioPad = mux->getRequestPad("audio_%u");
 
+  //videoSrcBin->getStaticPad("src")->link(videoPad);
+  //audioSrcBin->getStaticPad("src")->link(audioPad);
+
+  videoSrcBin->link(mux);
   mux->link(sink);
 
   m_pipeline->bus()->addSignalWatch();
